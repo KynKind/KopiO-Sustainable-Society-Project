@@ -1,0 +1,26 @@
+Every page gonna have it:
+-base.html (header and footer)(every page gonna have this)
+
+User authentication (put it inside my_profile.html):
+-login.html
+-register.html
+-forgot_password.html
+
+Homepage (show leaderboard and games, so that users straight forward click on games and play):
+-index.html (after login)
+
+Games & Quizzes (all show at homepage):
+-quiz_game.html
+-memory_game.html
+-sorting_game.html
+-puzzle_game.html
+
+Points & Rewards system:
+-leaderboard.html (show all users ranking and points)
+-my_profile.html (information of the user)
+
+Additional essential page (these 4 things all can access by scrolling down to the bottom, footer.html):
+-about.html
+-how_to_play.html
+-contact.html
+-sponsorship.html
