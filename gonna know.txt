@@ -24,3 +24,6 @@ Additional essential page (these 4 things all can access by scrolling down to th
 -how_to_play.html
 -contact.html
 -sponsorship.html
+
+Admin:
+admin.html (gonna make it only admin accounts can access this page)
