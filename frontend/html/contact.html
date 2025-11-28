@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Kopi-O</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <div class="logo">
+                    <i class="fas fa-mug-hot"></i>
+                    <span>Kopi-O</span>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li class="nav-item"><a href="my_profile.html" class="nav-link">My Profile</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="contact-container">
+            <!-- Contact Header -->
+            <section class="contact-hero card">
+                <div class="hero-content">
+                    <h1><i class="fas fa-envelope"></i> Get In Touch</h1>
+                    <p>We'd love to hear from you! Whether you have questions, feedback, or want to collaborate, reach out to us.</p>
+                </div>
+            </section>
+
+            <!-- Contact Methods -->
+            <div class="contact-methods">
+                <!-- Contact Form -->
+                <section class="contact-form-section card">
+                    <h2>Send us a Message</h2>
+                    <form class="contact-form" id="contactForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="contactName" class="form-label">Full Name *</label>
+                                <input type="text" id="contactName" class="form-input" placeholder="Enter your full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contactEmail" class="form-label">Email Address *</label>
+                                <input type="email" id="contactEmail" class="form-input" placeholder="your.email@mmu.edu.my" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contactSubject" class="form-label">Subject *</label>
+                            <select id="contactSubject" class="form-input" required>
+                                <option value="">Select a subject</option>
+                                <option value="general">General Inquiry</option>
+                                <option value="technical">Technical Support</option>
+                                <option value="feedback">Feedback & Suggestions</option>
+                                <option value="partnership">Partnership Opportunity</option>
+                                <option value="sponsorship">Sponsorship Inquiry</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contactMessage" class="form-label">Message *</label>
+                            <textarea id="contactMessage" class="form-input" rows="6" placeholder="Tell us how we can help you..." required></textarea>
+                        </div>
+
+                        <div class="form-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="contactConsent" required>
+                                <span class="checkmark"></span>
+                                I agree to the processing of my data according to the Privacy Policy
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-large" style="width: 100%;">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Contact Info -->
+                <section class="contact-info-section card">
+                    <h2>Other Ways to Reach Us</h2>
+                    
+                    <div class="contact-methods-list">
+                        <div class="contact-method">
+                            <div class="method-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="method-info">
+                                <h3>Email Us</h3>
+                                <p>support@kopio-mmu.com</p>
+                                <small>Typically reply within 24 hours</small>
+                            </div>
+                        </div>
+
+                        <div class="contact-method">
+                            <div class="method-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="method-info">
+                                <h3>Live Chat</h3>
+                                <p>Available Mon-Fri, 9AM-5PM</p>
+                                <small>Click the chat icon in the bottom right</small>
+                            </div>
+                        </div>
+
+                        <div class="contact-method">
+                            <div class="method-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="method-info">
+                                <h3>Visit Us</h3>
+                                <p>Multimedia University</p>
+                                <small>Cyberjaya Campus, Faculty of Computing and Informatics</small>
+                            </div>
+                        </div>
+
+                        <div class="contact-method">
+                            <div class="method-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="method-info">
+                                <h3>Response Time</h3>
+                                <p>1-2 Business Days</p>
+                                <small>For emails and contact form submissions</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Quick Links -->
+                    <div class="faq-quicklinks">
+                        <h3>Quick Answers</h3>
+                        <div class="quicklinks-grid">
+                            <a href="how_to_play.html#faq" class="quicklink">
+                                <i class="fas fa-gamepad"></i>
+                                <span>Game Questions</span>
+                            </a>
+                            <a href="how_to_play.html#points" class="quicklink">
+                                <i class="fas fa-coins"></i>
+                                <span>Points & Rewards</span>
+                            </a>
+                            <a href="about.html" class="quicklink">
+                                <i class="fas fa-info-circle"></i>
+                                <span>About Our Project</span>
+                            </a>
+                            <a href="sponsorship.html" class="quicklink">
+                                <i class="fas fa-handshake"></i>
+                                <span>Partnerships</span>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Team Contact -->
+            <section class="team-contact card">
+                <h2>Project Team Contacts</h2>
+                <p>For specific inquiries, you can reach out to our team leads:</p>
+                
+                <div class="team-contacts-grid">
+                    <div class="team-contact-card">
+                        <div class="contact-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Sarah Lim</h3>
+                            <span class="contact-role">Project Leader</span>
+                            <p class="contact-email">sarah.lim@kopio-mmu.com</p>
+                            <span class="contact-responsibility">Overall project coordination</span>
+                        </div>
+                    </div>
+
+                    <div class="team-contact-card">
+                        <div class="contact-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Ang Kynie</h3>
+                            <span class="contact-role">Partnership Lead</span>
+                            <p class="contact-email">kynie.ang@kopio-mmu.com</p>
+                            <span class="contact-responsibility">Sponsorships & collaborations</span>
+                        </div>
+                    </div>
+
+                    <div class="team-contact-card">
+                        <div class="contact-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Ahmad Haikal</h3>
+                            <span class="contact-role">Technical Lead</span>
+                            <p class="contact-email">ahmad.haikal@kopio-mmu.com</p>
+                            <span class="contact-responsibility">Technical issues & development</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Emergency Support -->
+            <section class="emergency-support card">
+                <div class="emergency-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h2>Urgent Technical Issues</h2>
+                </div>
+                <div class="emergency-content">
+                    <p>For urgent technical problems preventing you from playing games or accessing your account:</p>
+                    <div class="emergency-contacts">
+                        <div class="emergency-contact">
+                            <strong>Technical Support Hotline:</strong>
+                            <span>+603-8312 5000 (MMU IT Helpdesk)</span>
+                        </div>
+                        <div class="emergency-contact">
+                            <strong>Emergency Email:</strong>
+                            <span>tech-emergency@kopio-mmu.com</span>
+                        </div>
+                    </div>
+                    <div class="emergency-tips">
+                        <h4>Before Contacting Support:</h4>
+                        <ul>
+                            <li>Clear your browser cache and cookies</li>
+                            <li>Try using a different browser</li>
+                            <li>Check your internet connection</li>
+                            <li>Take a screenshot of any error messages</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Kopi-O Sustainable Society</h3>
+                <p>Making sustainability fun through games and challenges</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="how_to_play.html">How to Play</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="sponsorship.html">Sponsorship</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Connect With Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Kopi-O Sustainable Society. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Chat Widget (simplified) -->
+    <div class="chat-widget">
+        <div class="chat-icon">
+            <i class="fas fa-comments"></i>
+        </div>
+    </div>
+
+    <script src="../js/contact.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+</html>

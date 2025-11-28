@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Kopi-O</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <div class="logo">
+                    <i class="fas fa-mug-hot"></i>
+                    <span>Kopi-O</span>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li class="nav-item"><a href="my_profile.html" class="nav-link">My Profile</a></li>
+                <li class="nav-item"><a href="admin.html" class="nav-link admin-only">Admin</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="profile-container">
+            <!-- Profile Header -->
+            <div class="profile-header card">
+                <div class="profile-avatar">
+                    <div class="avatar-image">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="avatar-badge">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                </div>
+                <div class="profile-info">
+                    <h1>Demo Student</h1>
+                    <p class="profile-faculty">Faculty of Computing & Informatics</p>
+                    <p class="profile-email">student@mmu.edu.my</p>
+                    
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <strong>1,250</strong>
+                            <span>Total Points</span>
+                        </div>
+                        <div class="profile-stat">
+                            <strong>15</strong>
+                            <span>Global Rank</span>
+                        </div>
+                        <div class="profile-stat">
+                            <strong>87</strong>
+                            <span>Games Played</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <button class="btn btn-secondary" id="editProfile">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </button>
+                    <button class="btn" id="changeAvatar">
+                        <i class="fas fa-camera"></i> Change Avatar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Points & Rewards -->
+            <div class="profile-section card">
+                <h2><i class="fas fa-coins"></i> Points & Rewards</h2>
+                <div class="points-breakdown">
+                    <div class="points-card">
+                        <div class="points-icon">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <div class="points-info">
+                            <h3>Game Points</h3>
+                            <span class="points-amount">850 pts</span>
+                        </div>
+                    </div>
+                    <div class="points-card">
+                        <div class="points-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="points-info">
+                            <h3>Challenges</h3>
+                            <span class="points-amount">400 pts</span>
+                        </div>
+                    </div>
+                    <div class="points-card">
+                        <div class="points-icon">
+                            <i class="fas fa-streak"></i>
+                        </div>
+                        <div class="points-info">
+                            <h3>Daily Streak</h3>
+                            <span class="points-amount">+50 pts</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rewards-section">
+                    <h3>Available Rewards</h3>
+                    <div class="rewards-grid">
+                        <div class="reward-card">
+                            <div class="reward-icon">
+                                <i class="fas fa-mug-hot"></i>
+                            </div>
+                            <div class="reward-info">
+                                <h4>Free Coffee</h4>
+                                <p>Heandshe Coffee voucher</p>
+                                <div class="reward-cost">500 pts</div>
+                            </div>
+                            <button class="btn btn-small">Redeem</button>
+                        </div>
+                        <div class="reward-card">
+                            <div class="reward-icon">
+                                <i class="fas fa-print"></i>
+                            </div>
+                            <div class="reward-info">
+                                <h4>Printing Credits</h4>
+                                <p>50 free pages</p>
+                                <div class="reward-cost">300 pts</div>
+                            </div>
+                            <button class="btn btn-small">Redeem</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Statistics -->
+            <div class="profile-section card">
+                <h2><i class="fas fa-chart-bar"></i> Game Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-progress">
+                            <div class="circular-progress" data-value="75">
+                                <span class="progress-value">75%</span>
+                            </div>
+                        </div>
+                        <div class="stat-label">Quiz Accuracy</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-progress">
+                            <div class="circular-progress" data-value="60">
+                                <span class="progress-value">60%</span>
+                            </div>
+                        </div>
+                        <div class="stat-label">Memory Game</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-progress">
+                            <div class="circular-progress" data-value="85">
+                                <span class="progress-value">85%</span>
+                            </div>
+                        </div>
+                        <div class="stat-label">Sorting Game</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-progress">
+                            <div class="circular-progress" data-value="70">
+                                <span class="progress-value">70%</span>
+                            </div>
+                        </div>
+                        <div class="stat-label">Puzzle Game</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="profile-section card">
+                <h2><i class="fas fa-history"></i> Recent Activity</h2>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon success">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="activity-content">
+                            <strong>Completed Sustainability Quiz</strong>
+                            <span>Scored 80% and earned 50 points</span>
+                            <small>2 hours ago</small>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon success">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="activity-content">
+                            <strong>Weekly Challenge Completed</strong>
+                            <span>Recycled 10 items - 100 points earned</span>
+                            <small>1 day ago</small>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon info">
+                            <i class="fas fa-level-up-alt"></i>
+                        </div>
+                        <div class="activity-content">
+                            <strong>Level Up!</strong>
+                            <span>Reached Level 5 Sustainability Champion</span>
+                            <small>2 days ago</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Login/Register Section (for non-logged in users) -->
+            <div class="auth-section card" id="authSection" style="display: none;">
+                <div class="auth-promo">
+                    <h2>Join the Sustainability Movement!</h2>
+                    <p>Create an account to start earning points, playing games, and competing on the leaderboard.</p>
+                    <div class="auth-buttons">
+                        <a href="login.html" class="btn">Login</a>
+                        <a href="register.html" class="btn btn-secondary">Register</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Kopi-O Sustainable Society</h3>
+                <p>Making sustainability fun through games and challenges</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="how_to_play.html">How to Play</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="sponsorship.html">Sponsorship</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Connect With Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Kopi-O Sustainable Society. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../js/profile.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Kopi-O</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="user-admin">
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <div class="logo">
+                    <i class="fas fa-mug-hot"></i>
+                    <span>Kopi-O Admin</span>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li class="nav-item"><a href="my_profile.html" class="nav-link">My Profile</a></li>
+                <li class="nav-item"><a href="admin.html" class="nav-link admin-only">Admin</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="admin-container">
+            <!-- Admin Header -->
+            <section class="admin-header card">
+                <div class="admin-welcome">
+                    <h1><i class="fas fa-cogs"></i> Admin Dashboard</h1>
+                    <p>Welcome back, Administrator. Here's your system overview.</p>
+                </div>
+                <div class="admin-actions">
+                    <button class="btn btn-secondary" id="refreshData">
+                        <i class="fas fa-sync-alt"></i> Refresh Data
+                    </button>
+                    <button class="btn" id="exportReport">
+                        <i class="fas fa-download"></i> Export Report
+                    </button>
+                </div>
+            </section>
+
+            <!-- Statistics Overview -->
+            <section class="stats-overview">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon primary">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>1,247</h3>
+                            <p>Total Users</p>
+                            <span class="stat-change positive">+12% this month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon success">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>45,821</h3>
+                            <p>Games Played</p>
+                            <span class="stat-change positive">+8% this week</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon warning">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>128,450</h3>
+                            <p>Points Awarded</p>
+                            <span class="stat-change positive">+15% this month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card">
+                            <div class="stat-icon danger">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>5,672</h3>
+                                <p>Rewards Redeemed</p>
+                                <span class="stat-change positive">+20% this month</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="quick-actions card">
+                <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+                <div class="actions-grid">
+                    <button class="action-card" data-action="manage-users">
+                        <div class="action-icon">
+                            <i class="fas fa-user-cog"></i>
+                        </div>
+                        <h3>Manage Users</h3>
+                        <p>View and manage user accounts</p>
+                    </button>
+                    <button class="action-card" data-action="add-game">
+                        <div class="action-icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <h3>Add Game</h3>
+                        <p>Create new game content</p>
+                    </button>
+                    <button class="action-card" data-action="manage-rewards">
+                        <div class="action-icon">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <h3>Manage Rewards</h3>
+                        <p>Update reward catalog</p>
+                    </button>
+                    <button class="action-card" data-action="system-settings">
+                        <div class="action-icon">
+                            <i class="fas fa-sliders-h"></i>
+                        </div>
+                        <h3>System Settings</h3>
+                        <p>Configure platform settings</p>
+                    </button>
+                </div>
+            </section>
+
+            <!-- User Management -->
+            <section class="user-management card">
+                <div class="section-header">
+                    <h2><i class="fas fa-users-cog"></i> User Management</h2>
+                    <div class="header-actions">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="userSearch" placeholder="Search users...">
+                        </div>
+                        <button class="btn btn-small" id="addUser">
+                            <i class="fas fa-user-plus"></i> Add User
+                        </button>
+                    </div>
+                </div>
+
+                <div class="users-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Faculty</th>
+                                <th>Points</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="user-avatar">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="user-info">
+                                            <strong>Sarah Lim</strong>
+                                            <span>Admin</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>sarah.lim@mmu.edu.my</td>
+                                <td>FCI</td>
+                                <td>2,450</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn-icon" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="user-avatar">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="user-info">
+                                            <strong>Ahmad Haikal</strong>
+                                            <span>User</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>ahmad.haikal@mmu.edu.my</td>
+                                <td>FOE</td>
+                                <td>2,120</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn-icon" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="user-avatar">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="user-info">
+                                            <strong>Demo Student</strong>
+                                            <span>User</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>student@mmu.edu.my</td>
+                                <td>FCI</td>
+                                <td>1,250</td>
+                                <td><span class="status-badge inactive">Inactive</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn-icon" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-footer">
+                    <div class="pagination">
+                        <button class="btn-icon" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span class="page-info">Page 1 of 5</span>
+                        <button class="btn-icon">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Game Analytics -->
+            <section class="analytics-section card">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-bar"></i> Game Analytics</h2>
+                    <div class="time-filter">
+                        <select id="analyticsPeriod" class="filter-select">
+                            <option value="7d">Last 7 Days</option>
+                            <option value="30d" selected>Last 30 Days</option>
+                            <option value="90d">Last 90 Days</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3>Game Popularity</h3>
+                        <div class="chart-placeholder">
+                            <div class="chart-bar" style="height: 80%">
+                                <span>Quiz</span>
+                            </div>
+                            <div class="chart-bar" style="height: 65%">
+                                <span>Memory</span>
+                            </div>
+                            <div class="chart-bar" style="height: 50%">
+                                <span>Sorting</span>
+                            </div>
+                            <div class="chart-bar" style="height: 45%">
+                                <span>Puzzle</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3>User Engagement</h3>
+                        <div class="engagement-stats">
+                            <div class="engagement-item">
+                                <span class="metric-label">Avg. Session Duration</span>
+                                <span class="metric-value">12.5 min</span>
+                            </div>
+                            <div class="engagement-item">
+                                <span class="metric-label">Returning Users</span>
+                                <span class="metric-value">68%</span>
+                            </div>
+                            <div class="engagement-item">
+                                <span class="metric-label">Daily Active Users</span>
+                                <span class="metric-value">342</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- System Alerts -->
+            <section class="alerts-section card">
+                <div class="section-header">
+                    <h2><i class="fas fa-bell"></i> System Alerts</h2>
+                    <span class="alert-count">3 New</span>
+                </div>
+
+                <div class="alerts-list">
+                    <div class="alert-item warning">
+                        <div class="alert-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h3>High Server Load</h3>
+                            <p>Server CPU usage at 85% during peak hours</p>
+                            <small>2 hours ago</small>
+                        </div>
+                        <button class="btn-icon">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <div class="alert-item info">
+                        <div class="alert-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h3>New User Registration Peak</h3>
+                            <p>42 new users registered in the last 24 hours</p>
+                            <small>5 hours ago</small>
+                        </div>
+                        <button class="btn-icon">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <div class="alert-item success">
+                        <div class="alert-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h3>Backup Completed</h3>
+                            <p>Daily database backup completed successfully</p>
+                            <small>Yesterday</small>
+                        </div>
+                        <button class="btn-icon">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Kopi-O Sustainable Society</h3>
+                <p>Making sustainability fun through games and challenges</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="how_to_play.html">How to Play</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="sponsorship.html">Sponsorship</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Connect With Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Kopi-O Sustainable Society. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../js/admin.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+</html>

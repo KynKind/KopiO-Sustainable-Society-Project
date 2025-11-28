@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - Kopi-O</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <div class="logo">
+                    <i class="fas fa-mug-hot"></i>
+                    <span>Kopi-O</span>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li class="nav-item"><a href="my_profile.html" class="nav-link">My Profile</a></li>
+                <li class="nav-item"><a href="admin.html" class="nav-link admin-only">Admin</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="leaderboard-container">
+            <!-- Page Header -->
+            <div class="page-header card">
+                <h1><i class="fas fa-trophy"></i> Global Leaderboard</h1>
+                <p>See how you rank against other sustainability champions!</p>
+                
+                <div class="leaderboard-filters">
+                    <div class="filter-group">
+                        <label>Time Period:</label>
+                        <select id="timeFilter" class="filter-select">
+                            <option value="weekly">This Week</option>
+                            <option value="monthly">This Month</option>
+                            <option value="alltime">All Time</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Faculty:</label>
+                        <select id="facultyFilter" class="filter-select">
+                            <option value="all">All Faculties</option>
+                            <option value="fci">Computing & Informatics</option>
+                            <option value="fob">Business</option>
+                            <option value="foe">Engineering</option>
+                            <option value="fom">Management</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top 3 Winners -->
+            <div class="top-winners card">
+                <div class="winner-card winner-2">
+                    <div class="winner-rank">2</div>
+                    <div class="winner-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="winner-info">
+                        <h3>Ahmad Haikal</h3>
+                        <span class="winner-faculty">Faculty of Engineering</span>
+                        <div class="winner-points">2,120 pts</div>
+                    </div>
+                </div>
+
+                <div class="winner-card winner-1">
+                    <div class="winner-rank">1</div>
+                    <div class="winner-avatar">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="winner-info">
+                        <h3>Sarah Lim</h3>
+                        <span class="winner-faculty">Faculty of Computing</span>
+                        <div class="winner-points">2,450 pts</div>
+                    </div>
+                </div>
+
+                <div class="winner-card winner-3">
+                    <div class="winner-rank">3</div>
+                    <div class="winner-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="winner-info">
+                        <h3>Ang Kynie</h3>
+                        <span class="winner-faculty">Faculty of Business</span>
+                        <div class="winner-points">1,980 pts</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Leaderboard -->
+            <div class="leaderboard-main card">
+                <div class="leaderboard-header">
+                    <h2>All Players</h2>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="playerSearch" placeholder="Search players...">
+                    </div>
+                </div>
+
+                <div class="leaderboard-list">
+                    <!-- Players 4-10 -->
+                    <div class="leaderboard-item">
+                        <div class="rank">4</div>
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-info">
+                            <strong>Wei Jian</strong>
+                            <span>Faculty of Computing</span>
+                        </div>
+                        <div class="user-points">1,850 pts</div>
+                    </div>
+
+                    <div class="leaderboard-item">
+                        <div class="rank">5</div>
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-info">
+                            <strong>Priya Sharma</strong>
+                            <span>Faculty of Management</span>
+                        </div>
+                        <div class="user-points">1,720 pts</div>
+                    </div>
+
+                    <div class="leaderboard-item">
+                        <div class="rank">6</div>
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-info">
+                            <strong>Ashton Lim</strong>
+                            <span>Faculty of Engineering</span>
+                        </div>
+                        <div class="user-points">1,680 pts</div>
+                    </div>
+
+                    <div class="leaderboard-item">
+                        <div class="rank">7</div>
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-info">
+                            <strong>Mei Ling</strong>
+                            <span>Faculty of Business</span>
+                        </div>
+                        <div class="user-points">1,550 pts</div>
+                    </div>
+
+                    <div class="leaderboard-item">
+                        <div class="rank">8</div>
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-info">
+                            <strong>Raj Kumar</strong>
+                            <span>Faculty of Computing</span>
+                        </div>
+                        <div class="user-points">1,420 pts</div>
+                    </div>
+
+                    <!-- Current User Highlighted -->
+                    <div class="leaderboard-item current-user">
+                        <div class="rank">15</div>
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-info">
+                            <strong>You</strong>
+                            <span>Faculty of Computing</span>
+                        </div>
+                        <div class="user-points">1,250 pts</div>
+                    </div>
+                </div>
+
+                <div class="leaderboard-footer">
+                    <button class="btn btn-secondary" id="loadMore">
+                        Load More Players
+                    </button>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="leaderboard-stats card">
+                <h2>Community Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>1,247</h3>
+                            <p>Active Players</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>45,821</h3>
+                            <p>Games Played</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>128,450</h3>
+                            <p>Total Points</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-recycle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>5,672</h3>
+                            <p>Challenges Completed</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Kopi-O Sustainable Society</h3>
+                <p>Making sustainability fun through games and challenges</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="how_to_play.html">How to Play</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="sponsorship.html">Sponsorship</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Connect With Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Kopi-O Sustainable Society. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../js/leaderboard.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Kopi-O Sustainable Society</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <div class="logo">
+                    <i class="fas fa-mug-hot"></i>
+                    <span>Kopi-O</span>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li class="nav-item"><a href="my_profile.html" class="nav-link">My Profile</a></li>
+                <li class="nav-item"><a href="admin.html" class="nav-link admin-only">Admin</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero card">
+            <div class="hero-content">
+                <h1>Welcome to Kopi-O Sustainable Society!</h1>
+                <p>Play games, earn points, and help make our campus more sustainable. Every action counts!</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <h3>1,250</h3>
+                        <p>Players</p>
+                    </div>
+                    <div class="stat">
+                        <h3>45,800</h3>
+                        <p>Points Earned</p>
+                    </div>
+                    <div class="stat">
+                        <h3>350</h3>
+                        <p>Games Played Today</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Leaderboard Preview -->
+        <section class="card">
+            <h2>Top Players This Week</h2>
+            <div class="leaderboard-preview">
+                <div class="leaderboard-item">
+                    <div class="rank rank-1">1</div>
+                    <div class="user-info">
+                        <strong>Sarah Lim</strong>
+                        <span>Faculty of Computing</span>
+                    </div>
+                    <div class="user-points">2,450 pts</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="rank rank-2">2</div>
+                    <div class="user-info">
+                        <strong>Ahmad Haikal</strong>
+                        <span>Faculty of Engineering</span>
+                    </div>
+                    <div class="user-points">2,120 pts</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="rank rank-3">3</div>
+                    <div class="user-info">
+                        <strong>Ang Kynie</strong>
+                        <span>Faculty of Business</span>
+                    </div>
+                    <div class="user-points">1,980 pts</div>
+                </div>
+            </div>
+            <a href="leaderboard.html" class="btn btn-secondary" style="margin-top: 1rem;">View Full Leaderboard</a>
+        </section>
+
+        <!-- Games Section -->
+        <section class="card">
+            <h2>Play & Earn Points</h2>
+            <p>Choose a game to start earning sustainability points!</p>
+            
+            <div class="games-grid">
+                <div class="game-card">
+                    <div class="game-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <h3>Sustainability Quiz</h3>
+                    <p>Test your knowledge with multiple choice questions</p>
+                    <a href="quiz_game.html" class="btn">Play Now</a>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>Eco Memory</h3>
+                    <p>Match pairs and learn about sustainability</p>
+                    <a href="memory_game.html" class="btn">Play Now</a>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-icon">
+                        <i class="fas fa-recycle"></i>
+                    </div>
+                    <h3>Waste Sorter</h3>
+                    <p>Drag and drop items to correct bins</p>
+                    <a href="sorting_game.html" class="btn">Play Now</a>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-icon">
+                        <i class="fas fa-puzzle-piece"></i>
+                    </div>
+                    <h3>Eco Puzzle</h3>
+                    <p>Solve slider puzzles with nature themes</p>
+                    <a href="puzzle_game.html" class="btn">Play Now</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Current Challenges -->
+        <section class="card">
+            <h2>Weekly Challenges</h2>
+            <div class="challenges-list">
+                <div class="challenge-item">
+                    <h3>♻️ Recycle 10 Items</h3>
+                    <p>Earn 50 points by properly sorting waste</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 60%"></div>
+                    </div>
+                    <span>6/10 completed</span>
+                </div>
+                <div class="challenge-item">
+                    <h3>🌱 Plant Knowledge</h3>
+                    <p>Answer 5 plant-related questions correctly</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 100%"></div>
+                    </div>
+                    <span>Completed! +30 pts</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Kopi-O Sustainable Society</h3>
+                <p>Making sustainability fun through games and challenges</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="how_to_play.html">How to Play</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="sponsorship.html">Sponsorship</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Connect With Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Kopi-O Sustainable Society. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../js/script.js"></script>
+</body>
+</html>
