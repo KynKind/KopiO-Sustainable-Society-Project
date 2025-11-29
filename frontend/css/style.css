@@ -2618,105 +2618,6 @@ body {
     margin-bottom: 1rem;
 }
 
-/* Sponsorship Tiers */
-.tiers-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-.tier-card {
-    background: var(--light-cream);
-    padding: 2rem;
-    border-radius: var(--radius-large);
-    text-align: center;
-    position: relative;
-    border: 2px solid #E0D3B8;
-    transition: all 0.3s ease;
-}
-
-.tier-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(139, 69, 19, 0.1);
-}
-
-.tier-card.popular {
-    border-color: var(--accent-gold);
-    transform: scale(1.05);
-}
-
-.popular-badge {
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--accent-gold);
-    color: var(--dark-brown);
-    padding: 0.5rem 1.5rem;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-.tier-header {
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid #E0D3B8;
-}
-
-.tier-header h3 {
-    color: var(--dark-brown);
-    margin-bottom: 0.5rem;
-}
-
-.tier-price {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--primary-brown);
-    margin-bottom: 0.25rem;
-}
-
-.tier-duration {
-    color: var(--light-brown);
-    font-size: 0.9rem;
-}
-
-.tier-features {
-    margin-bottom: 2rem;
-    text-align: left;
-}
-
-.feature {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 0;
-}
-
-.feature i {
-    color: #00C851;
-}
-
-.feature.unavailable i {
-    color: #ff4444;
-}
-
-.feature.unavailable span {
-    color: var(--light-brown);
-    text-decoration: line-through;
-}
-
-.btn-outline {
-    background: transparent;
-    border: 2px solid var(--primary-brown);
-    color: var(--primary-brown);
-}
-
-.btn-outline:hover {
-    background: var(--primary-brown);
-    color: white;
-}
-
 /* Current Sponsors */
 .sponsors-grid {
     display: grid;
@@ -2756,30 +2657,6 @@ body {
     font-weight: 600;
     display: block;
     margin-bottom: 0.5rem;
-}
-
-/* Partnership Form */
-.partnership-form {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-/* Sponsorship FAQ */
-.faq-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2rem;
-}
-
-.faq-item {
-    padding: 1.5rem;
-    background: rgba(139, 69, 19, 0.05);
-    border-radius: var(--radius-medium);
-}
-
-.faq-item h3 {
-    color: var(--dark-brown);
-    margin-bottom: 1rem;
 }
 
 /* Admin Page Styles */
@@ -3440,5 +3317,238 @@ body {
     
     .option {
         padding: 0.75rem 1rem;
+    }
+}
+
+/* Sponsor Spotlight Styles */
+.sponsor-spotlight {
+    text-align: center;
+}
+
+.sponsor-feature {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.sponsor-main {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.sponsor-logo-large {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, var(--primary-brown), var(--light-brown));
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+}
+
+.sponsor-details h3 {
+    color: var(--dark-brown);
+    margin-bottom: 0.5rem;
+    font-size: 1.8rem;
+}
+
+.sponsor-tagline {
+    color: var(--primary-brown);
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.sponsor-highlights {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.highlight-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(139, 69, 19, 0.05);
+    border-radius: var(--radius-small);
+}
+
+.highlight-item i {
+    color: var(--primary-brown);
+    font-size: 1.1rem;
+}
+
+.sponsor-mission {
+    padding: 1.5rem;
+    background: rgba(212, 175, 55, 0.1);
+    border-radius: var(--radius-medium);
+    text-align: left;
+}
+
+.sponsor-mission h4 {
+    color: var(--dark-brown);
+    margin-bottom: 1rem;
+}
+
+/* Impact Grid */
+.impact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.impact-card {
+    text-align: center;
+    padding: 2rem 1.5rem;
+}
+
+.impact-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary-brown), var(--light-brown));
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+}
+
+.impact-card h3 {
+    color: var(--dark-brown);
+    margin-bottom: 1rem;
+}
+
+/* Benefits Showcase */
+.benefits-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.benefit-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.benefit-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--accent-gold), #E5C158);
+    color: var(--dark-brown);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.benefit-text h3 {
+    color: var(--dark-brown);
+    margin-bottom: 0.5rem;
+}
+
+/* Support CTA */
+.support-cta {
+    text-align: center;
+    color: var(--text-dark);
+}
+
+.support-cta .cta-content h2,
+.support-cta .cta-content p {
+    color: var(--text-dark);
+}
+
+.cta-features {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+}
+
+.feature-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(0, 200, 81, 0.1);
+    border-radius: 25px;
+    color: #007E33;
+    font-weight: 500;
+}
+
+.feature-badge i {
+    color: #00C851;
+}
+
+.cta-note {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: rgba(139, 69, 19, 0.05);
+    border-radius: var(--radius-medium);
+    text-align: left;
+}
+
+/* Footer Sponsor */
+.sponsor-footer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.footer-sponsor-logo {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.footer-sponsor-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-sponsor-info strong {
+    color: var(--accent-gold);
+}
+
+.footer-sponsor-info span {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sponsor-main {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .benefit-item {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .sponsor-highlights {
+        grid-template-columns: 1fr;
+    }
+    
+    .impact-grid {
+        grid-template-columns: 1fr;
     }
 }
