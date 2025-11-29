@@ -2248,55 +2248,6 @@ body {
     font-weight: bold;
 }
 
-/* FAQ */
-.faq-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.faq-item {
-    border: 1px solid #E0D3B8;
-    border-radius: var(--radius-medium);
-    overflow: hidden;
-}
-
-.faq-question {
-    padding: 1.5rem;
-    background: var(--light-cream);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.faq-question:hover {
-    background: rgba(139, 69, 19, 0.05);
-}
-
-.faq-question h3 {
-    color: var(--dark-brown);
-    margin: 0;
-    font-size: 1.1rem;
-}
-
-.faq-answer {
-    padding: 0 1.5rem;
-    max-height: 0;
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.faq-item.active .faq-answer {
-    padding: 1.5rem;
-    max-height: 200px;
-}
-
-.faq-item.active .faq-question i {
-    transform: rotate(180deg);
-}
-
 /* Support Options */
 .support-options {
     display: grid;
@@ -2612,33 +2563,6 @@ body {
     content: '⚠️';
     position: absolute;
     left: 0;
-}
-
-/* Chat Widget */
-.chat-widget {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    z-index: 1000;
-}
-
-.chat-icon {
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, var(--primary-brown), var(--light-brown));
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
-    transition: all 0.3s ease;
-}
-
-.chat-icon:hover {
-    transform: scale(1.1);
 }
 
 /* Sponsorship Page Styles */
