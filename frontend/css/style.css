@@ -3561,6 +3561,105 @@ body {
     width: 12px;
 }
 
+/* Company Details */
+.company-overview {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.business-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: rgba(139, 69, 19, 0.05);
+    border-radius: var(--radius-medium);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.stat-item strong {
+    color: var(--primary-brown);
+    font-size: 0.9rem;
+}
+
+/* Ecosystem Grid */
+.ecosystem-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.ecosystem-card {
+    padding: 2rem;
+    background: var(--light-cream);
+    border-radius: var(--radius-medium);
+    text-align: center;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.ecosystem-card:hover {
+    border-color: var(--accent-gold);
+    transform: translateY(-5px);
+}
+
+.ecosystem-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary-brown), var(--light-brown));
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 2rem;
+}
+
+.ecosystem-role {
+    color: var(--primary-brown);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.ecosystem-card ul {
+    list-style: none;
+    padding-left: 0;
+    text-align: left;
+}
+
+.ecosystem-card li {
+    padding: 0.25rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.ecosystem-card li::before {
+    content: '✓';
+    color: var(--accent-gold);
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ecosystem-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .business-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .sponsor-main {
