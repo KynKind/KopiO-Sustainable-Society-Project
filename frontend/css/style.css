@@ -3649,6 +3649,31 @@ body {
     font-weight: bold;
 }
 
+/* Sponsor Division Links */
+.sponsor-division {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.division-links {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.division-links a {
+    color: var(--text-light);
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.division-links a:hover {
+    opacity: 1;
+    color: var(--accent-gold);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .ecosystem-grid {
