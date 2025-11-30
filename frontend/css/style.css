@@ -3581,3 +3581,38 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* Fix password eye icon placement */
+.form-group {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.password-toggle i {
+    font-size: 18px;
+    color: #9c774c;
+}
+
+/* Fix navbar item spacing */
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 40px; 
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+}
