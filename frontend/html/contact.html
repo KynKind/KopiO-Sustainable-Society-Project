@@ -7,6 +7,44 @@
     <link rel="stylesheet" href="../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Additional CSS for email wrapping */
+        .email-contact-card {
+            min-height: 80px;
+            padding: 15px;
+            background: rgba(139, 69, 19, 0.05);
+            border-radius: var(--radius-medium);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .email-contact-card h3 {
+            color: var(--dark-brown);
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+        
+        .contact-email {
+            color: var(--primary-brown);
+            font-size: 0.85rem;
+            word-break: break-all;
+            line-height: 1.4;
+        }
+        
+        .email-contacts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        /* Make the contact section wider */
+        .team-contact.card {
+            max-width: 1200px;
+            margin: 0 auto 2rem;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -42,170 +80,164 @@
                 </div>
             </section>
 
-            <!-- Contact Methods -->
-            <div class="contact-methods">
-                <!-- Contact Form -->
-                <section class="contact-form-section card">
-                    <h2>Send us a Message</h2>
-                    <form class="contact-form" id="contactForm">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="contactName" class="form-label">Full Name *</label>
-                                <input type="text" id="contactName" class="form-input" placeholder="Enter your full name" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="contactEmail" class="form-label">Email Address *</label>
-                                <input type="email" id="contactEmail" class="form-input" placeholder="your.email@mmu.edu.my" required>
-                            </div>
+            <!-- Contact Info -->
+            <section class="contact-info-section card">
+                <h2>Contact Information</h2>
+                
+                <div class="contact-methods-list">
+                    <div class="contact-method">
+                        <div class="method-icon">
+                            <i class="fas fa-map-marker-alt"></i>
                         </div>
-
-                        <div class="form-group">
-                            <label for="contactSubject" class="form-label">Subject *</label>
-                            <select id="contactSubject" class="form-input" required>
-                                <option value="">Select a subject</option>
-                                <option value="general">General Inquiry</option>
-                                <option value="technical">Technical Support</option>
-                                <option value="feedback">Feedback & Suggestions</option>
-                                <option value="partnership">Partnership Opportunity</option>
-                                <option value="sponsorship">Sponsorship Inquiry</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="contactMessage" class="form-label">Message *</label>
-                            <textarea id="contactMessage" class="form-input" rows="6" placeholder="Tell us how we can help you..." required></textarea>
-                        </div>
-
-                        <div class="form-options">
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="contactConsent" required>
-                                <span class="checkmark"></span>
-                                I agree to the processing of my data according to the Privacy Policy
-                            </label>
-                        </div>
-
-                        <button type="submit" class="btn btn-large" style="width: 100%;">
-                            <i class="fas fa-paper-plane"></i> Send Message
-                        </button>
-                    </form>
-                </section>
-
-                <!-- Contact Info -->
-                <section class="contact-info-section card">
-                    <h2>Other Ways to Reach Us</h2>
-                    
-                    <div class="contact-methods-list">
-                        <div class="contact-method">
-                            <div class="method-icon">
-                                <i class="fas fa-envelope"></i>
-                            </div>
-                            <div class="method-info">
-                                <h3>Email Us</h3>
-                                <p>support@kopio-mmu.com</p>
-                                <small>Typically reply within 24 hours</small>
-                            </div>
-                        </div>
-
-                        <div class="contact-method">
-                            <div class="method-icon">
-                                <i class="fas fa-comments"></i>
-                            </div>
-                            <div class="method-info">
-                                <h3>Live Chat</h3>
-                                <p>Available Mon-Fri, 9AM-5PM</p>
-                                <small>Click the chat icon in the bottom right</small>
-                            </div>
-                        </div>
-
-                        <div class="contact-method">
-                            <div class="method-icon">
-                                <i class="fas fa-map-marker-alt"></i>
-                            </div>
-                            <div class="method-info">
-                                <h3>Visit Us</h3>
-                                <p>Multimedia University</p>
-                                <small>Cyberjaya Campus, Faculty of Computing and Informatics</small>
-                            </div>
-                        </div>
-
-                        <div class="contact-method">
-                            <div class="method-icon">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div class="method-info">
-                                <h3>Response Time</h3>
-                                <p>1-2 Business Days</p>
-                                <small>For emails and contact form submissions</small>
-                            </div>
+                        <div class="method-info">
+                            <h3>Visit Us</h3>
+                            <p>Multimedia University</p>
+                            <small>Cyberjaya Campus, Faculty of Computing and Informatics</small>
                         </div>
                     </div>
 
-                    <!-- FAQ Quick Links -->
-                    <div class="faq-quicklinks">
-                        <h3>Quick Answers</h3>
-                        <div class="quicklinks-grid">
-                            <a href="how_to_play.html#faq" class="quicklink">
-                                <i class="fas fa-gamepad"></i>
-                                <span>Game Questions</span>
-                            </a>
-                            <a href="how_to_play.html#points" class="quicklink">
-                                <i class="fas fa-coins"></i>
-                                <span>Points & Rewards</span>
-                            </a>
-                            <a href="about.html" class="quicklink">
-                                <i class="fas fa-info-circle"></i>
-                                <span>About Our Project</span>
-                            </a>
-                            <a href="sponsorship.html" class="quicklink">
-                                <i class="fas fa-handshake"></i>
-                                <span>Partnerships</span>
-                            </a>
+                    <div class="contact-method">
+                        <div class="method-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="method-info">
+                            <h3>Response Time</h3>
+                            <p>1-2 Business Days</p>
+                            <small>For email inquiries</small>
                         </div>
                     </div>
-                </section>
-            </div>
+                </div>
 
-            <!-- Team Contact -->
+                <!-- FAQ Quick Links -->
+                <div class="faq-quicklinks">
+                    <h3>Quick Answers</h3>
+                    <div class="quicklinks-grid">
+                        <a href="how_to_play.html#faq" class="quicklink">
+                            <i class="fas fa-gamepad"></i>
+                            <span>Game Questions</span>
+                        </a>
+                        <a href="how_to_play.html#points" class="quicklink">
+                            <i class="fas fa-coins"></i>
+                            <span>Points & Rewards</span>
+                        </a>
+                        <a href="about.html" class="quicklink">
+                            <i class="fas fa-info-circle"></i>
+                            <span>About Our Project</span>
+                        </a>
+                        <a href="sponsorship.html" class="quicklink">
+                            <i class="fas fa-handshake"></i>
+                            <span>Partnerships</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Project Team Contacts -->
             <section class="team-contact card">
                 <h2>Project Team Contacts</h2>
-                <p>For specific inquiries, you can reach out to our team leads:</p>
+                <p>For inquiries, you can reach out to our team members:</p>
                 
-                <div class="team-contacts-grid">
-                    <div class="team-contact-card">
-                        <div class="contact-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="contact-details">
-                            <h3>Sarah Lim</h3>
-                            <span class="contact-role">Project Leader</span>
-                            <p class="contact-email">sarah.lim@kopio-mmu.com</p>
-                            <span class="contact-responsibility">Overall project coordination</span>
-                        </div>
+                <div class="email-contacts-grid">
+                    <!-- Leader and Co-Leaders -->
+                    <div class="email-contact-card">
+                        <h3>Ang Kynie</h3>
+                        <p class="contact-email">ANG.KYNIE1@student.mmu.edu.my</p>
                     </div>
 
-                    <div class="team-contact-card">
-                        <div class="contact-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="contact-details">
-                            <h3>Ang Kynie</h3>
-                            <span class="contact-role">Partnership Lead</span>
-                            <p class="contact-email">kynie.ang@kopio-mmu.com</p>
-                            <span class="contact-responsibility">Sponsorships & collaborations</span>
-                        </div>
+                    <div class="email-contact-card">
+                        <h3>Arshad Sarah</h3>
+                        <p class="contact-email">ARSHAD.SARAH@student.mmu.edu.my</p>
                     </div>
 
-                    <div class="team-contact-card">
-                        <div class="contact-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="contact-details">
-                            <h3>Ahmad Haikal</h3>
-                            <span class="contact-role">Technical Lead</span>
-                            <p class="contact-email">ahmad.haikal@kopio-mmu.com</p>
-                            <span class="contact-responsibility">Technical issues & development</span>
-                        </div>
+                    <div class="email-contact-card">
+                        <h3>Afiq Rizal</h3>
+                        <p class="contact-email">AFIQ.RIZAL.MOHD@student.mmu.edu.my</p>
+                    </div>
+
+                    <!-- A to Z (excluding leaders) -->
+                    <div class="email-contact-card">
+                        <h3>Aidan Faris</h3>
+                        <p class="contact-email">AIDAN.FARIS.IRAWAN@student.mmu.edu.my</p>
+                    </div>
+
+                    <div class="email-contact-card">
+                        <h3>Ahmad Haikal</h3>
+                        <p class="contact-email">AHMAD.HAIKAL.AHMAD@student.mmu.edu.my</p>
+                    </div>
+
+                    <div class="email-contact-card">
+                        <h3>Ashton Lim</h3>
+                        <p class="contact-email">ASHTON.SHINO.LIM1@student.mmu.edu.my</p>
+                    </div>
+
+                    <div class="email-contact-card">
+                        <h3>Cheok Siow Qian</h3>
+                        <p class="contact-email">CHEOK.SIOW.QIAN@student.mmu.edu.my</p>
+                    </div>
+
+                    <div class="email-contact-card">
+                        <h3>Cheong Sheng Jie</h3>
+                        <p class="contact-email">CHEONG.SHENG.JIE1@student.mmu.edu.my</p>
+                    </div>
+
+                    <div class="email-contact-card">
+                        <h3>Cherry Chua</h3>
+                        <p class="contact-email">CHERRY.CHUA.SHAN@student.mmu.edu.my</p>
+                    </div>
+
+                    <div class="email-contact-card">
+                        <h3>Chin Zheng Hong</h3>
+                        <p class="contact-email">CHIN.ZHENG.HONG1@student.mmu.edu.my</p>
+                    </div>
+
+                    <div class="email-contact-card">
+                        <h3>Choo Beng Hao</h3>
+                        <p class="contact-email">CHOO.BENG.HAO@student.mmu.edu.my</p>
+                    </div>
+
+                    <div class="email-contact-card">
+                        <h3>Terry Chin</h3>
+                        <p class="contact-email">TERRY.CHIN.YAW@student.mmu.edu.my</p>
+                    </div>
+
+                    <div class="email-contact-card">
+                        <h3>Tiang Li Yuan</h3>
+                        <p class="contact-email">TIANG.LI.YUAN1@student.mmu.edu.my</p>
+                    </div>
+
+                    <div class="email-contact-card">
+                        <h3>Trisha Adelina</h3>
+                        <p class="contact-email">TRISHA.ADELINA.SHUHAINI1@student.mmu.edu.my</p>
+                    </div>
+
+                    <div class="email-contact-card">
+                        <h3>Wong Cii Voon</h3>
+                        <p class="contact-email">WONG.CII.VOON@student.mmu.edu.my</p>
+                    </div>
+
+                    <div class="email-contact-card">
+                        <h3>Wong Jin Jie</h3>
+                        <p class="contact-email">WONG.JIN.JIE@student.mmu.edu.my</p>
+                    </div>
+
+                    <div class="email-contact-card">
+                        <h3>Wong Xin Qing</h3>
+                        <p class="contact-email">WONG.XIN.QING1@student.mmu.edu.my</p>
+                    </div>
+
+                    <div class="email-contact-card">
+                        <h3>Wong Zheng Wei</h3>
+                        <p class="contact-email">WONG.ZHENG.WEI@student.mmu.edu.my</p>
+                    </div>
+
+                    <div class="email-contact-card">
+                        <h3>Yip Yu Zhe</h3>
+                        <p class="contact-email">YIP.YU.ZHE1@student.mmu.edu.my</p>
+                    </div>
+
+                    <div class="email-contact-card">
+                        <h3>Zeid Mahmoud</h3>
+                        <p class="contact-email">ZEID.MAHMOUD.SALEH1@student.mmu.edu.my</p>
                     </div>
                 </div>
             </section>
@@ -220,12 +252,8 @@
                     <p>For urgent technical problems preventing you from playing games or accessing your account:</p>
                     <div class="emergency-contacts">
                         <div class="emergency-contact">
-                            <strong>Technical Support Hotline:</strong>
-                            <span>+603-8312 5000 (MMU IT Helpdesk)</span>
-                        </div>
-                        <div class="emergency-contact">
                             <strong>Emergency Email:</strong>
-                            <span>tech-emergency@kopio-mmu.com</span>
+                            <span>ANG.KYNIE1@student.mmu.edu.my</span>
                         </div>
                     </div>
                     <div class="emergency-tips">
@@ -303,10 +331,10 @@
                                     <i class="fab fa-instagram"></i>
                                 </a>
                                 <a href="https://www.facebook.com/p/13Martstore-100094695825658/" target="_blank">
-                                    <i class="fab fa-facebook"></i>
+                                    <i class="fab fa-facebook"></i> Facebook
                                 </a>
                                 <a href="mailto:linearmark1431@gmail.com">
-                                    <i class="fas fa-envelope"></i>
+                                    <i class="fas fa-envelope"></i> Email
                                 </a>
                             </div>
                         </div>
@@ -344,14 +372,6 @@
         </div>
     </footer>
 
-    <!-- Chat Widget (simplified) -->
-    <div class="chat-widget">
-        <div class="chat-icon">
-            <i class="fas fa-comments"></i>
-        </div>
-    </div>
-
-    <script src="../js/contact.js"></script>
     <script src="../js/script.js"></script>
 </body>
 </html>
