@@ -5,17 +5,20 @@ for deployment: PythonAnywhere, GitHub, Git, CMD
 
 
 Every page gonna have it:
--base.html (header and footer)(every page gonna have this)
+✅(header and footer)(every page gonna have this)
 
 
 User authentication (put it inside my_profile.html):
--login.html
--register.html
--forgot_password.html
+-login.html		[user haven't login can see homepage and website, but when users want to play games jump them to register/login page]
+
+-register.html		[user haven't login can see homepage and website, but when users want to play games jump them to register/login page]
+			[only MMU students are allow to register to this website, so gonna make it student.mmu.edu.my can go in, and get email verification from outlook/email then only cna create account, password limit set etc, how many words/symbols/numbers/specialcase, and make it need to type double times then only change]
+
+-forgot_password.html	[same with above, gonna get email verification only can change new password, and make it need to type double times then only change]
 
 
 Homepage (show leaderboard and games, so that users straight forward click on games and play):
--index.html (after login)
+✅-index.html (after login)
 
 
 Games & Quizzes (all show at homepage):
@@ -26,16 +29,20 @@ Games & Quizzes (all show at homepage):
 
 
 Points & Rewards system:
--leaderboard.html (show all users ranking and points)
--my_profile.html (information of the user)
+-leaderboard.html
+
+-my_profile.html	[just do it simple, dun let users change profile, just automatic make their account name become their personal account profile pic, cna score their ranking and system, only they can see their own profile, profile in this website is just to let them know what is their current ranking and points, no need to let others users to know their account, so others users cannot see through their accounts.]
 
 
 Additional essential page (these 4 things all can access by scrolling down to the bottom, footer.html):
 -about.html
--how_to_play.html
+✅-how_to_play.html
 -contact.html
--sponsorship.html
+✅-sponsorship.html
 
 
 Admin:
 admin.html (gonna make it only admin accounts can access this page)
+
+
+
