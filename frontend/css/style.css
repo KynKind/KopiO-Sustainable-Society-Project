@@ -386,6 +386,7 @@ body {
 
 /* Hero Section */
 .hero {
+    position: relative;
     background: linear-gradient(135deg, var(--light-brown), var(--primary-brown));
     color: var(--text-light);
     text-align: center;
@@ -3816,4 +3817,26 @@ body {
 #regPassword + .password-toggle {
     top: 24% !important;
     transform: translateY(-50%) !important;
+}
+
+.event-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 220px;
+    height: 220px;
+    padding: 20px;
+    background: #ffe08a;
+    color: #7a4d00;
+    border-radius: 50%;
+    border: 6px solid #fff5c2;
+    font-weight: 1000;
+    font-size: 23px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1.1;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    z-index: 20;
 }
