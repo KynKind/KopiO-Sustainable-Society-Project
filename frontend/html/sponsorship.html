@@ -7,6 +7,48 @@
     <link rel="stylesheet" href="../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 内联样式确保显示效果 */
+        .ecosystem-website {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .website-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .website-link:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .sponsor-contact a.ecolike-link {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            padding: 6px 12px;
+            border-radius: 4px;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .sponsor-contact a.ecolike-link:hover {
+            background: linear-gradient(135deg, #45a049 0%, #1B5E20 100%);
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -75,7 +117,6 @@
 
                 <div class="sponsor-feature">
                     <div class="sponsor-main">
-                        <!-- REPLACED ICON WITH LOGO -->
                         <div class="sponsor-logo-large">
                             <img src="../assets/logos/senghung-logo.png" alt="Seng Hung Logo">
                         </div>
@@ -150,7 +191,6 @@
                 </div>
 
                 <div class="ecosystem-grid">
-
                     <!-- SHHS -->
                     <div class="ecosystem-card">
                         <div class="ecosystem-logo">
@@ -181,12 +221,12 @@
                         </ul>
                     </div>
 
-                    <!-- Ecoike -->
+                    <!-- Ecoike™ -->
                     <div class="ecosystem-card">
                         <div class="ecosystem-logo">
-                            <img src="../assets/logos/ecolike-logo.png" alt="Ecoike">
+                            <img src="../assets/logos/ecolike-logo.png" alt="Ecoike™">
                         </div>
-                        <h3>Ecoike Brand</h3>
+                        <h3>Ecoike™ Brand</h3>
                         <p class="ecosystem-role">Consumer Products Brand</p>
                         <ul>
                             <li>Laundry detergents</li>
@@ -195,6 +235,12 @@
                             <li>Personal care formulations</li>
                             <li>Eco-minded innovations</li>
                         </ul>
+                        <!-- 新增官网链接 -->
+                        <div class="ecosystem-website">
+                            <a href="https://ecolikecare.com/pages/ecolikecare-3" target="_blank" class="website-link">
+                                <i class="fas fa-external-link-alt"></i> Visit Official Website
+                            </a>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -316,7 +362,7 @@
                 <h3>Kopi-O Sustainable Society</h3>
                 <p>Making sustainability fun through games and challenges</p>
                 <div class="social-links">
-                    <a href="https://instagram.com/kopio_mmu" target="_blank">
+                    <a href="https://www.instagram.com/mmukopi.o?igsh=cTRjeXM1aWJoeXVt&utm_source=qr" target="_blank">
                         <i class="fab fa-instagram"></i>
                     </a>
                 </div>
@@ -354,6 +400,10 @@
                             <a href="mailto:senghunghygiene@gmail.com">
                                 <i class="fas fa-envelope"></i> Email
                             </a>
+                            <!-- 新增 Ecoike™ 官网链接 -->
+                            <a href="https://ecolikecare.com/pages/ecolikecare-3" target="_blank" class="ecolike-link">
+                                <i class="fas fa-leaf"></i> Ecoike™ Website
+                            </a>
                         </div>
 
                         <div class="sponsor-division">
@@ -374,6 +424,29 @@
                             </div>
                         </div>
 
+                        <!-- Complete Product Ecosystem -->
+                        <div class="sponsor-ecosystem">
+                            <h5>Complete Product Ecosystem</h5>
+                            <div class="ecosystem-brands">
+                                <div class="brand-item">
+                                    <strong>SHHS</strong>
+                                    <span>Industrial & Commercial Chemicals</span>
+                                </div>
+                                <div class="brand-item">
+                                    <strong>Linear Mark</strong>
+                                    <span>Household Products Manufacturing</span>
+                                </div>
+                                <div class="brand-item">
+                                    <strong>Ecoike™</strong>
+                                    <span>Consumer Products Brand</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Trademark Notice -->
+                        <div class="trademark-notice">
+                            <small>Ecoike™ is a registered trademark of Linear Mark Enterprise. All rights reserved.</small>
+                        </div>
                     </div>
                 </div>
             </div>

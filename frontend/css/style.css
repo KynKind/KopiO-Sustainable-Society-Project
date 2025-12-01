@@ -3840,3 +3840,92 @@ body {
     box-shadow: 0 6px 18px rgba(0,0,0,0.18);
     z-index: 20;
 }
+
+/* Footer Ecosystem */
+.sponsor-ecosystem {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sponsor-ecosystem h5 {
+    color: #fff;
+    font-size: 14px;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.ecosystem-brands {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.brand-item {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    border-left: 3px solid #4CAF50;
+}
+
+.brand-item strong {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.brand-item span {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+.trademark-notice {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Ecolike website website */
+.ecosystem-website {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.website-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.website-link:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* 页脚 Ecoike™ 链接样式 */
+.footer-section .sponsor-contact a[href*="ecolikecare"] {
+    background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+    padding: 6px 12px;
+    border-radius: 4px;
+    color: white;
+}
+
+.footer-section .sponsor-contact a[href*="ecolikecare"]:hover {
+    background: linear-gradient(135deg, #45a049 0%, #1B5E20 100%);
+}
