@@ -22,7 +22,7 @@
                 <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
                 <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
                 <li class="nav-item"><a href="my_profile.html" class="nav-link">My Profile</a></li>
-                <li class="nav-item"><a href="admin.html" class="nav-link admin-only">Admin</a></li>
+                <li class="nav-item"><a href="admin.html" class="nav-link admin-only active">Admin</a></li>
             </ul>
             <div class="hamburger">
                 <span class="bar"></span>
@@ -39,14 +39,14 @@
             <section class="admin-header card">
                 <div class="admin-welcome">
                     <h1><i class="fas fa-cogs"></i> Admin Dashboard</h1>
-                    <p>Welcome back, Administrator. Here's your system overview.</p>
+                    <p>Welcome back, Administrator. System overview for Kopi-O Sustainable Society.</p>
                 </div>
                 <div class="admin-actions">
                     <button class="btn btn-secondary" id="refreshData">
-                        <i class="fas fa-sync-alt"></i> Refresh Data
+                        <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <button class="btn" id="exportReport">
-                        <i class="fas fa-download"></i> Export Report
+                        <i class="fas fa-download"></i> Export Data
                     </button>
                 </div>
             </section>
@@ -59,9 +59,9 @@
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="stat-content">
-                            <h3>1,247</h3>
+                            <h3>324</h3>
                             <p>Total Users</p>
-                            <span class="stat-change positive">+12% this month</span>
+                            <span class="stat-change positive">+42 this week</span>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -69,9 +69,9 @@
                             <i class="fas fa-gamepad"></i>
                         </div>
                         <div class="stat-content">
-                            <h3>45,821</h3>
+                            <h3>12,847</h3>
                             <p>Games Played</p>
-                            <span class="stat-change positive">+8% this week</span>
+                            <span class="stat-change positive">+1,240 today</span>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -79,58 +79,21 @@
                             <i class="fas fa-coins"></i>
                         </div>
                         <div class="stat-content">
-                            <h3>128,450</h3>
-                            <p>Points Awarded</p>
-                            <span class="stat-change positive">+15% this month</span>
+                            <h3>45,280</h3>
+                            <p>Total Points</p>
+                            <span class="stat-change positive">+3,450 today</span>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-card">
-                            <div class="stat-icon danger">
-                                <i class="fas fa-trophy"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h3>5,672</h3>
-                                <p>Rewards Redeemed</p>
-                                <span class="stat-change positive">+20% this month</span>
-                            </div>
+                        <div class="stat-icon danger">
+                            <i class="fas fa-user-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>8.4 hrs</h3>
+                            <p>Avg. Play Time</p>
+                            <span class="stat-change positive">+0.5 hrs</span>
                         </div>
                     </div>
-                </div>
-            </section>
-
-            <!-- Quick Actions -->
-            <section class="quick-actions card">
-                <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
-                <div class="actions-grid">
-                    <button class="action-card" data-action="manage-users">
-                        <div class="action-icon">
-                            <i class="fas fa-user-cog"></i>
-                        </div>
-                        <h3>Manage Users</h3>
-                        <p>View and manage user accounts</p>
-                    </button>
-                    <button class="action-card" data-action="add-game">
-                        <div class="action-icon">
-                            <i class="fas fa-plus-circle"></i>
-                        </div>
-                        <h3>Add Game</h3>
-                        <p>Create new game content</p>
-                    </button>
-                    <button class="action-card" data-action="manage-rewards">
-                        <div class="action-icon">
-                            <i class="fas fa-gift"></i>
-                        </div>
-                        <h3>Manage Rewards</h3>
-                        <p>Update reward catalog</p>
-                    </button>
-                    <button class="action-card" data-action="system-settings">
-                        <div class="action-icon">
-                            <i class="fas fa-sliders-h"></i>
-                        </div>
-                        <h3>System Settings</h3>
-                        <p>Configure platform settings</p>
-                    </button>
                 </div>
             </section>
 
@@ -141,11 +104,8 @@
                     <div class="header-actions">
                         <div class="search-box">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="userSearch" placeholder="Search users...">
+                            <input type="text" id="userSearch" placeholder="Search by name, email, or ID...">
                         </div>
-                        <button class="btn btn-small" id="addUser">
-                            <i class="fas fa-user-plus"></i> Add User
-                        </button>
                     </div>
                 </div>
 
@@ -154,9 +114,10 @@
                         <thead>
                             <tr>
                                 <th>User</th>
-                                <th>Email</th>
+                                <th>Student ID</th>
                                 <th>Faculty</th>
                                 <th>Points</th>
+                                <th>Play Time</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -170,21 +131,22 @@
                                         </div>
                                         <div class="user-info">
                                             <strong>Sarah Lim</strong>
-                                            <span>Admin</span>
+                                            <span>sarah.lim@student.mmu.edu.my</span>
                                         </div>
                                     </div>
                                 </td>
-                                <td>sarah.lim@mmu.edu.my</td>
+                                <td>12234567</td>
                                 <td>FCI</td>
                                 <td>2,450</td>
+                                <td>14.5 hrs</td>
                                 <td><span class="status-badge active">Active</span></td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn-icon" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn-icon" title="View">
+                                        <button class="btn-icon" title="View Details">
                                             <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn-icon" title="Reset Password">
+                                            <i class="fas fa-key"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -197,21 +159,22 @@
                                         </div>
                                         <div class="user-info">
                                             <strong>Ahmad Haikal</strong>
-                                            <span>User</span>
+                                            <span>ahmad.haikal@student.mmu.edu.my</span>
                                         </div>
                                     </div>
                                 </td>
-                                <td>ahmad.haikal@mmu.edu.my</td>
+                                <td>12235678</td>
                                 <td>FOE</td>
                                 <td>2,120</td>
+                                <td>12.8 hrs</td>
                                 <td><span class="status-badge active">Active</span></td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn-icon" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn-icon" title="View">
+                                        <button class="btn-icon" title="View Details">
                                             <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn-icon" title="Reset Password">
+                                            <i class="fas fa-key"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -224,21 +187,22 @@
                                         </div>
                                         <div class="user-info">
                                             <strong>Demo Student</strong>
-                                            <span>User</span>
+                                            <span>student@student.mmu.edu.my</span>
                                         </div>
                                     </div>
                                 </td>
-                                <td>student@mmu.edu.my</td>
+                                <td>12345678</td>
                                 <td>FCI</td>
                                 <td>1,250</td>
-                                <td><span class="status-badge inactive">Inactive</span></td>
+                                <td>9.2 hrs</td>
+                                <td><span class="status-badge active">Active</span></td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn-icon" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn-icon" title="View">
+                                        <button class="btn-icon" title="View Details">
                                             <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn-icon" title="Reset Password">
+                                            <i class="fas fa-key"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -248,11 +212,14 @@
                 </div>
 
                 <div class="table-footer">
+                    <div class="table-info">
+                        <span>Showing 3 of 324 users</span>
+                    </div>
                     <div class="pagination">
                         <button class="btn-icon" disabled>
                             <i class="fas fa-chevron-left"></i>
                         </button>
-                        <span class="page-info">Page 1 of 5</span>
+                        <span class="page-info">Page 1 of 65</span>
                         <button class="btn-icon">
                             <i class="fas fa-chevron-right"></i>
                         </button>
@@ -264,13 +231,6 @@
             <section class="analytics-section card">
                 <div class="section-header">
                     <h2><i class="fas fa-chart-bar"></i> Game Analytics</h2>
-                    <div class="time-filter">
-                        <select id="analyticsPeriod" class="filter-select">
-                            <option value="7d">Last 7 Days</option>
-                            <option value="30d" selected>Last 30 Days</option>
-                            <option value="90d">Last 90 Days</option>
-                        </select>
-                    </div>
                 </div>
 
                 <div class="analytics-grid">
@@ -293,150 +253,127 @@
                     </div>
 
                     <div class="analytics-card">
-                        <h3>User Engagement</h3>
+                        <h3>Activity Metrics</h3>
                         <div class="engagement-stats">
+                            <div class="engagement-item">
+                                <span class="metric-label">Active Users Today</span>
+                                <span class="metric-value">142</span>
+                            </div>
                             <div class="engagement-item">
                                 <span class="metric-label">Avg. Session Duration</span>
                                 <span class="metric-value">12.5 min</span>
                             </div>
                             <div class="engagement-item">
-                                <span class="metric-label">Returning Users</span>
-                                <span class="metric-value">68%</span>
-                            </div>
-                            <div class="engagement-item">
-                                <span class="metric-label">Daily Active Users</span>
-                                <span class="metric-value">342</span>
+                                <span class="metric-label">Points Per User</span>
+                                <span class="metric-value">139.8</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- System Alerts -->
-            <section class="alerts-section card">
+            <!-- System Status -->
+            <section class="system-status card">
                 <div class="section-header">
-                    <h2><i class="fas fa-bell"></i> System Alerts</h2>
-                    <span class="alert-count">3 New</span>
+                    <h2><i class="fas fa-server"></i> System Status</h2>
                 </div>
-
-                <div class="alerts-list">
-                    <div class="alert-item warning">
-                        <div class="alert-icon">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
-                        <div class="alert-content">
-                            <h3>High Server Load</h3>
-                            <p>Server CPU usage at 85% during peak hours</p>
-                            <small>2 hours ago</small>
-                        </div>
-                        <button class="btn-icon">
-                            <i class="fas fa-times"></i>
-                        </button>
+                <div class="status-grid">
+                    <div class="status-item online">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Website</span>
+                        <strong>Online</strong>
                     </div>
-
-                    <div class="alert-item info">
-                        <div class="alert-icon">
-                            <i class="fas fa-info-circle"></i>
-                        </div>
-                        <div class="alert-content">
-                            <h3>New User Registration Peak</h3>
-                            <p>42 new users registered in the last 24 hours</p>
-                            <small>5 hours ago</small>
-                        </div>
-                        <button class="btn-icon">
-                            <i class="fas fa-times"></i>
-                        </button>
+                    <div class="status-item online">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Database</span>
+                        <strong>Connected</strong>
                     </div>
-
-                    <div class="alert-item success">
-                        <div class="alert-icon">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="alert-content">
-                            <h3>Backup Completed</h3>
-                            <p>Daily database backup completed successfully</p>
-                            <small>Yesterday</small>
-                        </div>
-                        <button class="btn-icon">
-                            <i class="fas fa-times"></i>
-                        </button>
+                    <div class="status-item online">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Games API</span>
+                        <strong>Running</strong>
+                    </div>
+                    <div class="status-item online">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Leaderboard</span>
+                        <strong>Updated</strong>
                     </div>
                 </div>
             </section>
         </div>
     </main>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Kopi-O Sustainable Society</h3>
-                    <p>Making sustainability fun through games and challenges</p>
-                    <div class="social-links">
-                        <a href="https://instagram.com/kopio_mmu" target="_blank">
-                            <i class="fab fa-instagram"></i>
-                        </a>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Kopi-O Sustainable Society</h3>
+                <p>Making sustainability fun through games and challenges</p>
+                <div class="social-links">
+                    <a href="https://instagram.com/kopio_mmu" target="_blank">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="how_to_play.html">How to Play</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="sponsorship.html">Our Sponsor</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Proudly Supported By</h4>
+                <div class="sponsor-footer">
+                    <div class="footer-sponsor-logo">
+                        <i class="fas fa-industry"></i>
                     </div>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="how_to_play.html">How to Play</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                        <li><a href="sponsorship.html">Our Sponsor</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Proudly Supported By</h4>
-                    <div class="sponsor-footer">
-                        <div class="footer-sponsor-logo">
-                            <i class="fas fa-industry"></i>
+                    <div class="footer-sponsor-info">
+                        <strong>Seng Hung Hygiene Supplies Sdn. Bhd.</strong>
+                        <span>Your Trusted Hygiene Partner</span>
+                        <div class="sponsor-contact">
+                            <a href="https://www.senghung.com/" target="_blank">
+                                <i class="fas fa-globe"></i> Website
+                            </a>
+                            <a href="https://www.facebook.com/senghunghygiene/" target="_blank">
+                                <i class="fab fa-facebook"></i> Facebook
+                            </a>
+                            <a href="https://www.lazada.com.my/shop/seng-hung-hygiene-supplies-sdn-bhd/" target="_blank">
+                                <i class="fas fa-shopping-cart"></i> Lazada
+                            </a>
+                            <a href="mailto:senghunghygiene@gmail.com">
+                                <i class="fas fa-envelope"></i> Email
+                            </a>
                         </div>
-                        <div class="footer-sponsor-info">
-                            <strong>Seng Hung Hygiene Supplies Sdn. Bhd.</strong>
-                            <span>Your Trusted Hygiene Partner</span>
-                            <div class="sponsor-contact">
-                                <a href="https://www.senghung.com/" target="_blank">
-                                    <i class="fas fa-globe"></i> Website
+                        <div class="sponsor-division">
+                            <small>Also operating: <strong>13Mart / Linear Mark</strong></small>
+                            <div class="division-links">
+                                <a href="https://www.tiktok.com/@13mart.store" target="_blank">
+                                    <i class="fab fa-tiktok"></i>
                                 </a>
-                                <a href="https://www.facebook.com/senghunghygiene/" target="_blank">
-                                    <i class="fab fa-facebook"></i> Facebook
+                                <a href="https://www.instagram.com/13mart.store_ecolike/" target="_blank">
+                                    <i class="fab fa-instagram"></i>
                                 </a>
-                                <a href="https://www.lazada.com.my/shop/seng-hung-hygiene-supplies-sdn-bhd/" target="_blank">
-                                    <i class="fas fa-shopping-cart"></i> Lazada
+                                <a href="https://www.facebook.com/p/13Martstore-100094695825658/" target="_blank">
+                                    <i class="fab fa-facebook"></i>
                                 </a>
-                                <a href="mailto:senghunghygiene@gmail.com">
-                                    <i class="fas fa-envelope"></i> Email
+                                <a href="mailto:linearmark1431@gmail.com">
+                                    <i class="fas fa-envelope"></i>
                                 </a>
-                            </div>
-                            <div class="sponsor-division">
-                                <small>Also operating: <strong>13Mart / Linear Mark</strong></small>
-                                <div class="division-links">
-                                    <a href="https://www.tiktok.com/@13mart.store" target="_blank">
-                                        <i class="fab fa-tiktok"></i>
-                                    </a>
-                                    <a href="https://www.instagram.com/13mart.store_ecolike/" target="_blank">
-                                        <i class="fab fa-instagram"></i>
-                                    </a>
-                                    <a href="https://www.facebook.com/p/13Martstore-100094695825658/" target="_blank">
-                                        <i class="fab fa-facebook"></i>
-                                    </a>
-                                    <a href="mailto:linearmark1431@gmail.com">
-                                        <i class="fas fa-envelope"></i>
-                                    </a>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Kopi-O Sustainable Society. All rights reserved. | Proudly sponsored by Seng Hung Hygiene Supplies Sdn. Bhd.</p>
-            </div>
-        </footer>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Kopi-O Sustainable Society. All rights reserved. | Proudly sponsored by Seng Hung Hygiene Supplies Sdn. Bhd.</p>
+        </div>
+    </footer>
 
     <script src="../js/admin.js"></script>
     <script src="../js/script.js"></script>

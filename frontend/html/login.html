@@ -21,7 +21,8 @@
             <ul class="nav-menu">
                 <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
                 <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
-                <li class="nav-item"><a href="login.html" class="nav-link">Login</a></li>
+                <li class="nav-item"><a href="my_profile.html" class="nav-link">My Profile</a></li>
+                <li class="nav-item"><a href="login.html" class="nav-link active">Login</a></li>
             </ul>
             <div class="hamburger">
                 <span class="bar"></span>
@@ -41,12 +42,13 @@
                     </div>
                     <h1>Welcome Back!</h1>
                     <p>Sign in to your Kopi-O account</p>
+                    <p class="auth-note"><i class="fas fa-university"></i> Only MMU students are allowed</p>
                 </div>
 
                 <form class="auth-form" id="loginForm">
                     <div class="form-group">
-                        <label for="email" class="form-label">Email Address</label>
-                        <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                        <label for="email" class="form-label">MMU Email Address</label>
+                        <input type="email" id="email" class="form-input" placeholder="username@student.mmu.edu.my" required>
                     </div>
 
                     <div class="form-group">
@@ -58,11 +60,6 @@
                     </div>
 
                     <div class="form-options">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="rememberMe">
-                            <span class="checkmark"></span>
-                            Remember me
-                        </label>
                         <a href="forgot_password.html" class="forgot-link">Forgot Password?</a>
                     </div>
 
@@ -74,89 +71,89 @@
                 </div>
 
                 <div class="demo-accounts">
-                    <h3>Demo Accounts:</h3>
+                    <h3>Demo Accounts (For Testing):</h3>
                     <div class="demo-account">
-                        <strong>Student:</strong> student@mmu.edu.my / password123
+                        <strong>Student:</strong> demo.student@student.mmu.edu.my / Student123!
                     </div>
                     <div class="demo-account">
-                        <strong>Admin:</strong> admin@mmu.edu.my / admin123
+                        <strong>Admin:</strong> admin@student.mmu.edu.my / Admin123!
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Kopi-O Sustainable Society</h3>
-                    <p>Making sustainability fun through games and challenges</p>
-                    <div class="social-links">
-                        <a href="https://instagram.com/kopio_mmu" target="_blank">
-                            <i class="fab fa-instagram"></i>
-                        </a>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Kopi-O Sustainable Society</h3>
+                <p>Making sustainability fun through games and challenges</p>
+                <div class="social-links">
+                    <a href="https://instagram.com/kopio_mmu" target="_blank">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="how_to_play.html">How to Play</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="sponsorship.html">Our Sponsor</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Proudly Supported By</h4>
+                <div class="sponsor-footer">
+                    <div class="footer-sponsor-logo">
+                        <i class="fas fa-industry"></i>
                     </div>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="how_to_play.html">How to Play</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                        <li><a href="sponsorship.html">Our Sponsor</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Proudly Supported By</h4>
-                    <div class="sponsor-footer">
-                        <div class="footer-sponsor-logo">
-                            <i class="fas fa-industry"></i>
+                    <div class="footer-sponsor-info">
+                        <strong>Seng Hung Hygiene Supplies Sdn. Bhd.</strong>
+                        <span>Your Trusted Hygiene Partner</span>
+                        <div class="sponsor-contact">
+                            <a href="https://www.senghung.com/" target="_blank">
+                                <i class="fas fa-globe"></i> Website
+                            </a>
+                            <a href="https://www.facebook.com/senghunghygiene/" target="_blank">
+                                <i class="fab fa-facebook"></i> Facebook
+                            </a>
+                            <a href="https://www.lazada.com.my/shop/seng-hung-hygiene-supplies-sdn-bhd/" target="_blank">
+                                <i class="fas fa-shopping-cart"></i> Lazada
+                            </a>
+                            <a href="mailto:senghunghygiene@gmail.com">
+                                <i class="fas fa-envelope"></i> Email
+                            </a>
                         </div>
-                        <div class="footer-sponsor-info">
-                            <strong>Seng Hung Hygiene Supplies Sdn. Bhd.</strong>
-                            <span>Your Trusted Hygiene Partner</span>
-                            <div class="sponsor-contact">
-                                <a href="https://www.senghung.com/" target="_blank">
-                                    <i class="fas fa-globe"></i> Website
+                        <div class="sponsor-division">
+                            <small>Also operating: <strong>13Mart / Linear Mark</strong></small>
+                            <div class="division-links">
+                                <a href="https://www.tiktok.com/@13mart.store" target="_blank">
+                                    <i class="fab fa-tiktok"></i>
                                 </a>
-                                <a href="https://www.facebook.com/senghunghygiene/" target="_blank">
-                                    <i class="fab fa-facebook"></i> Facebook
+                                <a href="https://www.instagram.com/13mart.store_ecolike/" target="_blank">
+                                    <i class="fab fa-instagram"></i>
                                 </a>
-                                <a href="https://www.lazada.com.my/shop/seng-hung-hygiene-supplies-sdn-bhd/" target="_blank">
-                                    <i class="fas fa-shopping-cart"></i> Lazada
+                                <a href="https://www.facebook.com/p/13Martstore-100094695825658/" target="_blank">
+                                    <i class="fab fa-facebook"></i>
                                 </a>
-                                <a href="mailto:senghunghygiene@gmail.com">
-                                    <i class="fas fa-envelope"></i> Email
+                                <a href="mailto:linearmark1431@gmail.com">
+                                    <i class="fas fa-envelope"></i>
                                 </a>
-                            </div>
-                            <div class="sponsor-division">
-                                <small>Also operating: <strong>13Mart / Linear Mark</strong></small>
-                                <div class="division-links">
-                                    <a href="https://www.tiktok.com/@13mart.store" target="_blank">
-                                        <i class="fab fa-tiktok"></i>
-                                    </a>
-                                    <a href="https://www.instagram.com/13mart.store_ecolike/" target="_blank">
-                                        <i class="fab fa-instagram"></i>
-                                    </a>
-                                    <a href="https://www.facebook.com/p/13Martstore-100094695825658/" target="_blank">
-                                        <i class="fab fa-facebook"></i>
-                                    </a>
-                                    <a href="mailto:linearmark1431@gmail.com">
-                                        <i class="fas fa-envelope"></i>
-                                    </a>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Kopi-O Sustainable Society. All rights reserved. | Proudly sponsored by Seng Hung Hygiene Supplies Sdn. Bhd.</p>
-            </div>
-        </footer>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Kopi-O Sustainable Society. All rights reserved. | Proudly sponsored by Seng Hung Hygiene Supplies Sdn. Bhd.</p>
+        </div>
+    </footer>
 
     <script src="../js/auth.js"></script>
     <script src="../js/script.js"></script>
