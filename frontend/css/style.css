@@ -520,7 +520,6 @@ body {
     cursor: pointer;
     color: var(--light-brown);
 }
-
 .form-group {
     position: relative;
 }
@@ -3579,6 +3578,7 @@ body {
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
+    color: var(--light-brown);
 }
 
 .password-toggle i {
@@ -3769,4 +3769,51 @@ body {
 .nav-link.active {
     background-color: rgba(255, 255, 255, 0.2);
     font-weight: 600;
+}
+
+.form-input {
+    padding: 12px 16px !important;
+    height: auto !important;
+    line-height: normal !important;
+    box-sizing: border-box;
+}
+
+.form-input[type="password"] {
+    padding-right: 42px !important;
+}
+
+.form-group {
+    position: relative !important;
+}
+
+.password-toggle {
+    position: absolute !important;
+    right: 14px !important;
+
+    top: 70% !important;
+    transform: translateY(-50%) !important;
+
+    height: 20px;
+    width: 20px;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.password-toggle i {
+    line-height: 1 !important;
+    font-size: 18px;
+}
+
+#regPassword {
+    position: relative !important;
+}
+
+#regPassword + .password-toggle {
+    top: 24% !important;
+    transform: translateY(-50%) !important;
 }
