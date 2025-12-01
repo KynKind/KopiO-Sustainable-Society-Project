@@ -80,6 +80,11 @@ body {
     transform: translateY(-2px);
 }
 
+.nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+}
+
 .hamburger {
     display: none;
     flex-direction: column;
@@ -3764,12 +3769,6 @@ body {
     font-weight: 700;
     color: var(--primary-brown);
     font-size: 1.2rem;
-}
-
-/* Active Nav Link */
-.nav-link.active {
-    background-color: rgba(255, 255, 255, 0.2);
-    font-weight: 600;
 }
 
 .form-input {
