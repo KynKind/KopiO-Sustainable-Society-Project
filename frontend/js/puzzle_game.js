@@ -1,4 +1,4 @@
-// Puzzle Game Logic
+// Puzzle Game Logic - UPDATED FOR FLASK BACKEND
 class PuzzleGame {
     constructor() {
         this.currentLevel = 1;
@@ -200,6 +200,7 @@ class PuzzleGame {
         
         this.moves = 0;
         document.getElementById('puzzleMoves').textContent = '0';
+        this.startTime = Date.now();
     }
 
     showOriginalImage() {
@@ -292,14 +293,14 @@ class PuzzleGame {
         `;
     }
 
-    completeLevel() {
+    async completeLevel() {
         clearInterval(this.timerInterval);
         
         const completionTime = Math.floor((Date.now() - this.startTime) / 1000);
         const points = this.calculatePoints(completionTime, this.moves);
 
+        await this.submitScore(completionTime, points);
         this.showLevelCompleteModal(completionTime, points);
-        this.saveScore(points);
 
         // Enable next level if available
         if (this.currentLevel < 5) {
@@ -326,6 +327,28 @@ class PuzzleGame {
         else if (moves < optimalMoves * 2) points += 15;
 
         return points;
+    }
+
+    async submitScore(timeSpent, points) {
+        try {
+            const result = await submitGameScore(
+                'puzzle', 
+                points, 
+                timeSpent,
+                this.currentLevel,
+                {
+                    puzzle_size: this.puzzleSize,
+                    moves: this.moves,
+                    level_completed: this.currentLevel
+                }
+            );
+            
+            if (result.success) {
+                console.log('Puzzle game score submitted:', result);
+            }
+        } catch (error) {
+            console.error('Failed to submit puzzle score:', error);
+        }
     }
 
     showLevelCompleteModal(time, points) {
@@ -415,38 +438,16 @@ class PuzzleGame {
         
         this.updateLevelInfo();
     }
-
-    saveScore(points) {
-        const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-        if (user.email) {
-            user.points = (user.points || 0) + points;
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            
-            this.updateLeaderboard(user, points);
-        }
-    }
-
-    updateLeaderboard(user, points) {
-        let leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
-        
-        const existingUser = leaderboard.find(u => u.email === user.email);
-        if (existingUser) {
-            existingUser.points += points;
-        } else {
-            leaderboard.push({
-                name: user.name || 'Anonymous',
-                email: user.email,
-                points: points,
-                faculty: user.faculty || 'Unknown'
-            });
-        }
-        
-        leaderboard.sort((a, b) => b.points - a.points);
-        localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
-    }
 }
 
 // Initialize game when page loads
 document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is logged in
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+    
     new PuzzleGame();
 });

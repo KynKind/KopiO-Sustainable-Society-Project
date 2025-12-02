@@ -1,4 +1,4 @@
-// Sorting Game Logic
+// Sorting Game Logic - UPDATED FOR FLASK BACKEND
 class SortingGame {
     constructor() {
         this.currentRound = 1;
@@ -7,6 +7,7 @@ class SortingGame {
         this.timerInterval = null;
         this.items = this.generateItems();
         this.draggedItem = null;
+        this.startTime = Date.now();
         
         this.initializeGame();
     }
@@ -131,7 +132,7 @@ class SortingGame {
         }
     }
 
-    checkAnswers() {
+    async checkAnswers() {
         let correct = 0;
         let total = this.items.length;
 
@@ -176,6 +177,11 @@ class SortingGame {
 
         document.getElementById('checkSorting').disabled = true;
         document.getElementById('nextRound').style.display = 'inline-block';
+
+        // Submit round score
+        if (this.currentRound === 3) {
+            await this.submitFinalScore();
+        }
     }
 
     showResults(correct, total, roundScore) {
@@ -241,14 +247,36 @@ class SortingGame {
         this.setupEventListeners();
     }
 
-    endGame() {
+    async endGame() {
         clearInterval(this.timerInterval);
         
+        const timeSpent = Math.floor((Date.now() - this.startTime) / 1000);
         const timeBonus = Math.floor(this.timer / 10);
         this.score += timeBonus;
 
+        await this.submitFinalScore(timeSpent);
         this.showGameOverModal();
-        this.saveScore();
+    }
+
+    async submitFinalScore(timeSpent = 0) {
+        try {
+            const result = await submitGameScore(
+                'sorting', 
+                this.score, 
+                timeSpent,
+                this.currentRound,
+                {
+                    rounds_completed: this.currentRound,
+                    items_sorted: this.items.length * this.currentRound
+                }
+            );
+            
+            if (result.success) {
+                console.log('Sorting game score submitted:', result);
+            }
+        } catch (error) {
+            console.error('Failed to submit sorting score:', error);
+        }
     }
 
     showGameOverModal() {
@@ -310,6 +338,7 @@ class SortingGame {
         this.score = 0;
         this.timer = 120;
         this.items = this.generateItems();
+        this.startTime = Date.now();
         
         // Reset UI
         document.querySelectorAll('.bin').forEach(bin => {
@@ -327,38 +356,16 @@ class SortingGame {
         document.getElementById('checkSorting').disabled = false;
         document.getElementById('nextRound').style.display = 'none';
     }
-
-    saveScore() {
-        const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-        if (user.email) {
-            user.points = (user.points || 0) + this.score;
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            
-            this.updateLeaderboard(user, this.score);
-        }
-    }
-
-    updateLeaderboard(user, points) {
-        let leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
-        
-        const existingUser = leaderboard.find(u => u.email === user.email);
-        if (existingUser) {
-            existingUser.points += points;
-        } else {
-            leaderboard.push({
-                name: user.name || 'Anonymous',
-                email: user.email,
-                points: points,
-                faculty: user.faculty || 'Unknown'
-            });
-        }
-        
-        leaderboard.sort((a, b) => b.points - a.points);
-        localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
-    }
 }
 
 // Initialize game when page loads
 document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is logged in
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+    
     new SortingGame();
 });

@@ -1,4 +1,6 @@
-// Authentication JavaScript
+// Authentication JavaScript for Flask Backend
+const API_BASE_URL = 'http://127.0.0.1:5000/api';
+
 document.addEventListener('DOMContentLoaded', function() {
     // Password toggle functionality
     const togglePassword = document.getElementById('togglePassword');
@@ -40,40 +42,51 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Login form handling
+    // Login form handling - FLASK VERSION
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            if (validateForm('loginForm')) {
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
                 
-                // Demo login - In real app, this would be an API call
-                if ((email === 'student@mmu.edu.my' && password === 'password123') || 
-                    (email === 'admin@mmu.edu.my' && password === 'admin123')) {
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Store user data
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('currentUser', JSON.stringify(data.user));
                     
-                    const user = {
-                        email: email,
-                        name: email === 'admin@mmu.edu.my' ? 'Admin User' : 'Demo Student',
-                        points: 1250,
-                        role: email === 'admin@mmu.edu.my' ? 'admin' : 'student',
-                        faculty: 'Faculty of Computing & Informatics'
-                    };
-                    
-                    localStorage.setItem('currentUser', JSON.stringify(user));
-                    window.location.href = 'index.html';
+                    // Redirect based on role
+                    if (data.user.is_admin) {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
                 } else {
-                    showMessage('Invalid email or password. Use demo accounts.', 'error');
+                    showMessage(data.error || 'Login failed', 'error');
                 }
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('Connection error. Make sure Python backend is running (python app.py)', 'error');
             }
         });
     }
 
-    // Register form handling
+    // Register form handling - FLASK VERSION
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
-        registerForm.addEventListener('submit', function(e) {
+        registerForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             if (validateRegisterForm()) {
                 const password = document.getElementById('regPassword').value;
@@ -84,11 +97,38 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
 
-                // Simulate successful registration
-                showMessage('Account created successfully! Redirecting...', 'success');
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 2000);
+                const userData = {
+                    student_id: document.getElementById('studentId').value,
+                    email: document.getElementById('regEmail').value,
+                    password: password,
+                    first_name: document.getElementById('firstName').value,
+                    last_name: document.getElementById('lastName').value,
+                    faculty: document.getElementById('faculty').value
+                };
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(userData)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showMessage('Account created successfully! Redirecting...', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 2000);
+                    } else {
+                        showMessage(data.error || 'Registration failed', 'error');
+                    }
+                } catch (error) {
+                    console.error('Registration error:', error);
+                    showMessage('Server connection error', 'error');
+                }
             }
         });
     }
@@ -105,6 +145,93 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Submit game score to Flask backend
+async function submitGameScore(gameType, score, timeSpent = 0, level = 1, details = {}) {
+    try {
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        
+        if (!token || !user) {
+            console.log('User not logged in, saving to localStorage only');
+            // Fallback to localStorage
+            user.points = (user?.points || 0) + score;
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            return { success: false, message: 'Not logged in' };
+        }
+
+        const response = await fetch(`${API_BASE_URL}/games/submit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                game_type: gameType,
+                score: score,
+                time_spent: timeSpent,
+                level: level,
+                details: details
+            })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            // Update local user data
+            user.points = data.total_points;
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            console.log(`✅ ${gameType} score submitted: +${score} points`);
+            return data;
+        } else {
+            throw new Error(data.error || 'Submission failed');
+        }
+    } catch (error) {
+        console.error('Failed to submit score:', error);
+        // Fallback to localStorage
+        const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+        user.points = (user.points || 0) + score;
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        return { success: false, error: error.message };
+    }
+}
+
+// Get leaderboard from backend
+async function getLeaderboard(faculty = null, limit = 10) {
+    try {
+        let url = `${API_BASE_URL}/games/leaderboard?limit=${limit}`;
+        if (faculty) url += `&faculty=${faculty}`;
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.success) {
+            return data.leaderboard;
+        }
+        return [];
+    } catch (error) {
+        console.error('Failed to get leaderboard:', error);
+        return [];
+    }
+}
+
+// Check if user is logged in
+function checkAuth() {
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    const token = localStorage.getItem('token');
+    
+    if (!user || !token) {
+        // If not on login/register page, redirect to login
+        if (!window.location.pathname.includes('login.html') && 
+            !window.location.pathname.includes('register.html') &&
+            !window.location.pathname.includes('forgot_password.html')) {
+            window.location.href = 'login.html';
+        }
+        return null;
+    }
+    return user;
+}
+
+// Original helper functions (keep these)
 function checkPasswordStrength(password) {
     const strengthBar = document.getElementById('passwordStrength');
     const strengthText = document.getElementById('strengthText');
@@ -169,7 +296,6 @@ function validateRegisterForm() {
 }
 
 function showMessage(message, type) {
-    // Remove existing messages
     const existingMessage = document.querySelector('.message-toast');
     if (existingMessage) {
         existingMessage.remove();
@@ -200,7 +326,7 @@ function showMessage(message, type) {
     }, 4000);
 }
 
-// Add these styles to CSS
+// Inject additional styles
 const additionalStyles = `
 @keyframes slideIn {
     from { transform: translateX(100%); opacity: 0; }
@@ -217,7 +343,6 @@ const additionalStyles = `
 }
 `;
 
-// Inject additional styles
 const styleSheet = document.createElement('style');
 styleSheet.textContent = additionalStyles;
 document.head.appendChild(styleSheet);

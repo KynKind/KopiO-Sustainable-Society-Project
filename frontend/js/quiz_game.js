@@ -1,4 +1,4 @@
-// Quiz Game Logic
+// Quiz Game Logic - UPDATED FOR FLASK BACKEND
 class QuizGame {
     constructor() {
         this.currentQuestion = 0;
@@ -7,6 +7,7 @@ class QuizGame {
         this.timerInterval = null;
         this.questions = this.getQuestions();
         this.selectedOption = null;
+        this.startTime = Date.now();
         
         this.initializeGame();
     }
@@ -104,7 +105,7 @@ class QuizGame {
             optionsContainer.appendChild(optionElement);
         });
 
-        // Re-attach event listeners to new options
+        // Re-attach event listeners
         document.querySelectorAll('.option').forEach(option => {
             option.addEventListener('click', (e) => {
                 this.selectOption(e.currentTarget);
@@ -128,7 +129,7 @@ class QuizGame {
         document.getElementById('submitButton').disabled = false;
     }
 
-    submitAnswer() {
+    async submitAnswer() {
         if (!this.selectedOption) return;
 
         const isCorrect = this.selectedOption.getAttribute('data-correct') === 'true';
@@ -179,11 +180,11 @@ class QuizGame {
         });
     }
 
-    nextQuestion() {
+    async nextQuestion() {
         this.currentQuestion++;
         
         if (this.currentQuestion >= this.questions.length) {
-            this.endGame();
+            await this.endGame();
             return;
         }
 
@@ -212,18 +213,43 @@ class QuizGame {
         }, 300);
     }
 
-    endGame() {
+    async endGame() {
         clearInterval(this.timerInterval);
         
         // Calculate final score
         const timeBonus = Math.floor(this.timer / 5);
         this.score += timeBonus;
         
+        // Calculate time spent
+        const timeSpent = Math.floor((Date.now() - this.startTime) / 1000);
+        
+        // Submit score to backend
+        await this.submitScore(timeSpent);
+        
         // Show game over modal
         this.showGameOverModal();
-        
-        // Save score to local storage
-        this.saveScore();
+    }
+
+    async submitScore(timeSpent) {
+        try {
+            const result = await submitGameScore(
+                'quiz', 
+                this.score, 
+                timeSpent,
+                1,
+                {
+                    questions_answered: this.currentQuestion + 1,
+                    total_questions: this.questions.length,
+                    time_remaining: this.timer
+                }
+            );
+            
+            if (result.success) {
+                console.log('Quiz score submitted to backend:', result);
+            }
+        } catch (error) {
+            console.error('Failed to submit quiz score:', error);
+        }
     }
 
     showGameOverModal() {
@@ -284,6 +310,7 @@ class QuizGame {
         this.score = 0;
         this.timer = 60;
         this.selectedOption = null;
+        this.startTime = Date.now();
         
         clearInterval(this.timerInterval);
         this.startTimer();
@@ -291,41 +318,20 @@ class QuizGame {
         
         document.getElementById('timer').textContent = '60s';
         document.getElementById('currentScore').textContent = '0';
-    }
-
-    saveScore() {
-        const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-        if (user.email) {
-            user.points = (user.points || 0) + this.score;
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            
-            // Update leaderboard in local storage
-            this.updateLeaderboard(user, this.score);
-        }
-    }
-
-    updateLeaderboard(user, score) {
-        let leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
-        
-        const existingUser = leaderboard.find(u => u.email === user.email);
-        if (existingUser) {
-            existingUser.points += score;
-        } else {
-            leaderboard.push({
-                name: user.name || 'Anonymous',
-                email: user.email,
-                points: score,
-                faculty: user.faculty || 'Unknown'
-            });
-        }
-        
-        // Sort by points
-        leaderboard.sort((a, b) => b.points - a.points);
-        localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+        document.getElementById('submitButton').disabled = true;
+        document.getElementById('submitButton').style.display = 'inline-block';
+        document.getElementById('nextButton').style.display = 'none';
     }
 }
 
 // Initialize game when page loads
 document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is logged in
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+    
     new QuizGame();
 });

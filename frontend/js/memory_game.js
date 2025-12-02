@@ -1,4 +1,4 @@
-// Memory Game Logic
+// Memory Game Logic - UPDATED FOR FLASK BACKEND
 class MemoryGame {
     constructor() {
         this.cards = this.generateCards();
@@ -255,14 +255,14 @@ class MemoryGame {
         });
     }
 
-    endGame() {
+    async endGame() {
         clearInterval(this.timerInterval);
         
         const finalTime = Math.floor((Date.now() - this.startTime) / 1000);
         const points = this.calculatePoints(finalTime, this.moves);
 
+        await this.submitScore(finalTime, points);
         this.showGameOverModal(finalTime, points);
-        this.saveScore(points);
     }
 
     calculatePoints(time, moves) {
@@ -282,6 +282,28 @@ class MemoryGame {
         if (moves === 16) points += 100;
 
         return points;
+    }
+
+    async submitScore(timeSpent, points) {
+        try {
+            const result = await submitGameScore(
+                'memory', 
+                points, 
+                timeSpent,
+                1,
+                {
+                    moves: this.moves,
+                    matched_pairs: this.matchedPairs,
+                    hints_used: 3 - this.hintsRemaining
+                }
+            );
+            
+            if (result.success) {
+                console.log('Memory game score submitted:', result);
+            }
+        } catch (error) {
+            console.error('Failed to submit memory score:', error);
+        }
     }
 
     showGameOverModal(time, points) {
@@ -357,38 +379,16 @@ class MemoryGame {
         document.getElementById('hintButton').disabled = false;
         document.getElementById('matchInfo').style.display = 'none';
     }
-
-    saveScore(points) {
-        const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-        if (user.email) {
-            user.points = (user.points || 0) + points;
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            
-            this.updateLeaderboard(user, points);
-        }
-    }
-
-    updateLeaderboard(user, points) {
-        let leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
-        
-        const existingUser = leaderboard.find(u => u.email === user.email);
-        if (existingUser) {
-            existingUser.points += points;
-        } else {
-            leaderboard.push({
-                name: user.name || 'Anonymous',
-                email: user.email,
-                points: points,
-                faculty: user.faculty || 'Unknown'
-            });
-        }
-        
-        leaderboard.sort((a, b) => b.points - a.points);
-        localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
-    }
 }
 
 // Initialize game when page loads
 document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is logged in
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+    
     new MemoryGame();
 });
