@@ -3,11 +3,10 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from config import Config
 from models import db, User
-from auth import auth_bp
+from auth import auth_bp, hash_password
 from games import games_bp
 from admin import admin_bp
 from datetime import datetime
-import hashlib
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -22,15 +21,11 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(games_bp)
 app.register_blueprint(admin_bp)
 
-# Password hashing function
-def hash_password(password):
-    return hashlib.sha256(f"kopio-salt-{password}".encode()).hexdigest()
-
 # Create database tables and initial data
 with app.app_context():
     db.create_all()
     
-    # Create admin user if not exists
+    # Create or update admin user
     admin_email = 'admin@student.mmu.edu.my'
     admin_user = User.query.filter_by(email=admin_email).first()
     
@@ -49,8 +44,14 @@ with app.app_context():
         db.session.add(admin_user)
         db.session.commit()
         print(f"✅ Created admin user: {admin_email} / Admin123!")
+    else:
+        # Update password hash to bcrypt if it's still using old format
+        if not admin_user.password_hash.startswith('$2b$'):
+            admin_user.password_hash = hash_password('Admin123!')
+            db.session.commit()
+            print(f"✅ Updated admin password to bcrypt: {admin_email}")
     
-    # Create demo student user if not exists
+    # Create or update demo student user
     demo_email = 'student@student.mmu.edu.my'
     demo_user = User.query.filter_by(email=demo_email).first()
     
@@ -69,6 +70,12 @@ with app.app_context():
         db.session.add(demo_user)
         db.session.commit()
         print(f"✅ Created demo user: {demo_email} / Student123!")
+    else:
+        # Update password hash to bcrypt if it's still using old format
+        if not demo_user.password_hash.startswith('$2b$'):
+            demo_user.password_hash = hash_password('Student123!')
+            db.session.commit()
+            print(f"✅ Updated demo password to bcrypt: {demo_email}")
 
 @app.route('/')
 def home():
@@ -86,6 +93,7 @@ def health():
     return jsonify({
         'status': 'healthy',
         'database': 'connected',
+        'security': 'bcrypt password hashing',
         'timestamp': datetime.utcnow().isoformat(),
         'endpoints': {
             'auth': ['/api/auth/login', '/api/auth/register', '/api/auth/me'],
