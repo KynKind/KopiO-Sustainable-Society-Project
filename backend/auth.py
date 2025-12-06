@@ -37,8 +37,11 @@ def validate_password_strength(password):
         return False, "Password must contain at least one lowercase letter"
     if not re.search(r'\d', password):
         return False, "Password must contain at least one digit"
-    if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
-        return False, "Password must contain at least one special character (!@#$%^&*)"
+    # if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+    #     return False, "Password must contain at least one special character (!@#$%^&*)"
+    # More generelized special character
+    if not re.search(r'[^a-zA-Z0-9]', password):
+        return False, "Password must contain at least one special character"
     return True, "Password is strong"
 
 # MMU Domain Validation
@@ -49,7 +52,7 @@ def validate_mmu_email(email):
     email = email.strip().lower()
     
     # Basic email format validation using regex
-    email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    email_pattern = r'[^@]+@[^@]+\.[^@]+'
     if not re.match(email_pattern, email):
         return False, "Invalid email format"
     
@@ -77,11 +80,12 @@ def validate_student_id(student_id):
     student_id = student_id.strip()
     
     # Check if it's numeric and has valid length
-    if not student_id.isdigit():
-        return False, "Student ID must contain only numbers"
+    # if not student_id.isdigit():
+    #     return False, "Student ID must contain only numbers"
+    # Student Id now has characthers along side numerics
     
     if len(student_id) < 7 or len(student_id) > 12:
-        return False, "Student ID must be 7-12 digits"
+        return False, "Student ID must be 7-12 characters"
     
     return True, "Valid student ID"
 

@@ -2,37 +2,56 @@
 const API_BASE_URL = 'http://127.0.0.1:5000/api';
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Password toggle functionality
-    const togglePassword = document.getElementById('togglePassword');
-    const toggleRegPassword = document.getElementById('toggleRegPassword');
-    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    // // Password toggle functionality
+    // const togglePassword = document.getElementById('togglePassword');
+    // const toggleRegPassword = document.getElementById('toggleRegPassword');
+    // const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
     
-    if (togglePassword) {
-        togglePassword.addEventListener('click', function() {
-            const password = document.getElementById('password');
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-            this.classList.toggle('fa-eye-slash');
-        });
+    // if (togglePassword) {
+    //     togglePassword.addEventListener('click', function() {
+    //         const password = document.getElementById('password');
+    //         const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+    //         password.setAttribute('type', type);
+    //         this.classList.toggle('fa-eye-slash');
+    //     });
+    // }
+
+    // if (toggleRegPassword) {
+    //     toggleRegPassword.addEventListener('click', function() {
+    //         const password = document.getElementById('regPassword');
+    //         const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+    //         password.setAttribute('type', type);
+    //         this.classList.toggle('fa-eye-slash');
+    //     });
+    // }
+
+    // if (toggleConfirmPassword) {
+    //     toggleConfirmPassword.addEventListener('click', function() {
+    //         const password = document.getElementById('confirmPassword');
+    //         const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+    //         password.setAttribute('type', type);
+    //         this.classList.toggle('fa-eye-slash');
+    //     });
+    // }
+    // redundant code
+    // refactored it to be shorter
+    function addPasswordToggle(toggleId, inputId) {
+        const toggle = document.getElementById(toggleId);
+        const input = document.getElementById(inputId);
+
+        if (toggle && input) {
+            toggle.addEventListener('click', function() {
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                this.classList.toggle('fa-eye-slash');
+            });
+        }
     }
 
-    if (toggleRegPassword) {
-        toggleRegPassword.addEventListener('click', function() {
-            const password = document.getElementById('regPassword');
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-            this.classList.toggle('fa-eye-slash');
-        });
-    }
-
-    if (toggleConfirmPassword) {
-        toggleConfirmPassword.addEventListener('click', function() {
-            const password = document.getElementById('confirmPassword');
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-            this.classList.toggle('fa-eye-slash');
-        });
-    }
+    // Apply to all password fields
+    addPasswordToggle('togglePassword', 'password');
+    addPasswordToggle('toggleRegPassword', 'regPassword');
+    addPasswordToggle('toggleConfirmPassword', 'confirmPassword');
 
     // Password strength indicator
     const regPassword = document.getElementById('regPassword');
