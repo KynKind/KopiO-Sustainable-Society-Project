@@ -466,59 +466,20 @@ class PuzzleGame {
         }
     }
 
-    resetLevel() {
-        clearInterval(this.timerInterval);
-        
-        this.moves = 0;
-        this.startTime = Date.now();
-        
-        this.generatePuzzle();
-        this.startTimer();
-        
-        document.getElementById('puzzleMoves').textContent = '0';
-        document.getElementById('puzzleTimer').textContent = '0s';
-    }
-
     resetGame() {
         this.currentLevel = 1;
+        this.completedLevels = 0;
+        this.totalMoves = 0;
+        this.gameStartTime = Date.now();
         this.resetLevel();
         
         // Reset level selection
         document.querySelectorAll('.level-card').forEach(card => {
             card.classList.remove('active');
         });
-        document.querySelector('[data-level="1"]').classList.add('active');
+        document.querySelector('[data-level="1"]')?.classList.add('active');
         
         this.updateLevelInfo();
-    }
-
-    saveScore(points) {
-        const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-        if (user.email) {
-            user.points = (user.points || 0) + points;
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            
-            this.updateLeaderboard(user, points);
-        }
-    }
-
-    updateLeaderboard(user, points) {
-        let leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
-        
-        const existingUser = leaderboard.find(u => u.email === user.email);
-        if (existingUser) {
-            existingUser.points += points;
-        } else {
-            leaderboard.push({
-                name: user.name || 'Anonymous',
-                email: user.email,
-                points: points,
-                faculty: user.faculty || 'Unknown'
-            });
-        }
-        
-        leaderboard.sort((a, b) => b.points - a.points);
-        localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
     }
 }
 

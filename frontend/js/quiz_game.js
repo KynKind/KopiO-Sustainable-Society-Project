@@ -130,45 +130,12 @@ class QuizGame {
             answer: selectedIndex
         });
 
-        const isCorrect = selectedIndex === parseInt(this.selectedOption.getAttribute('data-correct'));
+        // We don't know if it's correct yet - that comes from the API at the end
+        // For now, just show that answer was submitted
         const feedbackContainer = document.getElementById('feedbackContainer');
-        const correctFeedback = feedbackContainer.querySelector('.correct');
-        const incorrectFeedback = feedbackContainer.querySelector('.incorrect');
-        const funFactElement = document.getElementById('funFact');
-
-        // Show feedback
-        feedbackContainer.style.display = 'block';
         
-        if (isCorrect) {
-            correctFeedback.style.display = 'flex';
-            incorrectFeedback.style.display = 'none';
-            this.score += 10;
-            
-            // Bonus points for speed
-            if (this.timer > 45) this.score += 5;
-            else if (this.timer > 30) this.score += 3;
-            
-            this.animatePoints();
-        } else {
-            correctFeedback.style.display = 'none';
-            incorrectFeedback.style.display = 'flex';
-            
-            // Show correct answer
-            document.querySelectorAll('.option').forEach(option => {
-                if (parseInt(option.getAttribute('data-correct')) === selectedIndex) {
-                    option.classList.add('correct');
-                }
-            });
-        }
-
-        // Update fun fact (if available from previous API call)
-        if (question.fact) {
-            funFactElement.textContent = question.fact;
-        }
-
-        // Show correct answer in feedback
-        const correctAnswer = question.options[selectedIndex];
-        incorrectFeedback.querySelector('span').textContent = `Not quite right. The correct answer is ${correctAnswer}.`;
+        // Hide feedback for now - we'll show results at the end
+        feedbackContainer.style.display = 'none';
 
         // Update UI
         document.getElementById('submitButton').style.display = 'none';
@@ -178,6 +145,9 @@ class QuizGame {
         document.querySelectorAll('.option').forEach(option => {
             option.style.pointerEvents = 'none';
         });
+
+        // Mark selected answer visually
+        this.selectedOption.classList.add('selected-answer');
     }
 
     nextQuestion() {
