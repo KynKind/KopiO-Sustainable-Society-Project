@@ -14,7 +14,7 @@ class Config:
     DATABASE_PATH = os.path.join(os.path.dirname(__file__), 'kopio.db')
     
     # CORS settings
-    CORS_ORIGINS = ['http://localhost:3000', 'http://localhost:5000', 'http://127.0.0.1:3000', 'http://127.0.0.1:5000']
+    CORS_ORIGINS = ['http://localhost:3000', 'http://localhost:5000', 'http://127.0.0.1:3000', 'http://127.0.0.1:5000', 'http://localhost:5500', 'http://127.0.0.1:5500']
     
     # MMU Email validation
     # Allow both @mmu.edu.my and subdomains like @student.mmu.edu.my

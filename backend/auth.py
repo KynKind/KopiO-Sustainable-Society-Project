@@ -22,9 +22,36 @@ def verify_password(password, password_hash):
     return bcrypt.checkpw(password.encode('utf-8'), password_hash.encode('utf-8'))
 
 def validate_mmu_email(email):
-    """Validate that email ends with mmu.edu.my domain"""
-    email_lower = email.lower()
-    return email_lower.endswith('@mmu.edu.my') or email_lower.endswith('.mmu.edu.my')
+    """Validate that email is from MMU domain (including ALL subdomains)"""
+    email_lower = email.lower().strip()
+    
+    # Check for exactly one @ symbol
+    if email_lower.count('@') != 1:
+        return False
+    
+    # Split email into local part and domain
+    local_part, domain = email_lower.split('@')
+    
+    # Validate local part is not empty
+    if not local_part:
+        return False
+    
+    # Validate domain is not empty
+    if not domain:
+        return False
+    
+    # Check for leading/trailing dots in domain
+    if domain.startswith('.') or domain.endswith('.'):
+        return False
+    
+    # Accept @mmu.edu.my and ANY subdomain ending with .mmu.edu.my
+    if domain == 'mmu.edu.my':
+        return True
+    
+    if domain.endswith('.mmu.edu.my'):
+        return True
+    
+    return False
 
 def validate_password(password):
     """

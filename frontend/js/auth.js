@@ -107,10 +107,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 
-                // Validate MMU email (accept @mmu.edu.my and subdomains like @student.mmu.edu.my)
+                // Validate MMU email (accept @mmu.edu.my and any subdomain)
                 const email = document.getElementById('regEmail').value;
-                const emailLower = email.toLowerCase();
-                if (!emailLower.endsWith('@mmu.edu.my') && !emailLower.endsWith('.mmu.edu.my')) {
+                if (!validateMMUEmail(email)) {
                     showMessage('Only MMU email addresses are allowed (e.g., @mmu.edu.my or @student.mmu.edu.my)', 'error');
                     return;
                 }
@@ -175,6 +174,46 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+function validateMMUEmail(email) {
+    const emailLower = email.toLowerCase().trim();
+    
+    // Count @ symbols (simpler than regex)
+    const atCount = emailLower.split('@').length - 1;
+    if (atCount !== 1) {
+        return false;
+    }
+    
+    // Split email into local part and domain
+    const [localPart, domain] = emailLower.split('@');
+    
+    // Validate local part is not empty
+    if (!localPart) {
+        return false;
+    }
+    
+    // Validate domain is not empty
+    if (!domain) {
+        return false;
+    }
+    
+    // Check for leading/trailing dots in domain
+    if (domain.startsWith('.') || domain.endsWith('.')) {
+        return false;
+    }
+    
+    // Accept @mmu.edu.my
+    if (domain === 'mmu.edu.my') {
+        return true;
+    }
+    
+    // Check if it's a subdomain of mmu.edu.my
+    if (domain.endsWith('.mmu.edu.my')) {
+        return true;
+    }
+    
+    return false;
+}
 
 function checkPasswordStrength(password) {
     const strengthBar = document.getElementById('passwordStrength');

@@ -38,7 +38,7 @@ logger.info(f"Starting Kopi-O API in {env} mode")
 # Enable CORS
 # Note: Configure CORS_ORIGINS environment variable in production
 # Default allows common development ports
-default_cors = 'http://localhost:3000,http://localhost:5000,http://127.0.0.1:3000,http://127.0.0.1:5000,http://0.0.0.0:3000'
+default_cors = 'http://localhost:3000,http://localhost:5000,http://127.0.0.1:3000,http://127.0.0.1:5000,http://0.0.0.0:3000,http://localhost:5500,http://127.0.0.1:5500'
 cors_origins_str = os.environ.get('CORS_ORIGINS', default_cors)
 cors_origins = cors_origins_str.split(',') if cors_origins_str and cors_origins_str != '*' else '*'
 
