@@ -43,28 +43,43 @@ document.addEventListener('DOMContentLoaded', function() {
     // Login form handling
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             if (validateForm('loginForm')) {
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
                 
-                // Demo login - In real app, this would be an API call
-                if ((email === 'student@mmu.edu.my' && password === 'password123') || 
-                    (email === 'admin@mmu.edu.my' && password === 'admin123')) {
+                try {
+                    // Show loading state
+                    const submitBtn = loginForm.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
                     
-                    const user = {
-                        email: email,
-                        name: email === 'admin@mmu.edu.my' ? 'Admin User' : 'Demo Student',
-                        points: 1250,
-                        role: email === 'admin@mmu.edu.my' ? 'admin' : 'student',
-                        faculty: 'Faculty of Computing & Informatics'
-                    };
+                    // Call API
+                    const response = await apiRequest('/auth/login', {
+                        method: 'POST',
+                        skipAuth: true,
+                        body: JSON.stringify({ email, password })
+                    });
                     
-                    localStorage.setItem('currentUser', JSON.stringify(user));
-                    window.location.href = 'index.html';
-                } else {
-                    showMessage('Invalid email or password. Use demo accounts.', 'error');
+                    // Store token and user data
+                    localStorage.setItem('authToken', response.token);
+                    localStorage.setItem('currentUser', JSON.stringify(response.user));
+                    
+                    showMessage('Login successful! Redirecting...', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                    
+                } catch (error) {
+                    showMessage(error.message || 'Login failed. Please try again.', 'error');
+                    
+                    // Reset button
+                    const submitBtn = loginForm.querySelector('button[type="submit"]');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Sign In';
                 }
             }
         });
@@ -73,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Register form handling
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
-        registerForm.addEventListener('submit', function(e) {
+        registerForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             if (validateRegisterForm()) {
                 const password = document.getElementById('regPassword').value;
@@ -83,12 +98,52 @@ document.addEventListener('DOMContentLoaded', function() {
                     showMessage('Passwords do not match!', 'error');
                     return;
                 }
-
-                // Simulate successful registration
-                showMessage('Account created successfully! Redirecting...', 'success');
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 2000);
+                
+                // Validate MMU email
+                const email = document.getElementById('regEmail').value;
+                if (!email.toLowerCase().endsWith('@mmu.edu.my')) {
+                    showMessage('Only MMU email addresses (@mmu.edu.my) are allowed', 'error');
+                    return;
+                }
+                
+                try {
+                    // Show loading state
+                    const submitBtn = registerForm.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
+                    
+                    // Call API
+                    const response = await apiRequest('/auth/register', {
+                        method: 'POST',
+                        skipAuth: true,
+                        body: JSON.stringify({
+                            email: email,
+                            password: password,
+                            firstName: document.getElementById('firstName').value,
+                            lastName: document.getElementById('lastName').value,
+                            studentId: document.getElementById('studentId').value,
+                            faculty: document.getElementById('faculty').value
+                        })
+                    });
+                    
+                    // Store token and user data
+                    localStorage.setItem('authToken', response.token);
+                    localStorage.setItem('currentUser', JSON.stringify(response.user));
+                    
+                    showMessage('Account created successfully! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                    
+                } catch (error) {
+                    showMessage(error.message || 'Registration failed. Please try again.', 'error');
+                    
+                    // Reset button
+                    const submitBtn = registerForm.querySelector('button[type="submit"]');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                }
             }
         });
     }

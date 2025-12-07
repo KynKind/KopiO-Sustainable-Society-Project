@@ -1,12 +1,15 @@
-// Sorting Game Logic
+// Sorting Game Logic with API Integration
 class SortingGame {
     constructor() {
         this.currentRound = 1;
         this.score = 0;
         this.timer = 120;
+        this.startTime = Date.now();
         this.timerInterval = null;
         this.items = this.generateItems();
         this.draggedItem = null;
+        this.totalItemsSorted = 0;
+        this.totalCorrectSorts = 0;
         
         this.initializeGame();
     }
@@ -158,6 +161,10 @@ class SortingGame {
             }
         });
 
+        // Track totals for API
+        this.totalCorrectSorts += correct;
+        this.totalItemsSorted += total;
+
         // Calculate score
         const roundScore = Math.floor((correct / total) * 100);
         this.score += roundScore;
@@ -241,17 +248,15 @@ class SortingGame {
         this.setupEventListeners();
     }
 
-    endGame() {
+    async endGame() {
         clearInterval(this.timerInterval);
         
-        const timeBonus = Math.floor(this.timer / 10);
-        this.score += timeBonus;
-
-        this.showGameOverModal();
-        this.saveScore();
+        const timeTaken = Math.floor((Date.now() - this.startTime) / 1000);
+        
+        await this.saveScore(timeTaken);
     }
 
-    showGameOverModal() {
+    async showGameOverModal(result) {
         const modal = document.createElement('div');
         modal.className = 'game-over-modal';
         modal.style.cssText = `
@@ -267,6 +272,11 @@ class SortingGame {
             z-index: 10000;
         `;
 
+        const points = result ? result.points : this.score;
+        const accuracy = result ? result.accuracy : 0;
+        const accuracyBonus = result ? result.accuracyBonus : 0;
+        const timeBonus = result ? result.timeBonus : 0;
+
         modal.innerHTML = `
             <div class="modal-content" style="
                 background: var(--light-cream);
@@ -279,10 +289,12 @@ class SortingGame {
                 <h2 style="color: var(--dark-brown); margin-bottom: 1rem;">Sorting Champion! 🗑️</h2>
                 <div class="final-stats" style="margin-bottom: 2rem;">
                     <div style="font-size: 3rem; color: var(--primary-brown); font-weight: 700; margin-bottom: 1rem;">
-                        ${this.score} Points
+                        ${points} Points
                     </div>
                     <p style="color: var(--text-dark); margin-bottom: 0.5rem;">Rounds Completed: ${this.currentRound}/3</p>
-                    <p style="color: var(--text-dark);">Time remaining: ${this.timer}s</p>
+                    <p style="color: var(--text-dark); margin-bottom: 0.5rem;">Accuracy: ${Math.round(accuracy)}%</p>
+                    ${accuracyBonus > 0 ? `<p style="color: var(--primary-brown);">Accuracy Bonus: +${accuracyBonus} pts!</p>` : ''}
+                    ${timeBonus > 0 ? `<p style="color: var(--primary-brown);">Time Bonus: +${timeBonus} pts!</p>` : ''}
                 </div>
                 <div class="modal-actions" style="display: flex; gap: 1rem; justify-content: center;">
                     <button id="playAgain" class="btn">Play Again</button>
@@ -294,8 +306,7 @@ class SortingGame {
         document.body.appendChild(modal);
 
         document.getElementById('playAgain').addEventListener('click', () => {
-            document.body.removeChild(modal);
-            this.resetGame();
+            window.location.reload();
         });
 
         document.getElementById('backToHome').addEventListener('click', () => {
@@ -303,58 +314,32 @@ class SortingGame {
         });
     }
 
-    resetGame() {
-        clearInterval(this.timerInterval);
-        
-        this.currentRound = 1;
-        this.score = 0;
-        this.timer = 120;
-        this.items = this.generateItems();
-        
-        // Reset UI
-        document.querySelectorAll('.bin').forEach(bin => {
-            bin.classList.remove('correct', 'incorrect', 'active');
-            bin.querySelector('.bin-content').innerHTML = '';
-        });
-
-        this.renderItems();
-        this.setupEventListeners();
-        this.startTimer();
-        
-        document.getElementById('sortScore').textContent = '0';
-        document.getElementById('itemCount').textContent = `0/${this.items.length}`;
-        document.getElementById('sortTimer').textContent = '120s';
-        document.getElementById('checkSorting').disabled = false;
-        document.getElementById('nextRound').style.display = 'none';
-    }
-
-    saveScore() {
-        const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-        if (user.email) {
-            user.points = (user.points || 0) + this.score;
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            
-            this.updateLeaderboard(user, this.score);
-        }
-    }
-
-    updateLeaderboard(user, points) {
-        let leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
-        
-        const existingUser = leaderboard.find(u => u.email === user.email);
-        if (existingUser) {
-            existingUser.points += points;
-        } else {
-            leaderboard.push({
-                name: user.name || 'Anonymous',
-                email: user.email,
-                points: points,
-                faculty: user.faculty || 'Unknown'
+    async saveScore(timeTaken) {
+        try {
+            const result = await apiRequest('/games/sorting/submit', {
+                method: 'POST',
+                body: JSON.stringify({
+                    correctSorts: this.totalCorrectSorts,
+                    totalItems: this.totalItemsSorted,
+                    timeTaken: timeTaken,
+                    level: 1
+                })
             });
+            
+            // Update local user data
+            const user = await getCurrentUser();
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+            }
+            
+            this.showGameOverModal(result);
+            
+        } catch (error) {
+            console.error('Error saving score:', error);
+            showMessage('Failed to save score. Please try again.', 'error');
+            // Still show game over modal with default data
+            this.showGameOverModal(null);
         }
-        
-        leaderboard.sort((a, b) => b.points - a.points);
-        localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
     }
 }
 

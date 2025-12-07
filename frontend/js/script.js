@@ -71,18 +71,51 @@ function getFromLocalStorage(key) {
 }
 
 // Check if user is logged in
-function checkAuth() {
-    const user = getFromLocalStorage('currentUser');
-    if (!user && !window.location.pathname.includes('login.html') && 
-        !window.location.pathname.includes('register.html')) {
-        window.location.href = 'login.html';
+async function checkAuth() {
+    // Skip auth check on public pages
+    if (window.location.pathname.includes('login.html') || 
+        window.location.pathname.includes('register.html') ||
+        window.location.pathname.includes('forgot_password.html')) {
+        return null;
     }
-    return user;
+    
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        window.location.href = 'login.html';
+        return null;
+    }
+    
+    // Verify token is still valid
+    try {
+        const user = await getCurrentUser();
+        if (!user) {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+            return null;
+        }
+        
+        // Update local storage with latest user data
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        return user;
+    } catch (error) {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('currentUser');
+        window.location.href = 'login.html';
+        return null;
+    }
+}
+
+// Logout function
+function logout() {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('currentUser');
+    window.location.href = 'login.html';
 }
 
 // Initialize the page
-document.addEventListener('DOMContentLoaded', function() {
-    const user = checkAuth();
+document.addEventListener('DOMContentLoaded', async function() {
+    const user = await checkAuth();
     if (user && user.role === 'admin') {
         document.body.classList.add('user-admin');
     }
