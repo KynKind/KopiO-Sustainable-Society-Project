@@ -4,6 +4,7 @@ Database initialization and management for Kopi-O
 import sqlite3
 import os
 import logging
+import bcrypt
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
@@ -118,7 +119,10 @@ def init_db():
 
 def insert_demo_users(cursor):
     """Insert demo users for testing"""
-    from auth import hash_password
+    # Hash passwords using bcrypt
+    def hash_password(password):
+        salt = bcrypt.gensalt()
+        return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
     
     demo_users = [
         # Student demo account
@@ -140,7 +144,7 @@ def insert_demo_users(cursor):
             if result:
                 cursor.execute('INSERT OR IGNORE INTO user_stats (user_id) VALUES (?)', (result[0],))
         except Exception as e:
-            print(f"Error inserting demo user {user[0]}: {e}")
+            logger.error(f"Error inserting demo user {user[0]}: {e}")
 
 def insert_sample_questions(cursor):
     """Insert sample sustainability quiz questions"""
