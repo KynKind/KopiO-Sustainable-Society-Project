@@ -24,13 +24,37 @@ def verify_password(password, password_hash):
 def validate_mmu_email(email):
     """Validate that email is from MMU domain (including ALL subdomains)"""
     email_lower = email.lower().strip()
+    
+    # Check for exactly one @ symbol
+    if email_lower.count('@') != 1:
+        return False
+    
+    # Split and validate both parts exist
+    parts = email_lower.split('@')
+    if len(parts) != 2:
+        return False
+    
+    local_part, domain = parts
+    
+    # Validate local part is not empty
+    if not local_part:
+        return False
+    
+    # Validate domain is not empty
+    if not domain:
+        return False
+    
+    # Check for leading/trailing dots in domain
+    if domain.startswith('.') or domain.endswith('.'):
+        return False
+    
     # Accept @mmu.edu.my and ANY subdomain ending with .mmu.edu.my
-    if email_lower.endswith('@mmu.edu.my'):
+    if domain == 'mmu.edu.my':
         return True
-    if '.mmu.edu.my' in email_lower and '@' in email_lower:
-        domain = email_lower.split('@')[1]
-        if domain.endswith('mmu.edu.my'):
-            return True
+    
+    if domain.endswith('.mmu.edu.my'):
+        return True
+    
     return False
 
 def validate_password(password):

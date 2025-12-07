@@ -177,8 +177,47 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function validateMMUEmail(email) {
     const emailLower = email.toLowerCase().trim();
-    // Accept @mmu.edu.my and any subdomain
-    return emailLower.endsWith('@mmu.edu.my') || emailLower.includes('.mmu.edu.my');
+    
+    // Check for exactly one @ symbol
+    if ((emailLower.match(/@/g) || []).length !== 1) {
+        return false;
+    }
+    
+    // Split and validate both parts exist
+    const parts = emailLower.split('@');
+    if (parts.length !== 2) {
+        return false;
+    }
+    
+    const localPart = parts[0];
+    const domain = parts[1];
+    
+    // Validate local part is not empty
+    if (!localPart) {
+        return false;
+    }
+    
+    // Validate domain is not empty
+    if (!domain) {
+        return false;
+    }
+    
+    // Check for leading/trailing dots in domain
+    if (domain.startsWith('.') || domain.endsWith('.')) {
+        return false;
+    }
+    
+    // Accept @mmu.edu.my
+    if (domain === 'mmu.edu.my') {
+        return true;
+    }
+    
+    // Check if it's a subdomain of mmu.edu.my
+    if (domain.endsWith('.mmu.edu.my')) {
+        return true;
+    }
+    
+    return false;
 }
 
 function checkPasswordStrength(password) {
