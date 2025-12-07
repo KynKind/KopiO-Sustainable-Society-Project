@@ -150,14 +150,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         setTimeout(() => {
                             window.location.href = 'index.html';
                         }, 1000);
-                    } else {
-                        // Old flow - direct login (for backward compatibility)
-                        localStorage.setItem('authToken', response.token);
-                        localStorage.setItem('currentUser', JSON.stringify(response.user));
-                        showMessage('Account created successfully! Redirecting...', 'success');
-                        setTimeout(() => {
-                            window.location.href = 'index.html';
-                        }, 1500);
                     }
                     
                 } catch (error) {
