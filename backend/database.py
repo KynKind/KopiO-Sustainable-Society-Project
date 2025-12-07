@@ -48,7 +48,7 @@ def fix_unverified_users(cursor=None):
         
         if own_connection and conn:
             conn.commit()
-    except Exception as e:
+    except sqlite3.Error as e:
         logger.error(f"Error fixing unverified users: {e}")
         if own_connection and conn:
             conn.rollback()
@@ -62,7 +62,7 @@ def init_db():
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-    except Exception as e:
+    except sqlite3.Error as e:
         logger.error(f"Failed to initialize database: {e}")
         raise
     
