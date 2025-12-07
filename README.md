@@ -124,9 +124,23 @@ Only MMU email addresses ending with `@mmu.edu.my` are allowed to register.
 - At least 1 special character (!@#$%^&*)
 
 ### Demo Accounts
-For testing purposes (need to create manually via API or database):
-- **Student**: Any @mmu.edu.my email
-- **Admin**: Set role='admin' in database after registration
+For testing purposes:
+- **Student**: Register any @mmu.edu.my email via the registration page
+- **Admin**: To create an admin account:
+  1. First register a student account
+  2. Update the role in database:
+     ```bash
+     cd backend
+     sqlite3 kopio.db "UPDATE users SET role='admin' WHERE email='your-email@mmu.edu.my';"
+     ```
+  3. Login again to access admin panel
+
+### Creating Your First Admin
+```bash
+# After registering a user account, make it an admin:
+cd backend
+sqlite3 kopio.db "UPDATE users SET role='admin' WHERE email='your-email@mmu.edu.my';"
+```
 
 ## 🎯 API Endpoints
 
@@ -225,6 +239,47 @@ For testing purposes (need to create manually via API or database):
 3. Some HTML pages need manual API script includes
 4. No email verification (relies on MMU domain validation)
 5. Admin role must be set manually in database
+
+## 🔧 Troubleshooting
+
+### Backend Issues
+
+**Port 5000 already in use**
+```bash
+# Find and kill the process using port 5000
+lsof -ti:5000 | xargs kill
+# Or specify a different port
+PORT=5001 python app.py
+```
+
+**Database errors**
+```bash
+# Reinitialize the database
+cd backend
+rm kopio.db
+python database.py
+```
+
+**CORS errors in browser console**
+- Make sure the backend is running
+- Check that CORS_ORIGINS in .env includes your frontend URL
+- For development, you can use `CORS_ORIGINS=*` (not recommended for production)
+
+### Frontend Issues
+
+**API calls failing**
+- Verify backend is running at http://localhost:5000
+- Check browser console for CORS errors
+- Ensure you're logged in (check localStorage for authToken)
+
+**JavaScript files not loading**
+- Make sure you're serving from a web server, not file:// protocol
+- Check that all script paths are correct in HTML files
+
+**Authentication issues**
+- Clear localStorage: `localStorage.clear()` in browser console
+- Check that JWT token hasn't expired (24 hours by default)
+- Verify API_BASE_URL in `frontend/js/api-config.js`
 
 ## 🤝 Contributing
 
