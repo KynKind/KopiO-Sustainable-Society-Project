@@ -36,8 +36,14 @@ app.config.from_object(config.get(env, config['development']))
 logger.info(f"Starting Kopi-O API in {env} mode")
 
 # Enable CORS
-# Note: For production, update to specific allowed origins instead of wildcard
-cors_origins = os.environ.get('CORS_ORIGINS', '*').split(',') if os.environ.get('CORS_ORIGINS') else '*'
+# Note: Configure CORS_ORIGINS environment variable in production
+# Default allows common development ports
+default_cors = 'http://localhost:3000,http://localhost:5000,http://127.0.0.1:3000,http://127.0.0.1:5000'
+cors_origins_str = os.environ.get('CORS_ORIGINS', default_cors)
+cors_origins = cors_origins_str.split(',') if cors_origins_str and cors_origins_str != '*' else '*'
+
+if cors_origins == '*':
+    logger.warning("CORS is set to allow all origins. This should only be used in development!")
 
 CORS(app, resources={
     r"/api/*": {

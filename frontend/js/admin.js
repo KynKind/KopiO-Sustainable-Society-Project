@@ -228,6 +228,8 @@ function setupEventListeners() {
 
 async function searchUsers(query) {
     // Filter users based on search query
+    // NOTE: This currently fetches all users and filters locally
+    // For production with large user bases, implement server-side search
     try {
         const result = await apiRequest(`/admin/users?page=1&limit=50`);
         const usersTableBody = document.querySelector('#usersTable tbody');
@@ -296,7 +298,7 @@ function updatePagination(currentPage, totalPages) {
         const pageBtn = document.createElement('button');
         pageBtn.textContent = i;
         pageBtn.className = i === currentPage ? 'btn btn-primary' : 'btn';
-        pageBtn.onclick = () => loadUsersList(i);
+        pageBtn.addEventListener('click', () => loadUsersList(i));
         paginationContainer.appendChild(pageBtn);
     }
 }
