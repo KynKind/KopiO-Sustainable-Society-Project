@@ -130,7 +130,7 @@ def register_user(data):
         
         # Validate MMU email
         if not validate_mmu_email(email):
-            return {'error': 'Only MMU email addresses (@mmu.edu.my) are allowed'}, 400
+            return {'error': 'Only MMU email addresses are allowed (e.g., @mmu.edu.my or @student.mmu.edu.my)'}, 400
         
         # Validate password strength
         is_valid, message = validate_password(password)

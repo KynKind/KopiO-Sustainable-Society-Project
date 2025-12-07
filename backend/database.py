@@ -118,17 +118,13 @@ def init_db():
 
 def insert_demo_users(cursor):
     """Insert demo users for testing"""
-    import bcrypt
-    
-    # Hash passwords
-    def hash_pw(password):
-        return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    from auth import hash_password
     
     demo_users = [
         # Student demo account
-        ('demo.student@student.mmu.edu.my', hash_pw('Student123!'), 'Demo', 'Student', 'STU001', 'Faculty of Computing', 'student', 0),
+        ('demo.student@student.mmu.edu.my', hash_password('Student123!'), 'Demo', 'Student', 'STU001', 'Faculty of Computing', 'student', 0),
         # Admin demo account  
-        ('admin@student.mmu.edu.my', hash_pw('Admin123!'), 'Admin', 'User', 'ADM001', 'Administration', 'admin', 0),
+        ('admin@student.mmu.edu.my', hash_password('Admin123!'), 'Admin', 'User', 'ADM001', 'Administration', 'admin', 0),
     ]
     
     for user in demo_users:
