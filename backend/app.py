@@ -97,6 +97,30 @@ def get_current_user():
     result, status = auth.verify_token_endpoint(request.headers.get('Authorization', '').split(' ')[-1])
     return jsonify(result), status
 
+@app.route('/api/auth/verify-email', methods=['POST'])
+def verify_email():
+    """Verify user's email with token"""
+    data = request.get_json()
+    token = data.get('token')
+    
+    if not token:
+        return jsonify({'error': 'Verification token is required'}), 400
+    
+    result, status = auth.verify_email_token(token)
+    return jsonify(result), status
+
+@app.route('/api/auth/resend-verification', methods=['POST'])
+def resend_verification():
+    """Resend verification email"""
+    data = request.get_json()
+    email = data.get('email')
+    
+    if not email:
+        return jsonify({'error': 'Email is required'}), 400
+    
+    result, status = auth.resend_verification_email(email)
+    return jsonify(result), status
+
 # ==================== Quiz Game Endpoints ====================
 
 @app.route('/api/games/quiz/questions', methods=['GET'])

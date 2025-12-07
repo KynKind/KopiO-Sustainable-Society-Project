@@ -44,6 +44,9 @@ def init_db():
             faculty TEXT NOT NULL,
             role TEXT DEFAULT 'student',
             total_points INTEGER DEFAULT 0,
+            email_verified BOOLEAN DEFAULT 0,
+            verification_token TEXT,
+            verification_token_expires TIMESTAMP,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )

@@ -74,7 +74,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     }, 1000);
                     
                 } catch (error) {
-                    showMessage(error.message || 'Login failed. Please try again.', 'error');
+                    const errorMessage = error.message || 'Login failed. Please try again.';
+                    
+                    // Check if error is about email verification
+                    if (error.requiresVerification) {
+                        const resendLink = `<br><a href="verify_email.html" style="color: var(--accent-gold); text-decoration: underline;">Resend verification email</a>`;
+                        showMessage(errorMessage + resendLink, 'error');
+                    } else {
+                        showMessage(errorMessage, 'error');
+                    }
                     
                     // Reset button
                     const submitBtn = loginForm.querySelector('button[type="submit"]');
@@ -99,10 +107,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 
-                // Validate MMU email
+                // Validate MMU email (accept @mmu.edu.my and subdomains like @student.mmu.edu.my)
                 const email = document.getElementById('regEmail').value;
-                if (!email.toLowerCase().endsWith('@mmu.edu.my')) {
-                    showMessage('Only MMU email addresses (@mmu.edu.my) are allowed', 'error');
+                const emailLower = email.toLowerCase();
+                if (!emailLower.endsWith('@mmu.edu.my') && !emailLower.endsWith('.mmu.edu.my')) {
+                    showMessage('Only MMU email addresses are allowed (e.g., @mmu.edu.my or @student.mmu.edu.my)', 'error');
                     return;
                 }
                 
@@ -127,14 +136,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         })
                     });
                     
-                    // Store token and user data
-                    localStorage.setItem('authToken', response.token);
-                    localStorage.setItem('currentUser', JSON.stringify(response.user));
-                    
-                    showMessage('Account created successfully! Redirecting...', 'success');
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1500);
+                    // Check if email verification is required
+                    if (response.requiresVerification) {
+                        showMessage(response.message || 'Registration successful! Please check your email to verify your account.', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'login.html?registered=true';
+                        }, 3000);
+                    } else {
+                        // Old flow - direct login (for backward compatibility)
+                        localStorage.setItem('authToken', response.token);
+                        localStorage.setItem('currentUser', JSON.stringify(response.user));
+                        showMessage('Account created successfully! Redirecting...', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1500);
+                    }
                     
                 } catch (error) {
                     showMessage(error.message || 'Registration failed. Please try again.', 'error');
@@ -232,7 +248,7 @@ function showMessage(message, type) {
 
     const toast = document.createElement('div');
     toast.className = `message-toast ${type}`;
-    toast.textContent = message;
+    toast.innerHTML = message; // Changed from textContent to innerHTML to support links
     toast.style.cssText = `
         position: fixed;
         top: 100px;
@@ -252,7 +268,7 @@ function showMessage(message, type) {
     setTimeout(() => {
         toast.style.animation = 'slideOut 0.3s ease';
         setTimeout(() => toast.remove(), 300);
-    }, 4000);
+    }, 6000); // Increased to 6 seconds for longer messages
 }
 
 // Add these styles to CSS

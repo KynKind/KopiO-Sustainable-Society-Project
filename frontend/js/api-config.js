@@ -23,7 +23,11 @@ async function apiRequest(endpoint, options = {}) {
         const data = await response.json();
         
         if (!response.ok) {
-            throw new Error(data.error || 'Request failed');
+            const error = new Error(data.error || 'Request failed');
+            // Pass through additional error properties
+            if (data.requiresVerification) error.requiresVerification = true;
+            if (data.email) error.email = data.email;
+            throw error;
         }
         
         return data;
