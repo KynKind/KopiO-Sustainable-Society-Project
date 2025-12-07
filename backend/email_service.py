@@ -3,6 +3,7 @@ Email service for sending verification emails
 """
 import smtplib
 import secrets
+import html
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timedelta
@@ -18,7 +19,11 @@ def generate_verification_token():
 def send_verification_email(to_email, first_name, verification_token):
     """Send verification email to user"""
     try:
-        # Create verification link
+        # Escape user inputs to prevent XSS
+        safe_first_name = html.escape(first_name)
+        safe_email = html.escape(to_email)
+        
+        # Create verification link (token is already secure)
         verification_link = f"{Config.FRONTEND_URL}/html/verify_email.html?token={verification_token}"
         
         # Create email
@@ -48,7 +53,7 @@ def send_verification_email(to_email, first_name, verification_token):
                 <div class="header">
                     <div class="logo">☕ Kopi-O</div>
                 </div>
-                <h1>Welcome, {first_name}!</h1>
+                <h1>Welcome, {safe_first_name}!</h1>
                 <p>Thank you for registering with Kopi-O Sustainable Society. Please verify your email address to activate your account and start earning points!</p>
                 <p style="text-align: center;">
                     <a href="{verification_link}" class="btn">Verify My Email</a>
@@ -67,7 +72,7 @@ def send_verification_email(to_email, first_name, verification_token):
         
         # Plain text version
         text = f"""
-        Welcome to Kopi-O, {first_name}!
+        Welcome to Kopi-O, {safe_first_name}!
         
         Please verify your email by clicking this link:
         {verification_link}

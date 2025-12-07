@@ -316,10 +316,20 @@ def verify_email_token(token):
         
         # Check if token expired
         if user['verification_token_expires']:
-            token_expires = datetime.fromisoformat(user['verification_token_expires'])
-            if datetime.utcnow() > token_expires:
+            try:
+                # Handle both string and datetime objects from SQLite
+                if isinstance(user['verification_token_expires'], str):
+                    token_expires = datetime.fromisoformat(user['verification_token_expires'])
+                else:
+                    token_expires = user['verification_token_expires']
+                    
+                if datetime.utcnow() > token_expires:
+                    conn.close()
+                    return {'error': 'Verification token has expired. Please request a new one.', 'expired': True}, 400
+            except (ValueError, TypeError) as e:
+                # If parsing fails, treat as expired for security
                 conn.close()
-                return {'error': 'Verification token has expired. Please request a new one.', 'expired': True}, 400
+                return {'error': 'Invalid verification token. Please request a new one.', 'expired': True}, 400
         
         # Mark email as verified
         cursor.execute('''
@@ -349,7 +359,7 @@ def resend_verification_email(email):
         
         # Find user
         cursor.execute('''
-            SELECT id, first_name, email_verified
+            SELECT id, first_name, email_verified, verification_token_expires
             FROM users 
             WHERE email = ?
         ''', (email,))
@@ -364,6 +374,25 @@ def resend_verification_email(email):
         if user['email_verified']:
             conn.close()
             return {'message': 'Email already verified! You can login now.'}, 200
+        
+        # Check if last token was created recently (within 60 seconds) to prevent spam
+        if user['verification_token_expires']:
+            try:
+                if isinstance(user['verification_token_expires'], str):
+                    last_token_time = datetime.fromisoformat(user['verification_token_expires'])
+                else:
+                    last_token_time = user['verification_token_expires']
+                
+                # Token was generated for 24 hours ahead, so subtract that to get creation time
+                token_created_at = last_token_time - Config.VERIFICATION_TOKEN_EXPIRES
+                time_since_last_request = datetime.utcnow() - token_created_at
+                
+                if time_since_last_request.total_seconds() < 60:
+                    conn.close()
+                    return {'error': 'Please wait before requesting another verification email. Check your spam folder.'}, 429
+            except (ValueError, TypeError):
+                # If parsing fails, allow regeneration
+                pass
         
         # Generate new verification token
         verification_token = generate_verification_token()

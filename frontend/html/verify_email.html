@@ -180,21 +180,37 @@
         
         function showMessage(icon, iconClass, message, submessage, showResend = false) {
             const content = document.getElementById('verifyContent');
-            content.innerHTML = `
-                <div class="verify-icon ${iconClass}">
-                    <i class="fas ${icon}"></i>
-                </div>
-                <h1 class="verify-message">${message}</h1>
-                <p class="verify-submessage">${submessage}</p>
-                <div class="verify-actions">
-                    <a href="login.html" class="btn btn-large">
-                        <i class="fas fa-sign-in-alt"></i> Go to Login
-                    </a>
-                    <a href="index.html" class="btn btn-large" style="background: var(--accent-gold);">
-                        <i class="fas fa-home"></i> Go to Home
-                    </a>
-                </div>
+            
+            // Create elements safely to prevent XSS
+            content.innerHTML = '';
+            
+            const iconDiv = document.createElement('div');
+            iconDiv.className = `verify-icon ${iconClass}`;
+            iconDiv.innerHTML = `<i class="fas ${icon}"></i>`;
+            
+            const messageH1 = document.createElement('h1');
+            messageH1.className = 'verify-message';
+            messageH1.textContent = message;
+            
+            const submessageP = document.createElement('p');
+            submessageP.className = 'verify-submessage';
+            submessageP.textContent = submessage;
+            
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'verify-actions';
+            actionsDiv.innerHTML = `
+                <a href="login.html" class="btn btn-large">
+                    <i class="fas fa-sign-in-alt"></i> Go to Login
+                </a>
+                <a href="index.html" class="btn btn-large" style="background: var(--accent-gold);">
+                    <i class="fas fa-home"></i> Go to Home
+                </a>
             `;
+            
+            content.appendChild(iconDiv);
+            content.appendChild(messageH1);
+            content.appendChild(submessageP);
+            content.appendChild(actionsDiv);
             
             if (showResend) {
                 document.getElementById('resendSection').style.display = 'block';
