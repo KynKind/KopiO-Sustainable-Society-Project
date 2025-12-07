@@ -86,7 +86,8 @@ function updateNavbar(user) {
             };
         }
         if (userGreeting) {
-            userGreeting.textContent = `Hi, ${user.firstName || user.email.split('@')[0]}!`;
+            const displayName = user.firstName || (user.email && user.email.includes('@') ? user.email.split('@')[0] : 'User');
+            userGreeting.textContent = `Hi, ${displayName}!`;
         }
         if (user.role === 'admin') {
             document.body.classList.add('user-admin');
