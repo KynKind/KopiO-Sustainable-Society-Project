@@ -70,18 +70,62 @@ function getFromLocalStorage(key) {
     return data ? JSON.parse(data) : null;
 }
 
+// Update navbar based on auth state
+function updateNavbar(user) {
+    const authBtn = document.getElementById('authBtn');
+    const userGreeting = document.getElementById('userGreeting');
+    
+    if (user) {
+        document.body.classList.add('logged-in');
+        if (authBtn) {
+            authBtn.textContent = 'Logout';
+            authBtn.href = '#';
+            authBtn.onclick = (e) => {
+                e.preventDefault();
+                logout();
+            };
+        }
+        if (userGreeting) {
+            const displayName = user.firstName || (user.email && user.email.includes('@') ? user.email.split('@')[0] : 'User');
+            userGreeting.textContent = `Hi, ${displayName}!`;
+        }
+        if (user.role === 'admin') {
+            document.body.classList.add('user-admin');
+        }
+    } else {
+        document.body.classList.remove('logged-in');
+        document.body.classList.remove('user-admin');
+        if (authBtn) {
+            authBtn.textContent = 'Login';
+            authBtn.href = 'login.html';
+            authBtn.onclick = null;
+        }
+        if (userGreeting) {
+            userGreeting.textContent = '';
+        }
+    }
+}
+
 // Check if user is logged in
 async function checkAuth() {
-    // Skip auth check on public pages
-    if (window.location.pathname.includes('login.html') || 
-        window.location.pathname.includes('register.html') ||
-        window.location.pathname.includes('forgot_password.html')) {
-        return null;
-    }
-    
     const token = localStorage.getItem('authToken');
+    
+    // If on public pages, just update navbar state without redirecting
+    const isPublicPage = window.location.pathname.includes('login.html') || 
+                        window.location.pathname.includes('register.html') ||
+                        window.location.pathname.includes('forgot_password.html') ||
+                        window.location.pathname.includes('index.html') ||
+                        window.location.pathname.includes('leaderboard.html') ||
+                        window.location.pathname.includes('about.html') ||
+                        window.location.pathname.includes('contact.html') ||
+                        window.location.pathname.includes('how_to_play.html') ||
+                        window.location.pathname.includes('sponsorship.html');
+    
     if (!token) {
-        window.location.href = 'login.html';
+        updateNavbar(null);
+        if (!isPublicPage) {
+            window.location.href = 'login.html';
+        }
         return null;
     }
     
@@ -91,17 +135,24 @@ async function checkAuth() {
         if (!user) {
             localStorage.removeItem('authToken');
             localStorage.removeItem('currentUser');
-            window.location.href = 'login.html';
+            updateNavbar(null);
+            if (!isPublicPage) {
+                window.location.href = 'login.html';
+            }
             return null;
         }
         
         // Update local storage with latest user data
         localStorage.setItem('currentUser', JSON.stringify(user));
+        updateNavbar(user);
         return user;
     } catch (error) {
         localStorage.removeItem('authToken');
         localStorage.removeItem('currentUser');
-        window.location.href = 'login.html';
+        updateNavbar(null);
+        if (!isPublicPage) {
+            window.location.href = 'login.html';
+        }
         return null;
     }
 }
@@ -115,8 +166,5 @@ function logout() {
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', async function() {
-    const user = await checkAuth();
-    if (user && user.role === 'admin') {
-        document.body.classList.add('user-admin');
-    }
+    await checkAuth();
 });

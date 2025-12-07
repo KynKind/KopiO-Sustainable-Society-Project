@@ -100,6 +100,56 @@ body {
     transition: 0.3s;
 }
 
+/* Navbar Auth Section */
+.nav-auth {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-btn {
+    padding: 8px 20px;
+    font-size: 0.9rem;
+}
+
+.user-greeting {
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+/* Hide auth-required links when not logged in */
+body:not(.logged-in) .auth-required {
+    display: none;
+}
+
+/* Hide admin-only for non-admins */
+body:not(.user-admin) .admin-only {
+    display: none;
+}
+
+/* Better error toast styling */
+.message-toast {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    color: white;
+    font-weight: 500;
+    z-index: 10000;
+    max-width: 350px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    animation: slideIn 0.3s ease;
+}
+
+.message-toast.error {
+    background: linear-gradient(135deg, #ff4444, #cc0000);
+}
+
+.message-toast.success {
+    background: linear-gradient(135deg, #00C851, #007E33);
+}
+
 /* Main Content */
 .main-content {
     min-height: calc(100vh - 140px);
@@ -354,6 +404,17 @@ body {
 
     .hamburger.active .bar:nth-child(3) {
         transform: translateY(-8px) rotate(-45deg);
+    }
+    
+    .nav-auth {
+        margin-top: 1rem;
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .nav-btn {
+        width: 80%;
+        text-align: center;
     }
 
     .games-grid {

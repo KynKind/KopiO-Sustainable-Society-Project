@@ -8,8 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
-    <!-- Header -->
+<body>    <!-- Header -->
     <header class="header">
         <nav class="navbar">
             <div class="nav-brand">
@@ -21,8 +20,13 @@
             <ul class="nav-menu">
                 <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
                 <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
-                <li class="nav-item"><a href="my_profile.html" class="nav-link">My Profile</a></li>
+                <li class="nav-item"><a href="my_profile.html" class="nav-link auth-required">My Profile</a></li>
+                <li class="nav-item admin-only"><a href="admin.html" class="nav-link">Admin</a></li>
             </ul>
+            <div class="nav-auth">
+                <span class="user-greeting" id="userGreeting"></span>
+                <a href="login.html" class="btn nav-btn" id="authBtn">Login</a>
+            </div>
             <div class="hamburger">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -104,72 +108,21 @@
                     <li><a href="contact.html">Contact</a></li>
                     <li><a href="sponsorship.html">Our Sponsor</a></li>
                 </ul>
-            </div>
-
-            <div class="footer-section">
+            </div>            <div class="footer-section">
                 <h4>Proudly Supported By</h4>
-                <div class="sponsor-footer">
-                    <div class="footer-sponsor-logo">
-                        <i class="fas fa-industry"></i>
-                    </div>
-                    <div class="footer-sponsor-info">
-                        <strong>Seng Hung Hygiene Supplies Sdn. Bhd.</strong>
-                        <span>Your Trusted Hygiene Partner</span>
-                        <div class="sponsor-contact">
-                            <a href="https://www.senghung.com/" target="_blank">
-                                <i class="fas fa-globe"></i> Website
-                            </a>
-                            <a href="https://www.facebook.com/senghunghygiene/" target="_blank">
-                                <i class="fab fa-facebook"></i> Facebook
-                            </a>
-                            <a href="https://www.lazada.com.my/shop/seng-hung-hygiene-supplies-sdn-bhd/" target="_blank">
-                                <i class="fas fa-shopping-cart"></i> Lazada
-                            </a>
-                            <a href="mailto:senghunghygiene@gmail.com">
-                                <i class="fas fa-envelope"></i> Email
-                            </a>
-                            <!-- 新增 Ecoike™ 官网链接 -->
-                            <a href="https://ecolikecare.com/pages/ecolikecare-3" target="_blank" class="ecolike-link">
-                                <i class="fas fa-leaf"></i> Ecoike™ Website
-                            </a>
-                        </div>
-
-                        <div class="sponsor-division">
-                            <small>Also operating: <strong>13Mart / Linear Mark</strong></small>
-                            <div class="division-links">
-                                <a href="https://www.tiktok.com/@13mart.store" target="_blank">
-                                    <i class="fab fa-tiktok"></i>
-                                </a>
-                                <a href="https://www.instagram.com/13mart.store_ecolike/" target="_blank">
-                                    <i class="fab fa-instagram"></i>
-                                </a>
-                                <a href="https://www.facebook.com/p/13Martstore-100094695825658/" target="_blank">
-                                    <i class="fab fa-facebook"></i>
-                                </a>
-                                <a href="mailto:linearmark1431@gmail.com">
-                                    <i class="fas fa-envelope"></i>
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Complete Product Ecosystem -->
-                        <div class="sponsor-ecosystem">
-                            <h5>Complete Product Ecosystem</h5>
-                            <div class="ecosystem-brands">
-                                <div class="brand-item">
-                                    <strong>SHHS</strong>
-                                    <span>Industrial & Commercial Chemicals</span>
-                                </div>
-                                <div class="brand-item">
-                                    <strong>Linear Mark</strong>
-                                    <span>Household Products Manufacturing</span>
-                                </div>
-                                <div class="brand-item">
-                                    <strong>Ecoike™</strong>
-                                    <span>Consumer Products Brand</span>
-                                </div>
-                            </div>
-                        </div>
+                <strong>Seng Hung Hygiene Supplies Sdn. Bhd.</strong>
+                <p>Your Trusted Hygiene Partner</p>
+                <div class="social-links">
+                    <a href="https://www.senghung.com/" target="_blank" title="Website">
+                        <i class="fas fa-globe"></i>
+                    </a>
+                    <a href="https://www.facebook.com/senghunghygiene/" target="_blank" title="Facebook">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                </div>
+                <p style="margin-top: 1rem;"><small>Learn more on our <a href="sponsorship.html" style="color: var(--accent-gold);">Sponsorship page</a></small></p>
+            </div>
+        </div>
 
                         <!-- Trademark Notice -->
                         <div class="trademark-notice">
