@@ -1,14 +1,17 @@
-// Puzzle Game Logic
+// Puzzle Game Logic with API Integration
 class PuzzleGame {
     constructor() {
         this.currentLevel = 1;
         this.moves = 0;
+        this.totalMoves = 0;
         this.startTime = null;
+        this.gameStartTime = Date.now();
         this.timerInterval = null;
         this.puzzleSize = 3;
         this.board = [];
         this.emptyPos = { row: 2, col: 2 };
         this.images = this.getPuzzleImages();
+        this.completedLevels = 0;
         
         this.initializeGame();
     }
@@ -292,14 +295,15 @@ class PuzzleGame {
         `;
     }
 
-    completeLevel() {
+    async completeLevel() {
         clearInterval(this.timerInterval);
         
         const completionTime = Math.floor((Date.now() - this.startTime) / 1000);
-        const points = this.calculatePoints(completionTime, this.moves);
+        this.completedLevels++;
+        this.totalMoves += this.moves;
 
-        this.showLevelCompleteModal(completionTime, points);
-        this.saveScore(points);
+        // Show level complete modal
+        await this.showLevelCompleteModal(completionTime);
 
         // Enable next level if available
         if (this.currentLevel < 5) {
@@ -308,27 +312,14 @@ class PuzzleGame {
                 this.resetLevel();
                 this.updateLevelInfo();
             }, 3000);
+        } else {
+            // Game complete - save score
+            const totalTime = Math.floor((Date.now() - this.gameStartTime) / 1000);
+            await this.saveScore(totalTime);
         }
     }
 
-    calculatePoints(time, moves) {
-        let points = this.currentLevel * 50; // Base points by level
-        
-        // Time bonus
-        if (time < 60) points += 100;
-        else if (time < 120) points += 60;
-        else if (time < 180) points += 30;
-
-        // Moves bonus (fewer moves = more points)
-        const optimalMoves = this.puzzleSize * this.puzzleSize * 10; // Approximate
-        if (moves < optimalMoves * 1.2) points += 50;
-        else if (moves < optimalMoves * 1.5) points += 30;
-        else if (moves < optimalMoves * 2) points += 15;
-
-        return points;
-    }
-
-    showLevelCompleteModal(time, points) {
+    async showLevelCompleteModal(time) {
         const modal = document.createElement('div');
         modal.className = 'level-complete-modal';
         modal.style.cssText = `
@@ -355,19 +346,16 @@ class PuzzleGame {
             ">
                 <h2 style="color: var(--dark-brown); margin-bottom: 1rem;">Level ${this.currentLevel} Complete! 🎉</h2>
                 <div class="final-stats" style="margin-bottom: 2rem;">
-                    <div style="font-size: 3rem; color: var(--primary-brown); font-weight: 700; margin-bottom: 1rem;">
-                        +${points} Points
-                    </div>
                     <p style="color: var(--text-dark); margin-bottom: 0.5rem;">Time: ${time} seconds</p>
                     <p style="color: var(--text-dark); margin-bottom: 0.5rem;">Moves: ${this.moves}</p>
                     <p style="color: var(--text-dark);">Level: ${this.currentLevel}/5</p>
+                    ${this.currentLevel >= 5 ? '<p style="color: var(--primary-brown); font-weight: bold; margin-top: 1rem;">All Levels Complete! Saving score...</p>' : ''}
                 </div>
                 <div class="modal-actions" style="display: flex; gap: 1rem; justify-content: center;">
                     ${this.currentLevel < 5 ? 
                         '<button id="nextLevel" class="btn">Next Level</button>' : 
-                        '<button id="playAgain" class="btn">Play Again</button>'
+                        ''
                     }
-                    <button id="backToHome" class="btn btn-secondary">Back to Home</button>
                 </div>
             </div>
         `;
@@ -378,16 +366,104 @@ class PuzzleGame {
             document.getElementById('nextLevel').addEventListener('click', () => {
                 document.body.removeChild(modal);
             });
-        } else {
-            document.getElementById('playAgain').addEventListener('click', () => {
-                document.body.removeChild(modal);
-                this.resetGame();
-            });
         }
+    }
+
+    async showGameCompleteModal(result) {
+        const modal = document.createElement('div');
+        modal.className = 'game-complete-modal';
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        `;
+
+        const points = result ? result.points : 0;
+        const moveBonus = result ? result.moveBonus : 0;
+        const timeBonus = result ? result.timeBonus : 0;
+
+        modal.innerHTML = `
+            <div class="modal-content" style="
+                background: var(--light-cream);
+                padding: 3rem;
+                border-radius: var(--radius-large);
+                text-align: center;
+                max-width: 500px;
+                width: 90%;
+            ">
+                <h2 style="color: var(--dark-brown); margin-bottom: 1rem;">Puzzle Master! 🧩</h2>
+                <div class="final-stats" style="margin-bottom: 2rem;">
+                    <div style="font-size: 3rem; color: var(--primary-brown); font-weight: 700; margin-bottom: 1rem;">
+                        ${points} Points
+                    </div>
+                    <p style="color: var(--text-dark); margin-bottom: 0.5rem;">Levels Completed: ${this.completedLevels}</p>
+                    <p style="color: var(--text-dark); margin-bottom: 0.5rem;">Total Moves: ${this.totalMoves}</p>
+                    ${moveBonus > 0 ? `<p style="color: var(--primary-brown);">Move Bonus: +${moveBonus} pts!</p>` : ''}
+                    ${timeBonus > 0 ? `<p style="color: var(--primary-brown);">Time Bonus: +${timeBonus} pts!</p>` : ''}
+                </div>
+                <div class="modal-actions" style="display: flex; gap: 1rem; justify-content: center;">
+                    <button id="playAgain" class="btn">Play Again</button>
+                    <button id="backToHome" class="btn btn-secondary">Back to Home</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        document.getElementById('playAgain').addEventListener('click', () => {
+            window.location.reload();
+        });
 
         document.getElementById('backToHome').addEventListener('click', () => {
             window.location.href = 'index.html';
         });
+    }
+
+    resetLevel() {
+        clearInterval(this.timerInterval);
+        
+        this.moves = 0;
+        this.startTime = Date.now();
+        
+        this.generatePuzzle();
+        this.startTimer();
+        
+        document.getElementById('puzzleMoves').textContent = '0';
+        document.getElementById('puzzleTimer').textContent = '0s';
+    }
+
+    async saveScore(timeTaken) {
+        try {
+            const result = await apiRequest('/games/puzzle/submit', {
+                method: 'POST',
+                body: JSON.stringify({
+                    moves: this.totalMoves,
+                    timeTaken: timeTaken,
+                    puzzleNumber: this.completedLevels
+                })
+            });
+            
+            // Update local user data
+            const user = await getCurrentUser();
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+            }
+            
+            this.showGameCompleteModal(result);
+            
+        } catch (error) {
+            console.error('Error saving score:', error);
+            showMessage('Failed to save score. Please try again.', 'error');
+            // Still show game complete modal with default data
+            this.showGameCompleteModal(null);
+        }
     }
 
     resetLevel() {

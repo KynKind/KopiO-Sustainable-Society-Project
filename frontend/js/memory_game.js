@@ -255,36 +255,15 @@ class MemoryGame {
         });
     }
 
-    endGame() {
+    async endGame() {
         clearInterval(this.timerInterval);
         
         const finalTime = Math.floor((Date.now() - this.startTime) / 1000);
-        const points = this.calculatePoints(finalTime, this.moves);
 
-        this.showGameOverModal(finalTime, points);
-        this.saveScore(points);
+        await this.saveScore(finalTime);
     }
 
-    calculatePoints(time, moves) {
-        let points = 100; // Base points
-        
-        // Time bonus (faster = more points)
-        if (time < 60) points += 50;
-        else if (time < 90) points += 30;
-        else if (time < 120) points += 15;
-
-        // Moves bonus (fewer moves = more points)
-        if (moves < 20) points += 50;
-        else if (moves < 30) points += 30;
-        else if (moves < 40) points += 15;
-
-        // Perfect game bonus
-        if (moves === 16) points += 100;
-
-        return points;
-    }
-
-    showGameOverModal(time, points) {
+    async showGameOverModal(result, time) {
         const modal = document.createElement('div');
         modal.className = 'game-over-modal';
         modal.style.cssText = `
@@ -299,6 +278,10 @@ class MemoryGame {
             justify-content: center;
             z-index: 10000;
         `;
+
+        const points = result ? result.points : 0;
+        const moveBonus = result ? result.moveBonus : 0;
+        const timeBonus = result ? result.timeBonus : 0;
 
         modal.innerHTML = `
             <div class="modal-content" style="
@@ -316,7 +299,9 @@ class MemoryGame {
                     </div>
                     <p style="color: var(--text-dark); margin-bottom: 0.5rem;">Time: ${time} seconds</p>
                     <p style="color: var(--text-dark); margin-bottom: 0.5rem;">Moves: ${this.moves}</p>
-                    <p style="color: var(--text-dark);">Pairs: 8/8</p>
+                    <p style="color: var(--text-dark); margin-bottom: 0.5rem;">Pairs: 8/8</p>
+                    ${moveBonus > 0 ? `<p style="color: var(--primary-brown);">Move Bonus: +${moveBonus} pts!</p>` : ''}
+                    ${timeBonus > 0 ? `<p style="color: var(--primary-brown);">Time Bonus: +${timeBonus} pts!</p>` : ''}
                 </div>
                 <div class="modal-actions" style="display: flex; gap: 1rem; justify-content: center;">
                     <button id="playAgain" class="btn">Play Again</button>
@@ -328,8 +313,7 @@ class MemoryGame {
         document.body.appendChild(modal);
 
         document.getElementById('playAgain').addEventListener('click', () => {
-            document.body.removeChild(modal);
-            this.resetGame();
+            window.location.reload();
         });
 
         document.getElementById('backToHome').addEventListener('click', () => {
@@ -337,54 +321,31 @@ class MemoryGame {
         });
     }
 
-    resetGame() {
-        clearInterval(this.timerInterval);
-        
-        this.cards = this.generateCards();
-        this.flippedCards = [];
-        this.matchedPairs = 0;
-        this.moves = 0;
-        this.hintsRemaining = 3;
-        this.gameStarted = false;
-        
-        this.renderCards();
-        this.startTimer();
-        
-        document.getElementById('moveCount').textContent = '0';
-        document.getElementById('matchCount').textContent = '0/8';
-        document.getElementById('memoryTimer').textContent = '0s';
-        document.getElementById('hintButton').textContent = `Get Hint (${this.hintsRemaining} left)`;
-        document.getElementById('hintButton').disabled = false;
-        document.getElementById('matchInfo').style.display = 'none';
-    }
-
-    saveScore(points) {
-        const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-        if (user.email) {
-            user.points = (user.points || 0) + points;
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            
-            this.updateLeaderboard(user, points);
-        }
-    }
-
-    updateLeaderboard(user, points) {
-        let leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
-        
-        const existingUser = leaderboard.find(u => u.email === user.email);
-        if (existingUser) {
-            existingUser.points += points;
-        } else {
-            leaderboard.push({
-                name: user.name || 'Anonymous',
-                email: user.email,
-                points: points,
-                faculty: user.faculty || 'Unknown'
+    async saveScore(timeTaken) {
+        try {
+            const result = await apiRequest('/games/memory/submit', {
+                method: 'POST',
+                body: JSON.stringify({
+                    moves: this.moves,
+                    timeTaken: timeTaken,
+                    level: 1
+                })
             });
+            
+            // Update local user data
+            const user = await getCurrentUser();
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+            }
+            
+            this.showGameOverModal(result, timeTaken);
+            
+        } catch (error) {
+            console.error('Error saving score:', error);
+            showMessage('Failed to save score. Please try again.', 'error');
+            // Still show game over modal with default data
+            this.showGameOverModal(null, timeTaken);
         }
-        
-        leaderboard.sort((a, b) => b.points - a.points);
-        localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
     }
 }
 
