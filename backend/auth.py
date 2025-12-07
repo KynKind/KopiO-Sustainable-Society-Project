@@ -29,12 +29,8 @@ def validate_mmu_email(email):
     if email_lower.count('@') != 1:
         return False
     
-    # Split and validate both parts exist
-    parts = email_lower.split('@')
-    if len(parts) != 2:
-        return False
-    
-    local_part, domain = parts
+    # Split email into local part and domain
+    local_part, domain = email_lower.split('@')
     
     # Validate local part is not empty
     if not local_part:

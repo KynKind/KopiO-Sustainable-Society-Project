@@ -178,19 +178,14 @@ document.addEventListener('DOMContentLoaded', function() {
 function validateMMUEmail(email) {
     const emailLower = email.toLowerCase().trim();
     
-    // Check for exactly one @ symbol
-    if ((emailLower.match(/@/g) || []).length !== 1) {
+    // Count @ symbols (simpler than regex)
+    const atCount = emailLower.split('@').length - 1;
+    if (atCount !== 1) {
         return false;
     }
     
-    // Split and validate both parts exist
-    const parts = emailLower.split('@');
-    if (parts.length !== 2) {
-        return false;
-    }
-    
-    const localPart = parts[0];
-    const domain = parts[1];
+    // Split email into local part and domain
+    const [localPart, domain] = emailLower.split('@');
     
     // Validate local part is not empty
     if (!localPart) {
