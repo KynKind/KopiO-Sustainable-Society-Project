@@ -4,6 +4,7 @@ Database initialization and management for Kopi-O
 import sqlite3
 import os
 import logging
+import bcrypt
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
@@ -105,9 +106,45 @@ def init_db():
         insert_sample_questions(cursor)
         conn.commit()
     
+    # Insert demo users if they don't exist
+    cursor.execute("SELECT COUNT(*) FROM users WHERE email = 'demo.student@student.mmu.edu.my'")
+    if cursor.fetchone()[0] == 0:
+        insert_demo_users(cursor)
+        conn.commit()
+        logger.info("Demo users created successfully!")
+    
     conn.close()
     logger.info("Database initialized successfully!")
     print("Database initialized successfully!")
+
+def insert_demo_users(cursor):
+    """Insert demo users for testing"""
+    # Hash passwords using bcrypt
+    def hash_password(password):
+        salt = bcrypt.gensalt()
+        return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
+    
+    demo_users = [
+        # Student demo account
+        ('demo.student@student.mmu.edu.my', hash_password('Student123!'), 'Demo', 'Student', 'STU001', 'Faculty of Computing', 'student', 0),
+        # Admin demo account  
+        ('admin@student.mmu.edu.my', hash_password('Admin123!'), 'Admin', 'User', 'ADM001', 'Administration', 'admin', 0),
+    ]
+    
+    for user in demo_users:
+        try:
+            cursor.execute('''
+                INSERT OR IGNORE INTO users (email, password_hash, first_name, last_name, student_id, faculty, role, total_points)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ''', user)
+            
+            # Get the user ID for stats
+            cursor.execute('SELECT id FROM users WHERE email = ?', (user[0],))
+            result = cursor.fetchone()
+            if result:
+                cursor.execute('INSERT OR IGNORE INTO user_stats (user_id) VALUES (?)', (result[0],))
+        except Exception as e:
+            logger.error(f"Error inserting demo user {user[0]}: {e}")
 
 def insert_sample_questions(cursor):
     """Insert sample sustainability quiz questions"""

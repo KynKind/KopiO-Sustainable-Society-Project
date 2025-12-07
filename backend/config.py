@@ -17,7 +17,8 @@ class Config:
     CORS_ORIGINS = ['http://localhost:3000', 'http://localhost:5000', 'http://127.0.0.1:3000', 'http://127.0.0.1:5000']
     
     # MMU Email validation
-    ALLOWED_EMAIL_DOMAIN = '@mmu.edu.my'
+    # Allow both @mmu.edu.my and subdomains like @student.mmu.edu.my
+    ALLOWED_EMAIL_DOMAIN = 'mmu.edu.my'
     
     # Game settings
     QUIZ_QUESTIONS_PER_GAME = 5

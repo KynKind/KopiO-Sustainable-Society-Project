@@ -21,8 +21,9 @@ def verify_password(password, password_hash):
     return bcrypt.checkpw(password.encode('utf-8'), password_hash.encode('utf-8'))
 
 def validate_mmu_email(email):
-    """Validate that email ends with @mmu.edu.my"""
-    return email.lower().endswith(Config.ALLOWED_EMAIL_DOMAIN)
+    """Validate that email ends with mmu.edu.my domain"""
+    email_lower = email.lower()
+    return email_lower.endswith('@mmu.edu.my') or email_lower.endswith('.mmu.edu.my')
 
 def validate_password(password):
     """
@@ -129,7 +130,7 @@ def register_user(data):
         
         # Validate MMU email
         if not validate_mmu_email(email):
-            return {'error': 'Only MMU email addresses (@mmu.edu.my) are allowed'}, 400
+            return {'error': 'Only MMU email addresses are allowed (e.g., @mmu.edu.my or @student.mmu.edu.my)'}, 400
         
         # Validate password strength
         is_valid, message = validate_password(password)
