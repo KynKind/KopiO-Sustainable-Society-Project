@@ -5,7 +5,8 @@ A full-stack web application for MMU Cyberjaya students to learn about sustainab
 ## 🎮 Features
 
 ### For Students
-- **Authentication**: Secure registration and login with MMU email (@mmu.edu.my)
+- **Authentication**: Secure registration and login with MMU email (@mmu.edu.my and subdomains like @student.mmu.edu.my)
+- **Email Verification**: Verify your email address to activate your account
 - **4 Interactive Games**:
   - Quiz Game: Test sustainability knowledge with 25+ questions
   - Memory Game: Match eco-friendly symbols
@@ -91,10 +92,25 @@ KopiO-Sustainable-Society-Project/
    python database.py  # Initialize database with sample questions
    ```
 
-3. **Configure environment (optional)**
+3. **Configure environment (optional but recommended)**
    ```bash
    cp .env.example .env
-   # Edit .env to customize settings (SECRET_KEY, JWT_SECRET_KEY, etc.)
+   # Edit .env to customize settings
+   ```
+   
+   **For Email Verification (Optional):**
+   - Set up SMTP email settings in `.env` to enable actual email sending
+   - For Gmail: Generate an App Password at Google Account > Security > 2-Step Verification > App passwords
+   - If email is not configured, verification links will be printed to console (development mode)
+   
+   Example email configuration in `.env`:
+   ```env
+   MAIL_SERVER=smtp.gmail.com
+   MAIL_PORT=587
+   MAIL_USERNAME=your-email@gmail.com
+   MAIL_PASSWORD=your-app-password
+   MAIL_DEFAULT_SENDER=noreply@kopio.com
+   FRONTEND_URL=http://localhost:3000
    ```
 
 4. **Start the backend server**
@@ -114,7 +130,14 @@ KopiO-Sustainable-Society-Project/
 ## 🔐 Authentication
 
 ### Email Validation
-Only MMU email addresses ending with `@mmu.edu.my` are allowed to register.
+- Only MMU email addresses are allowed to register
+- Supported formats: `@mmu.edu.my` and subdomains like `@student.mmu.edu.my`, `@staff.mmu.edu.my`
+
+### Email Verification
+- After registration, users must verify their email address
+- A verification email is sent with a secure link (valid for 24 hours)
+- Users cannot login until their email is verified
+- Verification emails can be resent if needed
 
 ### Password Requirements
 - Minimum 8 characters
