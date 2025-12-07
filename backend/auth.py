@@ -21,8 +21,9 @@ def verify_password(password, password_hash):
     return bcrypt.checkpw(password.encode('utf-8'), password_hash.encode('utf-8'))
 
 def validate_mmu_email(email):
-    """Validate that email ends with @mmu.edu.my"""
-    return email.lower().endswith(Config.ALLOWED_EMAIL_DOMAIN)
+    """Validate that email ends with mmu.edu.my domain"""
+    email_lower = email.lower()
+    return email_lower.endswith('@mmu.edu.my') or email_lower.endswith('.mmu.edu.my')
 
 def validate_password(password):
     """
