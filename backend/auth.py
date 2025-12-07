@@ -155,14 +155,22 @@ def register_user(data):
         # Hash password and create user
         password_hash = hash_password(password)
         
-        # Generate verification token
-        verification_token = generate_verification_token()
-        token_expires = datetime.utcnow() + Config.VERIFICATION_TOKEN_EXPIRES
+        # Check if email verification is required
+        if Config.EMAIL_VERIFICATION_REQUIRED:
+            # Generate verification token and send email
+            verification_token = generate_verification_token()
+            token_expires = datetime.utcnow() + Config.VERIFICATION_TOKEN_EXPIRES
+            email_verified = 0
+        else:
+            # Skip verification - auto-verify the user
+            verification_token = None
+            token_expires = None
+            email_verified = 1
         
         cursor.execute('''
             INSERT INTO users (email, password_hash, first_name, last_name, student_id, faculty, email_verified, verification_token, verification_token_expires)
-            VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?)
-        ''', (email, password_hash, first_name, last_name, student_id, faculty, verification_token, token_expires))
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (email, password_hash, first_name, last_name, student_id, faculty, email_verified, verification_token, token_expires))
         
         user_id = cursor.lastrowid
         
@@ -174,22 +182,40 @@ def register_user(data):
         conn.commit()
         conn.close()
         
-        # Send verification email
-        email_sent = send_verification_email(email, first_name, verification_token)
-        
-        if not email_sent:
-            # Email failed but user was created - they can use resend
+        # Send verification email only if required
+        if Config.EMAIL_VERIFICATION_REQUIRED:
+            email_sent = send_verification_email(email, first_name, verification_token)
+            
+            if not email_sent:
+                # Email failed but user was created - they can use resend
+                return {
+                    'message': 'Registration successful! However, we could not send the verification email. Please try resending it.',
+                    'requiresVerification': True,
+                    'email': email
+                }, 201
+            
             return {
-                'message': 'Registration successful! However, we could not send the verification email. Please try resending it.',
+                'message': 'Registration successful! Please check your email to verify your account.',
                 'requiresVerification': True,
                 'email': email
             }, 201
-        
-        return {
-            'message': 'Registration successful! Please check your email to verify your account.',
-            'requiresVerification': True,
-            'email': email
-        }, 201
+        else:
+            # Auto-verified - return token so user can login immediately
+            token = generate_token(user_id, email, 'student')
+            return {
+                'message': 'Registration successful!',
+                'token': token,
+                'user': {
+                    'id': user_id,
+                    'email': email,
+                    'firstName': first_name,
+                    'lastName': last_name,
+                    'studentId': student_id,
+                    'faculty': faculty,
+                    'role': 'student',
+                    'totalPoints': 0
+                }
+            }, 201
         
     except Exception as e:
         return {'error': f'Registration failed: {str(e)}'}, 500
@@ -224,8 +250,8 @@ def login_user(data):
         if not verify_password(password, user['password_hash']):
             return {'error': 'Invalid email or password'}, 401
         
-        # Check if email is verified
-        if not user['email_verified']:
+        # Check if email is verified (only if verification is required)
+        if Config.EMAIL_VERIFICATION_REQUIRED and not user['email_verified']:
             return {'error': 'Please verify your email before logging in. Check your inbox for the verification link.', 'requiresVerification': True, 'email': email}, 401
         
         # Generate token

@@ -39,7 +39,8 @@ class Config:
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@kopio.com')
     
     # Verification settings
-    EMAIL_VERIFICATION_REQUIRED = True
+    # Set to False to skip email verification (for development/testing)
+    EMAIL_VERIFICATION_REQUIRED = os.environ.get('EMAIL_VERIFICATION_REQUIRED', 'false').lower() == 'true'
     VERIFICATION_TOKEN_EXPIRES = timedelta(hours=24)
     FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
 
