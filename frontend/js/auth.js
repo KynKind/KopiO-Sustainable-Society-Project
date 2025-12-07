@@ -142,14 +142,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         setTimeout(() => {
                             window.location.href = 'login.html?registered=true';
                         }, 3000);
-                    } else {
-                        // Old flow - direct login (for backward compatibility)
+                    } else if (response.token) {
+                        // No verification needed - user is auto-logged in
                         localStorage.setItem('authToken', response.token);
                         localStorage.setItem('currentUser', JSON.stringify(response.user));
                         showMessage('Account created successfully! Redirecting...', 'success');
                         setTimeout(() => {
                             window.location.href = 'index.html';
-                        }, 1500);
+                        }, 1000);
                     }
                     
                 } catch (error) {

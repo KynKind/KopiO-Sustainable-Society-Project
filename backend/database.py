@@ -121,24 +121,25 @@ def init_db():
     print("Database initialized successfully!")
 
 def insert_demo_users(cursor):
-    """Insert demo users for testing"""
+    """Insert demo users for testing - PRE-VERIFIED so they can login immediately"""
     # Hash passwords using bcrypt
     def hash_password(password):
         salt = bcrypt.gensalt()
         return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
     
     demo_users = [
-        # Student demo account
-        ('demo.student@student.mmu.edu.my', hash_password('Student123!'), 'Demo', 'Student', 'STU001', 'Faculty of Computing', 'student', 0),
-        # Admin demo account  
-        ('admin@student.mmu.edu.my', hash_password('Admin123!'), 'Admin', 'User', 'ADM001', 'Administration', 'admin', 0),
+        # (email, password_hash, first_name, last_name, student_id, faculty, role, total_points, email_verified)
+        # Student demo account - email_verified = 1
+        ('demo.student@student.mmu.edu.my', hash_password('Student123!'), 'Demo', 'Student', 'STU001', 'Faculty of Computing', 'student', 100, 1),
+        # Admin demo account - email_verified = 1
+        ('admin@student.mmu.edu.my', hash_password('Admin123!'), 'Admin', 'User', 'ADM001', 'Administration', 'admin', 500, 1),
     ]
     
     for user in demo_users:
         try:
             cursor.execute('''
-                INSERT OR IGNORE INTO users (email, password_hash, first_name, last_name, student_id, faculty, role, total_points)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT OR IGNORE INTO users (email, password_hash, first_name, last_name, student_id, faculty, role, total_points, email_verified)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', user)
             
             # Get the user ID for stats
