@@ -21,16 +21,16 @@ A full-stack web application for MMU Cyberjaya students to learn about sustainab
 - Game analytics
 - Role management
 
-## 🏗️ Architecture
+## 🏗️ Tech Stack
 
-### Backend (Flask + SQLite)
+### Backend
 - **Language**: Python 3.9+
 - **Framework**: Flask 3.0
 - **Database**: SQLite with 4 tables (users, quiz_questions, game_scores, user_stats)
 - **Authentication**: JWT tokens with bcrypt password hashing
 - **API**: RESTful JSON API
 
-### Frontend (Vanilla JavaScript)
+### Frontend
 - **Languages**: HTML5, CSS3, JavaScript ES6+
 - **No frameworks**: Pure JavaScript for maximum compatibility
 - **Responsive Design**: Mobile-first approach
@@ -50,10 +50,9 @@ KopiO-Sustainable-Society-Project/
 │   ├── config.py           # Configuration
 │   ├── database.py         # Database initialization
 │   ├── requirements.txt    # Python dependencies
-│   ├── .env.example        # Environment variables template
-│   └── README.md           # Backend documentation
+│   └── .env.example        # Environment variables template
 ├── frontend/
-│   ├── html/               # HTML pages
+│   ├── html/               # HTML pages (15 pages)
 │   ├── css/                # Stylesheets
 │   ├── js/                 # JavaScript files
 │   │   ├── api-config.js   # API configuration
@@ -64,9 +63,10 @@ KopiO-Sustainable-Society-Project/
 │   │   ├── sorting_game.js # Sorting game logic
 │   │   ├── leaderboard.js  # Leaderboard UI
 │   │   ├── profile.js      # Profile UI
+│   │   ├── admin.js        # Admin dashboard
 │   │   └── script.js       # Global utilities
 │   └── assets/             # Images and media
-└── README.md               # This file
+└── .gitignore
 ```
 
 ## 🚀 Getting Started
@@ -94,7 +94,7 @@ KopiO-Sustainable-Society-Project/
 3. **Configure environment (optional)**
    ```bash
    cp .env.example .env
-   # Edit .env to set FLASK_DEBUG=True for development
+   # Edit .env to customize settings (SECRET_KEY, JWT_SECRET_KEY, etc.)
    ```
 
 4. **Start the backend server**
@@ -106,7 +106,7 @@ KopiO-Sustainable-Society-Project/
 5. **Open the frontend**
    Open `frontend/html/index.html` in your browser, or use a local web server:
    ```bash
-   cd frontend
+   cd ../frontend
    python -m http.server 3000
    ```
    Then navigate to `http://localhost:3000/html/index.html`
@@ -123,10 +123,14 @@ Only MMU email addresses ending with `@mmu.edu.my` are allowed to register.
 - At least 1 number
 - At least 1 special character (!@#$%^&*)
 
-### Demo Accounts
-For testing purposes (need to create manually via API or database):
-- **Student**: Any @mmu.edu.my email
-- **Admin**: Set role='admin' in database after registration
+### Creating an Admin Account
+1. First register a student account via the registration page
+2. Update the role in database:
+   ```bash
+   cd backend
+   sqlite3 kopio.db "UPDATE users SET role='admin' WHERE email='your-email@mmu.edu.my';"
+   ```
+3. Login again to access admin panel
 
 ## 🎯 API Endpoints
 
@@ -211,20 +215,72 @@ For testing purposes (need to create manually via API or database):
 ## 🔒 Security Features
 
 - ✅ Password hashing with bcrypt
-- ✅ JWT token authentication
+- ✅ JWT token authentication (24-hour expiry)
 - ✅ Email domain validation
 - ✅ Role-based access control
 - ✅ CORS configuration
 - ✅ SQL injection prevention (parameterized queries)
+- ✅ XSS prevention (HTML escaping)
 - ✅ Debug mode disabled by default
 
-## 🐛 Known Issues & Limitations
+## 🔧 Configuration
 
-1. Quiz feedback is shown only at the end (by design)
-2. Puzzle game only saves score after completing all 5 levels
-3. Some HTML pages need manual API script includes
-4. No email verification (relies on MMU domain validation)
-5. Admin role must be set manually in database
+All configuration is done through environment variables. See `backend/.env.example` for:
+- Secret keys (SECRET_KEY, JWT_SECRET_KEY)
+- Flask settings (FLASK_ENV, FLASK_DEBUG, PORT)
+- CORS origins
+- Database path
+- Game settings
+- JWT token expiration
+- Logging configuration
+
+### Production Deployment
+1. Generate strong secret keys:
+   ```bash
+   python -c "import secrets; print(secrets.token_hex(32))"
+   ```
+2. Set `FLASK_ENV=production` and `FLASK_DEBUG=False`
+3. Configure proper CORS_ORIGINS (specific domains, no wildcards)
+4. Use HTTPS
+5. Consider using PostgreSQL or MySQL instead of SQLite
+6. Set up database backups
+7. Configure rate limiting at reverse proxy level
+
+## 🐛 Troubleshooting
+
+### Backend Issues
+
+**Port 5000 already in use**
+```bash
+# Find and kill the process
+lsof -ti:5000 | xargs kill
+# Or use a different port
+PORT=5001 python app.py
+```
+
+**Database errors**
+```bash
+# Reinitialize the database
+cd backend
+rm kopio.db
+python database.py
+```
+
+**CORS errors**
+- Ensure backend is running
+- Check CORS_ORIGINS in .env includes your frontend URL
+- For development, you can use `CORS_ORIGINS=*` (not for production)
+
+### Frontend Issues
+
+**API calls failing**
+- Verify backend is running at http://localhost:5000
+- Check browser console for CORS errors
+- Ensure you're logged in (check localStorage for authToken)
+
+**JavaScript files not loading**
+- Serve from a web server, not file:// protocol
+- Verify all script paths are correct in HTML files
 
 ## 🤝 Contributing
 

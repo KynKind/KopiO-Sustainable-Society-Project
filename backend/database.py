@@ -3,20 +3,33 @@ Database initialization and management for Kopi-O
 """
 import sqlite3
 import os
+import logging
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 DATABASE_PATH = os.path.join(os.path.dirname(__file__), 'kopio.db')
 
 def get_db_connection():
-    """Get a database connection"""
-    conn = sqlite3.connect(DATABASE_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
+    """Get a database connection with error handling"""
+    try:
+        conn = sqlite3.connect(DATABASE_PATH, timeout=10.0)
+        conn.row_factory = sqlite3.Row
+        # Enable foreign key constraints
+        conn.execute("PRAGMA foreign_keys = ON")
+        return conn
+    except sqlite3.Error as e:
+        logger.error(f"Database connection error: {e}")
+        raise
 
 def init_db():
     """Initialize the database with tables"""
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+    except Exception as e:
+        logger.error(f"Failed to initialize database: {e}")
+        raise
     
     # Users table
     cursor.execute('''
@@ -93,6 +106,7 @@ def init_db():
         conn.commit()
     
     conn.close()
+    logger.info("Database initialized successfully!")
     print("Database initialized successfully!")
 
 def insert_sample_questions(cursor):
