@@ -29,6 +29,19 @@ class Config:
     MEMORY_GAME_BASE_POINTS = 50
     PUZZLE_GAME_BASE_POINTS = 30
     SORTING_GAME_BASE_POINTS = 20
+    
+    # Email Configuration (using SMTP)
+    MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+    MAIL_PORT = int(os.environ.get('MAIL_PORT', 587))
+    MAIL_USE_TLS = True
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')  # Your email
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')  # App password
+    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@kopio.com')
+    
+    # Verification settings
+    EMAIL_VERIFICATION_REQUIRED = True
+    VERIFICATION_TOKEN_EXPIRES = timedelta(hours=24)
+    FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
 
 class DevelopmentConfig(Config):
     """Development configuration"""

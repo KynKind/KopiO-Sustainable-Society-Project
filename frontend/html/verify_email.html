@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email - Kopi-O Sustainable Society</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .verify-container {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .verify-card {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            padding: 3rem;
+        }
+        
+        .verify-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .verify-icon.loading {
+            color: var(--primary-brown);
+            animation: spin 1s linear infinite;
+        }
+        
+        .verify-icon.success {
+            color: #00C851;
+        }
+        
+        .verify-icon.error {
+            color: #ff4444;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .verify-message {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .verify-submessage {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+        
+        .verify-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        #resendForm {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        #resendForm .form-group {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <div class="logo">
+                    <i class="fas fa-mug-hot"></i>
+                    <span>Kopi-O</span>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+            </ul>
+            <div class="nav-auth">
+                <a href="login.html" class="btn nav-btn">Login</a>
+            </div>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="verify-container">
+            <div class="verify-card card">
+                <div id="verifyContent">
+                    <div class="verify-icon loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <h1 class="verify-message">Verifying your email...</h1>
+                    <p class="verify-submessage">Please wait while we verify your email address.</p>
+                </div>
+                
+                <div id="resendSection" style="display: none;">
+                    <form id="resendForm">
+                        <h3>Resend Verification Email</h3>
+                        <p class="verify-submessage">Enter your email address to receive a new verification link.</p>
+                        <div class="form-group">
+                            <input type="email" id="resendEmail" class="form-input" placeholder="your.email@student.mmu.edu.my" required>
+                        </div>
+                        <button type="submit" class="btn btn-large">
+                            <i class="fas fa-envelope"></i> Resend Email
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Kopi-O Sustainable Society</h3>
+                <p>Making sustainability fun through games and challenges</p>
+                <div class="social-links">
+                    <a href="https://www.instagram.com/mmukopi.o?igsh=cTRjeXM1aWJoeXVt&utm_source=qr" target="_blank">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="how_to_play.html">How to Play</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="sponsorship.html">Our Sponsor</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Proudly Supported By</h4>
+                <strong>Seng Hung Hygiene Supplies Sdn. Bhd.</strong>
+                <p>Your Trusted Hygiene Partner</p>
+                <div class="social-links">
+                    <a href="https://www.senghung.com/" target="_blank" title="Website">
+                        <i class="fas fa-globe"></i>
+                    </a>
+                    <a href="https://www.facebook.com/senghunghygiene/" target="_blank" title="Facebook">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                </div>
+                <p style="margin-top: 1rem;"><small>Learn more on our <a href="sponsorship.html" style="color: var(--accent-gold);">Sponsorship page</a></small></p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 Kopi-O Sustainable Society. All rights reserved. | Proudly sponsored by Seng Hung Hygiene Supplies Sdn. Bhd.</p>
+        </div>
+    </footer>
+
+    <script src="../js/api-config.js"></script>
+    <script>
+        // Get token from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        
+        function showMessage(icon, iconClass, message, submessage, showResend = false) {
+            const content = document.getElementById('verifyContent');
+            content.innerHTML = `
+                <div class="verify-icon ${iconClass}">
+                    <i class="fas ${icon}"></i>
+                </div>
+                <h1 class="verify-message">${message}</h1>
+                <p class="verify-submessage">${submessage}</p>
+                <div class="verify-actions">
+                    <a href="login.html" class="btn btn-large">
+                        <i class="fas fa-sign-in-alt"></i> Go to Login
+                    </a>
+                    <a href="index.html" class="btn btn-large" style="background: var(--accent-gold);">
+                        <i class="fas fa-home"></i> Go to Home
+                    </a>
+                </div>
+            `;
+            
+            if (showResend) {
+                document.getElementById('resendSection').style.display = 'block';
+            }
+        }
+        
+        function showError(message, showResend = false) {
+            showMessage('fa-times-circle', 'error', 'Verification Failed', message, showResend);
+        }
+        
+        function showSuccess(message) {
+            showMessage('fa-check-circle', 'success', 'Email Verified!', message, false);
+        }
+        
+        async function verifyEmail() {
+            if (!token) {
+                showError('No verification token provided. Please check your email for the verification link.', true);
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/verify-email`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ token })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    showSuccess(data.message || 'Your email has been verified successfully! You can now login and start playing games.');
+                } else if (data.expired) {
+                    showError(data.error || 'Your verification link has expired. Please request a new one below.', true);
+                } else {
+                    showError(data.error || 'Verification failed. Please try again or request a new verification email.', true);
+                }
+            } catch (error) {
+                showError('Could not verify email. Please check your internet connection and try again.', true);
+            }
+        }
+        
+        // Verify email on page load
+        verifyEmail();
+        
+        // Handle resend form
+        document.getElementById('resendForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('resendEmail').value;
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                
+                const response = await fetch(`${API_BASE_URL}/auth/resend-verification`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert('✅ ' + (data.message || 'Verification email sent! Please check your inbox.'));
+                } else {
+                    alert('❌ ' + (data.error || 'Failed to send verification email.'));
+                }
+            } catch (error) {
+                alert('❌ Could not send verification email. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
+    </script>
+    <script src="../js/script.js"></script>
+</body>
+</html>

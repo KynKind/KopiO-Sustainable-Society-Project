@@ -10,6 +10,7 @@ from functools import wraps
 from flask import jsonify, request
 from database import get_db_connection
 from config import Config
+from email_service import generate_verification_token, send_verification_email
 
 def hash_password(password):
     """Hash a password using bcrypt"""
@@ -113,7 +114,7 @@ def admin_required(f):
     return decorated
 
 def register_user(data):
-    """Register a new user"""
+    """Register a new user with email verification"""
     try:
         # Validate required fields
         required_fields = ['email', 'password', 'firstName', 'lastName', 'studentId', 'faculty']
@@ -154,10 +155,14 @@ def register_user(data):
         # Hash password and create user
         password_hash = hash_password(password)
         
+        # Generate verification token
+        verification_token = generate_verification_token()
+        token_expires = datetime.utcnow() + Config.VERIFICATION_TOKEN_EXPIRES
+        
         cursor.execute('''
-            INSERT INTO users (email, password_hash, first_name, last_name, student_id, faculty)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (email, password_hash, first_name, last_name, student_id, faculty))
+            INSERT INTO users (email, password_hash, first_name, last_name, student_id, faculty, email_verified, verification_token, verification_token_expires)
+            VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?)
+        ''', (email, password_hash, first_name, last_name, student_id, faculty, verification_token, token_expires))
         
         user_id = cursor.lastrowid
         
@@ -169,21 +174,21 @@ def register_user(data):
         conn.commit()
         conn.close()
         
-        # Generate token
-        token = generate_token(user_id, email, 'student')
+        # Send verification email
+        email_sent = send_verification_email(email, first_name, verification_token)
+        
+        if not email_sent:
+            # Email failed but user was created - they can use resend
+            return {
+                'message': 'Registration successful! However, we could not send the verification email. Please try resending it.',
+                'requiresVerification': True,
+                'email': email
+            }, 201
         
         return {
-            'message': 'Registration successful',
-            'token': token,
-            'user': {
-                'id': user_id,
-                'email': email,
-                'firstName': first_name,
-                'lastName': last_name,
-                'studentId': student_id,
-                'faculty': faculty,
-                'role': 'student'
-            }
+            'message': 'Registration successful! Please check your email to verify your account.',
+            'requiresVerification': True,
+            'email': email
         }, 201
         
     except Exception as e:
@@ -205,7 +210,7 @@ def login_user(data):
         
         cursor.execute('''
             SELECT id, email, password_hash, first_name, last_name, 
-                   student_id, faculty, role, total_points
+                   student_id, faculty, role, total_points, email_verified
             FROM users WHERE email = ?
         ''', (email,))
         
@@ -218,6 +223,10 @@ def login_user(data):
         # Verify password
         if not verify_password(password, user['password_hash']):
             return {'error': 'Invalid email or password'}, 401
+        
+        # Check if email is verified
+        if not user['email_verified']:
+            return {'error': 'Please verify your email before logging in. Check your inbox for the verification link.', 'requiresVerification': True, 'email': email}, 401
         
         # Generate token
         token = generate_token(user['id'], user['email'], user['role'])
@@ -277,3 +286,110 @@ def verify_token_endpoint(token):
         
     except Exception as e:
         return {'error': f'Verification failed: {str(e)}'}, 500
+
+def verify_email_token(token):
+    """Verify user's email with token"""
+    try:
+        if not token:
+            return {'error': 'Verification token is required'}, 400
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Find user with this verification token
+        cursor.execute('''
+            SELECT id, email, first_name, verification_token_expires, email_verified
+            FROM users 
+            WHERE verification_token = ?
+        ''', (token,))
+        
+        user = cursor.fetchone()
+        
+        if not user:
+            conn.close()
+            return {'error': 'Invalid verification token'}, 400
+        
+        # Check if already verified
+        if user['email_verified']:
+            conn.close()
+            return {'message': 'Email already verified! You can now login.', 'success': True}, 200
+        
+        # Check if token expired
+        if user['verification_token_expires']:
+            token_expires = datetime.fromisoformat(user['verification_token_expires'])
+            if datetime.utcnow() > token_expires:
+                conn.close()
+                return {'error': 'Verification token has expired. Please request a new one.', 'expired': True}, 400
+        
+        # Mark email as verified
+        cursor.execute('''
+            UPDATE users 
+            SET email_verified = 1, verification_token = NULL, verification_token_expires = NULL
+            WHERE id = ?
+        ''', (user['id'],))
+        
+        conn.commit()
+        conn.close()
+        
+        return {
+            'message': 'Email verified successfully! You can now login.',
+            'success': True
+        }, 200
+        
+    except Exception as e:
+        return {'error': f'Verification failed: {str(e)}'}, 500
+
+def resend_verification_email(email):
+    """Resend verification email to user"""
+    try:
+        email = email.lower().strip()
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Find user
+        cursor.execute('''
+            SELECT id, first_name, email_verified
+            FROM users 
+            WHERE email = ?
+        ''', (email,))
+        
+        user = cursor.fetchone()
+        
+        if not user:
+            conn.close()
+            return {'error': 'Email not found'}, 404
+        
+        # Check if already verified
+        if user['email_verified']:
+            conn.close()
+            return {'message': 'Email already verified! You can login now.'}, 200
+        
+        # Generate new verification token
+        verification_token = generate_verification_token()
+        token_expires = datetime.utcnow() + Config.VERIFICATION_TOKEN_EXPIRES
+        
+        # Update user with new token
+        cursor.execute('''
+            UPDATE users 
+            SET verification_token = ?, verification_token_expires = ?
+            WHERE id = ?
+        ''', (verification_token, token_expires, user['id']))
+        
+        conn.commit()
+        conn.close()
+        
+        # Send verification email
+        email_sent = send_verification_email(email, user['first_name'], verification_token)
+        
+        if not email_sent:
+            return {'error': 'Failed to send verification email. Please try again later.'}, 500
+        
+        return {
+            'message': 'Verification email sent! Please check your inbox.',
+            'success': True
+        }, 200
+        
+    except Exception as e:
+        return {'error': f'Failed to resend verification: {str(e)}'}, 500
+
