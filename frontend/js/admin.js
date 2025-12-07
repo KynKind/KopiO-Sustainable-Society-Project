@@ -56,9 +56,14 @@ async function loadPlatformStats() {
     }
 }
 
-async function loadUsersList(page = 1) {
+async function loadUsersList(page = 1, roleFilter = null) {
     try {
-        const result = await apiRequest(`/admin/users?page=${page}&limit=20`);
+        let url = `/admin/users?page=${page}&limit=20`;
+        if (roleFilter) {
+            url += `&role=${roleFilter}`;
+        }
+        
+        const result = await apiRequest(url);
         
         const usersTableBody = document.querySelector('#usersTable tbody');
         if (!usersTableBody) return;
@@ -68,19 +73,38 @@ async function loadUsersList(page = 1) {
         result.users.forEach(user => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${user.id}</td>
-                <td>${user.firstName} ${user.lastName}</td>
-                <td>${user.email}</td>
-                <td>${user.faculty}</td>
-                <td>${user.role}</td>
-                <td>${user.totalPoints}</td>
-                <td>${user.gamesPlayed}</td>
-                <td>
-                    <button class="btn btn-small btn-primary" onclick="viewUserDetails(${user.id})">View</button>
-                    <button class="btn btn-small btn-warning" onclick="changeUserRole(${user.id}, '${user.role}')">Change Role</button>
-                    <button class="btn btn-small btn-danger" onclick="deleteUser(${user.id})">Delete</button>
+                <td>${escapeHtml(String(user.id))}</td>
+                <td>${escapeHtml(user.firstName)} ${escapeHtml(user.lastName)}</td>
+                <td>${escapeHtml(user.email)}</td>
+                <td>${escapeHtml(user.faculty)}</td>
+                <td>${escapeHtml(user.role)}</td>
+                <td>${escapeHtml(String(user.totalPoints))}</td>
+                <td>${escapeHtml(String(user.gamesPlayed))}</td>
+                <td class="action-buttons">
                 </td>
             `;
+            
+            // Add action buttons with event listeners (safer than inline onclick)
+            const actionsCell = row.querySelector('.action-buttons');
+            
+            const viewBtn = document.createElement('button');
+            viewBtn.className = 'btn btn-small btn-primary';
+            viewBtn.textContent = 'View';
+            viewBtn.addEventListener('click', () => viewUserDetails(user.id));
+            actionsCell.appendChild(viewBtn);
+            
+            const roleBtn = document.createElement('button');
+            roleBtn.className = 'btn btn-small btn-warning';
+            roleBtn.textContent = 'Change Role';
+            roleBtn.addEventListener('click', () => changeUserRole(user.id, user.role));
+            actionsCell.appendChild(roleBtn);
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'btn btn-small btn-danger';
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.addEventListener('click', () => deleteUser(user.id));
+            actionsCell.appendChild(deleteBtn);
+            
             usersTableBody.appendChild(row);
         });
         
@@ -96,8 +120,30 @@ async function viewUserDetails(userId) {
     try {
         const user = await apiRequest(`/admin/users/${userId}`);
         
-        // Display user details in a modal or dedicated section
-        alert(`User Details:\n\nName: ${user.firstName} ${user.lastName}\nEmail: ${user.email}\nStudent ID: ${user.studentId}\nFaculty: ${user.faculty}\nRole: ${user.role}\nTotal Points: ${user.totalPoints}\nGames Played: Quiz: ${user.stats.quizGamesPlayed}, Memory: ${user.stats.memoryGamesPlayed}, Puzzle: ${user.stats.puzzleGamesPlayed}, Sorting: ${user.stats.sortingGamesPlayed}`);
+        // Create a better formatted display instead of alert
+        const detailsHtml = `
+            <div class="user-details-modal">
+                <h3>User Details</h3>
+                <div class="detail-row"><strong>Name:</strong> ${escapeHtml(user.firstName)} ${escapeHtml(user.lastName)}</div>
+                <div class="detail-row"><strong>Email:</strong> ${escapeHtml(user.email)}</div>
+                <div class="detail-row"><strong>Student ID:</strong> ${escapeHtml(user.studentId)}</div>
+                <div class="detail-row"><strong>Faculty:</strong> ${escapeHtml(user.faculty)}</div>
+                <div class="detail-row"><strong>Role:</strong> ${escapeHtml(user.role)}</div>
+                <div class="detail-row"><strong>Total Points:</strong> ${user.totalPoints}</div>
+                <h4>Games Played</h4>
+                <div class="detail-row">Quiz: ${user.stats.quizGamesPlayed}</div>
+                <div class="detail-row">Memory: ${user.stats.memoryGamesPlayed}</div>
+                <div class="detail-row">Puzzle: ${user.stats.puzzleGamesPlayed}</div>
+                <div class="detail-row">Sorting: ${user.stats.sortingGamesPlayed}</div>
+            </div>
+        `;
+        
+        // For now, use alert but with better formatting
+        // In production, this should be replaced with a proper modal
+        const plainText = `User Details:\n\nName: ${user.firstName} ${user.lastName}\nEmail: ${user.email}\nStudent ID: ${user.studentId}\nFaculty: ${user.faculty}\nRole: ${user.role}\nTotal Points: ${user.totalPoints}\n\nGames Played:\nQuiz: ${user.stats.quizGamesPlayed}\nMemory: ${user.stats.memoryGamesPlayed}\nPuzzle: ${user.stats.puzzleGamesPlayed}\nSorting: ${user.stats.sortingGamesPlayed}`;
+        alert(plainText);
+        
+        // TODO: Replace with proper modal in HTML
     } catch (error) {
         console.error('Error viewing user details:', error);
         showMessage('Failed to load user details', 'error');
@@ -151,7 +197,10 @@ function setupEventListeners() {
         searchInput.addEventListener('input', debounce(async function(e) {
             const query = e.target.value.trim();
             if (query.length >= 2) {
-                // Filter users locally or make a search API call
+                // Implement actual search
+                await searchUsers(query);
+            } else if (query.length === 0) {
+                // Reset to full list if search is cleared
                 await loadUsersList();
             }
         }, 300));
@@ -161,7 +210,8 @@ function setupEventListeners() {
     const roleFilter = document.getElementById('roleFilter');
     if (roleFilter) {
         roleFilter.addEventListener('change', async function() {
-            await loadUsersList();
+            const role = this.value;
+            await loadUsersList(1, role);
         });
     }
     
@@ -173,6 +223,66 @@ function setupEventListeners() {
             await loadUsersList();
             showMessage('Data refreshed', 'success');
         });
+    }
+}
+
+async function searchUsers(query) {
+    // Filter users based on search query
+    try {
+        const result = await apiRequest(`/admin/users?page=1&limit=50`);
+        const usersTableBody = document.querySelector('#usersTable tbody');
+        if (!usersTableBody) return;
+        
+        usersTableBody.innerHTML = '';
+        
+        // Filter users locally
+        const filteredUsers = result.users.filter(user => {
+            const searchLower = query.toLowerCase();
+            return user.firstName.toLowerCase().includes(searchLower) ||
+                   user.lastName.toLowerCase().includes(searchLower) ||
+                   user.email.toLowerCase().includes(searchLower) ||
+                   user.studentId.includes(query);
+        });
+        
+        filteredUsers.forEach(user => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${escapeHtml(String(user.id))}</td>
+                <td>${escapeHtml(user.firstName)} ${escapeHtml(user.lastName)}</td>
+                <td>${escapeHtml(user.email)}</td>
+                <td>${escapeHtml(user.faculty)}</td>
+                <td>${escapeHtml(user.role)}</td>
+                <td>${escapeHtml(String(user.totalPoints))}</td>
+                <td>${escapeHtml(String(user.gamesPlayed))}</td>
+                <td class="action-buttons">
+                </td>
+            `;
+            
+            const actionsCell = row.querySelector('.action-buttons');
+            
+            const viewBtn = document.createElement('button');
+            viewBtn.className = 'btn btn-small btn-primary';
+            viewBtn.textContent = 'View';
+            viewBtn.addEventListener('click', () => viewUserDetails(user.id));
+            actionsCell.appendChild(viewBtn);
+            
+            const roleBtn = document.createElement('button');
+            roleBtn.className = 'btn btn-small btn-warning';
+            roleBtn.textContent = 'Change Role';
+            roleBtn.addEventListener('click', () => changeUserRole(user.id, user.role));
+            actionsCell.appendChild(roleBtn);
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'btn btn-small btn-danger';
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.addEventListener('click', () => deleteUser(user.id));
+            actionsCell.appendChild(deleteBtn);
+            
+            usersTableBody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Error searching users:', error);
+        showMessage('Search failed', 'error');
     }
 }
 
@@ -210,4 +320,16 @@ function showMessage(message, type) {
     } else {
         alert(message);
     }
+}
+
+// Utility function to escape HTML and prevent XSS
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return String(text).replace(/[&<>"']/g, m => map[m]);
 }

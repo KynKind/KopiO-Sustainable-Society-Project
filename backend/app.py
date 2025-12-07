@@ -36,9 +36,12 @@ app.config.from_object(config.get(env, config['development']))
 logger.info(f"Starting Kopi-O API in {env} mode")
 
 # Enable CORS
+# Note: For production, update to specific allowed origins instead of wildcard
+cors_origins = os.environ.get('CORS_ORIGINS', '*').split(',') if os.environ.get('CORS_ORIGINS') else '*'
+
 CORS(app, resources={
     r"/api/*": {
-        "origins": "*",  # Allow all origins for development; restrict in production
+        "origins": cors_origins,
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
         "supports_credentials": False
@@ -293,6 +296,9 @@ def internal_error(error):
 @app.errorhandler(Exception)
 def handle_exception(error):
     logger.error(f"Unhandled exception: {str(error)}", exc_info=True)
+    # Return generic error in production, detailed error in development
+    if app.config.get('DEBUG'):
+        return jsonify({'error': str(error)}), 500
     return jsonify({'error': 'An unexpected error occurred'}), 500
 
 # Request logging middleware
