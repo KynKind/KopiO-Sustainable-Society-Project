@@ -40,7 +40,7 @@ class Config:
     
     # Verification settings
     # Set to False to skip email verification (for development/testing)
-    EMAIL_VERIFICATION_REQUIRED = os.environ.get('EMAIL_VERIFICATION_REQUIRED', 'false').lower() == 'true'
+    EMAIL_VERIFICATION_REQUIRED = False  # Hardcoded to False - users are auto-verified
     VERIFICATION_TOKEN_EXPIRES = timedelta(hours=24)
     FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
 

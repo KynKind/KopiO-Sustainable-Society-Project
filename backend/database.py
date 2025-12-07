@@ -23,6 +23,25 @@ def get_db_connection():
         logger.error(f"Database connection error: {e}")
         raise
 
+def fix_unverified_users():
+    """Fix any unverified users by setting email_verified = 1"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Update ALL users to be verified
+        cursor.execute('UPDATE users SET email_verified = 1 WHERE email_verified = 0')
+        
+        affected = cursor.rowcount
+        if affected > 0:
+            logger.info(f"Auto-verified {affected} users")
+            print(f"✅ Auto-verified {affected} existing users")
+        
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        logger.error(f"Error fixing unverified users: {e}")
+
 def init_db():
     """Initialize the database with tables"""
     try:
@@ -102,6 +121,9 @@ def init_db():
     ''')
     
     conn.commit()
+    
+    # AUTO-FIX: Verify all existing users so they can login
+    fix_unverified_users()
     
     # Insert sample quiz questions if none exist
     cursor.execute('SELECT COUNT(*) FROM quiz_questions')
