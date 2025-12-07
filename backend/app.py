@@ -4,8 +4,21 @@ Main Flask application for Kopi-O Sustainable Society Project
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
+import logging
+from datetime import datetime
 from config import config
 from database import init_db
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('kopio.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # Import modules
 import auth
@@ -16,14 +29,19 @@ import admin
 
 # Initialize Flask app
 app = Flask(__name__)
-app.config.from_object(config['development'])
+env = os.environ.get('FLASK_ENV', 'development')
+app.config.from_object(config.get(env, config['development']))
+
+# Log startup
+logger.info(f"Starting Kopi-O API in {env} mode")
 
 # Enable CORS
 CORS(app, resources={
     r"/api/*": {
-        "origins": ["http://localhost:*", "http://127.0.0.1:*"],
+        "origins": "*",  # Allow all origins for development; restrict in production
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"]
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": False
     }
 })
 
@@ -264,14 +282,32 @@ def reset_user_password(user_id):
 # Error handlers
 @app.errorhandler(404)
 def not_found(error):
+    logger.warning(f"404 Error: {request.url} not found")
     return jsonify({'error': 'Endpoint not found'}), 404
 
 @app.errorhandler(500)
 def internal_error(error):
+    logger.error(f"500 Error: {str(error)}", exc_info=True)
     return jsonify({'error': 'Internal server error'}), 500
+
+@app.errorhandler(Exception)
+def handle_exception(error):
+    logger.error(f"Unhandled exception: {str(error)}", exc_info=True)
+    return jsonify({'error': 'An unexpected error occurred'}), 500
+
+# Request logging middleware
+@app.before_request
+def log_request():
+    logger.info(f"{request.method} {request.path} - IP: {request.remote_addr}")
+
+@app.after_request
+def log_response(response):
+    logger.info(f"{request.method} {request.path} - Status: {response.status_code}")
+    return response
 
 # Run the application
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+    logger.info(f"Starting server on port {port} with debug={debug_mode}")
     app.run(host='0.0.0.0', port=port, debug=debug_mode)
