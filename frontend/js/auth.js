@@ -107,10 +107,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 
-                // Validate MMU email (accept @mmu.edu.my and subdomains like @student.mmu.edu.my)
+                // Validate MMU email (accept @mmu.edu.my and any subdomain)
                 const email = document.getElementById('regEmail').value;
-                const emailLower = email.toLowerCase();
-                if (!emailLower.endsWith('@mmu.edu.my') && !emailLower.endsWith('.mmu.edu.my')) {
+                if (!validateMMUEmail(email)) {
                     showMessage('Only MMU email addresses are allowed (e.g., @mmu.edu.my or @student.mmu.edu.my)', 'error');
                     return;
                 }
@@ -175,6 +174,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+function validateMMUEmail(email) {
+    const emailLower = email.toLowerCase().trim();
+    // Accept @mmu.edu.my and any subdomain
+    return emailLower.endsWith('@mmu.edu.my') || emailLower.includes('.mmu.edu.my');
+}
 
 function checkPasswordStrength(password) {
     const strengthBar = document.getElementById('passwordStrength');
