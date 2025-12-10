@@ -1,0 +1,3 @@
+[33mb84cf33[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mbackend[m[33m, [m[1;32mmain[m[33m)[m Updated quiz
+[33m5430439[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge pull request #10 from KynKind/copilot/fix-user-verification-issue
+[33m5515ace[m[33m ([m[1;31morigin/copilot/fix-user-verification-issue[m[33m)[m Improve exception handling - use specific sqlite3.Error instead of generic Exception
