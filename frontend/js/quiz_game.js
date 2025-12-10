@@ -342,7 +342,7 @@ nextQuestion() {
     }
 }
 
-// Initialize game when page loads
+// Initialize game when page loads.
 document.addEventListener('DOMContentLoaded', function() {
     new QuizGame();
 });
