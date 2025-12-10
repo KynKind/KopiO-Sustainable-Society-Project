@@ -10,6 +10,7 @@ class QuizGame {
         this.selectedOption = null;
         this.answers = [];
         
+        this.correctAnswersCount = 0;
         this.loadQuestions();
     }
 
@@ -116,57 +117,115 @@ class QuizGame {
 
         // Enable submit button
         document.getElementById('submitButton').disabled = false;
+        
     }
 
-    submitAnswer() {
+    async submitAnswer() {
         if (!this.selectedOption) return;
-
-        const selectedIndex = Array.from(document.querySelectorAll('.option')).indexOf(this.selectedOption);
+        const selectedOptionElement = this.selectedOption;
+        const selectedIndex = Array.from(document.querySelectorAll('.option')).indexOf(selectedOptionElement);
         const question = this.questions[this.currentQuestion];
-        
-        // Store answer
-        this.answers.push({
+
+        // Store answer locally with question data - ADD DEBUG LOG
+        const answerData = {
             questionId: question.id,
-            answer: selectedIndex
-        });
-
-        // We don't know if it's correct yet - that comes from the API at the end
-        // For now, just show that answer was submitted
-        const feedbackContainer = document.getElementById('feedbackContainer');
+            answer: selectedIndex,
+            isCorrect: false // Initialize as false by default
+        };
         
-        // Hide feedback for now - we'll show results at the end
-        feedbackContainer.style.display = 'none';
+        console.log('Submitting answer for question:', this.currentQuestion, 'selected index:', selectedIndex);
 
-        // Update UI
-        document.getElementById('submitButton').style.display = 'none';
-        document.getElementById('nextButton').style.display = 'inline-block';
-
-        // Disable all options
+        // Disable submission and options
+        document.getElementById('submitButton').disabled = true;
         document.querySelectorAll('.option').forEach(option => {
             option.style.pointerEvents = 'none';
         });
 
-        // Mark selected answer visually
-        this.selectedOption.classList.add('selected-answer');
-    }
+        try {
+            const result = await apiRequest('/games/quiz/check_answer', {
+                method: 'POST',
+                body: JSON.stringify({
+                    questionId: question.id,
+                    userAnswer: selectedIndex
+                })
+            });
+            
+            console.log('Backend response:', result);
 
-    nextQuestion() {
-        this.currentQuestion++;
-        
-        if (this.currentQuestion >= this.questions.length) {
-            this.endGame();
+            // Mark if the answer was correct and store it
+            if (result && result.isCorrect) {
+                const pointsAwarded = result.pointsAwarded || 100;
+                this.score += pointsAwarded;
+                document.getElementById('currentScore').textContent = this.score;
+                this.animatePoints();
+                
+                // Mark as correct
+                selectedOptionElement.classList.add('correct');
+                
+                // Store that this answer was correct
+                answerData.isCorrect = true;
+                this.correctAnswersCount++;
+                console.log('Answer marked as CORRECT');
+            } else {
+                selectedOptionElement.classList.add('incorrect');
+                
+                // Store that this answer was incorrect
+                // answerData.isCorrect is already false by default, but we can explicitly set it
+                answerData.isCorrect = false; // EXPLICITLY SET TO FALSE
+                console.log('Answer marked as INCORRECT');
+                
+                // If backend returns correct answer index, highlight it
+                if (result && result.correctAnswerIndex !== undefined) {
+                    const options = document.querySelectorAll('.option');
+                    if (options[result.correctAnswerIndex]) {
+                        options[result.correctAnswerIndex].classList.add('correct-answer');
+                    }
+                }
+            }
+
+            // Add the answer to our answers array
+            this.answers.push(answerData);
+            console.log('Current answers array:', this.answers);
+            console.log('Correct answers so far:', this.answers.filter(a => a.isCorrect).length);
+
+        } catch (error) {
+            console.error('Error submitting answer:', error);
+            showMessage('Failed to check answer.', 'error');
+            document.getElementById('submitButton').disabled = false;
+            document.querySelectorAll('.option').forEach(option => {
+                option.style.pointerEvents = 'auto';
+            });
             return;
         }
 
-        // Reset for next question
-        this.selectedOption = null;
-        document.getElementById('submitButton').style.display = 'inline-block';
-        document.getElementById('nextButton').style.display = 'none';
-        document.getElementById('feedbackContainer').style.display = 'none';
-        document.getElementById('submitButton').disabled = true;
-
-        this.displayQuestion();
+        // Update UI to show Next button
+        document.getElementById('submitButton').style.display = 'none';
+        document.getElementById('nextButton').style.display = 'inline-block';
     }
+
+nextQuestion() {
+    this.currentQuestion++;
+
+    if (this.currentQuestion >= this.questions.length) {
+        this.endGame();
+        return;
+    }
+
+    // Reset for next question
+    this.selectedOption = null;
+    document.getElementById('submitButton').style.display = 'inline-block';
+    document.getElementById('nextButton').style.display = 'none';
+    document.getElementById('feedbackContainer').style.display = 'none';
+    document.getElementById('submitButton').disabled = true;
+
+    // FIX: Re-enable clicking on options
+    document.querySelectorAll('.option').forEach(option => {
+        option.style.pointerEvents = 'auto';
+        option.classList.remove('selected', 'correct', 'incorrect');
+    });
+
+    this.displayQuestion();
+}
 
     updateProgress() {
         const progress = ((this.currentQuestion + 1) / this.questions.length) * 100;
@@ -184,14 +243,14 @@ class QuizGame {
     }
 
     async endGame() {
-        clearInterval(this.timerInterval);
-        
-        // Calculate time taken
-        const timeTaken = Math.floor((Date.now() - this.startTime) / 1000);
-        
-        // Submit score to backend
-        await this.saveScore(timeTaken);
-    }
+            clearInterval(this.timerInterval);
+            
+            // Calculate time taken
+            const timeTaken = Math.floor((Date.now() - this.startTime) / 1000);
+            
+            // Submit final results using the answers array
+            await this.finalSubmit(timeTaken); // Renamed function
+        }
 
     async showGameOverModal(result) {
         const modal = document.createElement('div');
@@ -226,7 +285,9 @@ class QuizGame {
                     <div style="font-size: 3rem; color: var(--primary-brown); font-weight: 700; margin-bottom: 1rem;">
                         ${pointsEarned} Points
                     </div>
-                    <p style="color: var(--text-dark); margin-bottom: 0.5rem;">Correct Answers: ${result ? result.score : 0}/${result ? result.totalQuestions : this.questions.length}</p>
+                    <p style="color: var(--text-dark); margin-bottom: 0.5rem; font-size: 1.2rem;">
+                        Correct Answers: ${result ? (result.correctCount || result.score || 0) : 0}/${result ? result.totalQuestions : this.questions.length}
+                    </p>
                     ${timeBonus > 0 ? `<p style="color: var(--primary-brown);">Time Bonus: +${timeBonus} pts!</p>` : ''}
                 </div>
                 <div class="modal-actions" style="display: flex; gap: 1rem; justify-content: center;">
@@ -235,7 +296,6 @@ class QuizGame {
                 </div>
             </div>
         `;
-
         document.body.appendChild(modal);
 
         // Event listeners for modal buttons
@@ -248,9 +308,15 @@ class QuizGame {
         });
     }
 
-    async saveScore(timeTaken) {
+    async finalSubmit(timeTaken) { 
         try {
-            const result = await apiRequest('/games/quiz/submit', {
+            console.log('Final submit - answers array:', this.answers);
+            console.log('Correct answers count from tracking:', this.correctAnswersCount);
+            
+            // Use the tracked count
+            const correctCount = this.correctAnswersCount;
+            
+            const result = await apiRequest('/games/quiz/final_submit', {
                 method: 'POST',
                 body: JSON.stringify({
                     answers: this.answers,
@@ -258,19 +324,20 @@ class QuizGame {
                 })
             });
             
-            // Update local user data
-            const user = await getCurrentUser();
-            if (user) {
-                localStorage.setItem('currentUser', JSON.stringify(user));
-            }
-            
-            this.showGameOverModal(result);
+            this.showGameOverModal({
+                ...result,
+                correctCount: correctCount,
+                totalQuestions: this.questions.length
+            });
             
         } catch (error) {
-            console.error('Error saving score:', error);
-            showMessage('Failed to save score. Please try again.', 'error');
-            // Still show game over modal with local score
-            this.showGameOverModal(null);
+            console.error('Error submitting final results:', error);
+            this.showGameOverModal({
+                correctCount: this.correctAnswersCount,
+                totalQuestions: this.questions.length,
+                points: this.score,
+                timeBonus: Math.max(0, 60 - timeTaken) * 10
+            });
         }
     }
 }

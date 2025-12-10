@@ -9,6 +9,7 @@ from datetime import datetime
 from config import config
 from database import init_db
 
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -131,12 +132,36 @@ def get_quiz_questions():
     result, status = games.get_random_quiz_questions(count)
     return jsonify(result), status
 
-@app.route('/api/games/quiz/submit', methods=['POST'])
+@app.route('/api/games/quiz/check_answer', methods=['POST'])
 @auth.token_required
-def submit_quiz():
-    """Submit quiz answers and get score"""
+def check_quiz_answer():
+    """Check a single quiz answer, update score, and return feedback"""
+    try:
+        data = request.get_json()
+        if data is None:
+            # This happens if Content-Type is missing or body is empty
+            print("ERROR: Received request with no JSON data or incorrect Content-Type.")
+            return jsonify({'error': 'Invalid JSON data provided.'}), 400
+        
+        # The `request.user_id` is automatically set by the @auth.token_required decorator
+        result, status = games.check_single_quiz_answer(request.user_id, data)
+        return jsonify(result), status
+
+    except Exception as e:
+        # 🚨 THIS WILL CATCH ALL CRASHES BEFORE games.py gets the data
+        print(f"\n--- FLASK ROUTE CRASH ---")
+        print(f"Error in check_quiz_answer: {e}")
+        import traceback
+        traceback.print_exc()
+        print(f"-------------------------\n")
+        return jsonify({'error': 'Internal Server Error during answer check.'}), 500
+
+@app.route('/api/games/quiz/final_submit', methods=['POST']) 
+@auth.token_required
+def final_submit_quiz(): 
+    """Submit all quiz answers for final summary/time bonus calculation"""
     data = request.get_json()
-    result, status = games.submit_quiz_score(request.user_id, data)
+    result, status = games.final_submit_quiz_score(request.user_id, data)
     return jsonify(result), status
 
 # ==================== Memory Game Endpoints ====================
@@ -346,4 +371,4 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
     logger.info(f"Starting server on port {port} with debug={debug_mode}")
-    app.run(host='0.0.0.0', port=port, debug=debug_mode)
+    app.run(host='0.0.0.0', port=port, debug=debug_mode)            
