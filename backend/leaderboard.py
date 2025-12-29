@@ -71,7 +71,71 @@ def get_faculty_leaderboard(faculty, limit=50, offset=0):
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        cursor.execute('''
+        # Map known faculty codes (from the dropdown) to possible stored name variants
+        # so selection values like 'fci' match users stored as 'Faculty of Computing' or similar
+        FACULTY_CODE_TO_NAMES = {
+            'fci': [
+                'Faculty of Computing & Informatics (FCI)',
+                'Faculty of Computing',
+                'Computing',
+                'FCI'
+            ],
+            'fom': [
+                'Faculty of Management (FOM)',
+                'Faculty of Management',
+                'Management',
+                'FOM'
+            ],
+            'faie': [
+                'Faculty of Artificial Intelligence & Engineering (FAIE)',
+                'Faculty of Artificial Intelligence & Engineering',
+                'Artificial Intelligence',
+                'FAIE'
+            ],
+            'fcm': [
+                'Faculty of Creative Multimedia (FCM)',
+                'Faculty of Creative Multimedia',
+                'Creative Multimedia',
+                'FCM'
+            ],
+            'fca': [
+                'Faculty of Cinematic Arts (FCA)',
+                'Faculty of Cinematic Arts',
+                'Cinematic Arts',
+                'FCA'
+            ],
+            'fob': [
+                'Faculty of Business (FOB)',
+                'Faculty of Business',
+                'Business',
+                'FOB'
+            ],
+            'fac': [
+                'Faculty of Applied Communication (FAC)',
+                'Faculty of Applied Communication',
+                'Applied Communication',
+                'FAC'
+            ],
+            'fist': [
+                'Faculty of Information Science & Technology (FIST)',
+                'Faculty of Information Science & Technology',
+                'Information Science',
+                'FIST'
+            ]
+        }
+
+        # Build search terms: include the raw input and any mapped full name variants
+        search_terms = [faculty]
+        mapped_names = FACULTY_CODE_TO_NAMES.get(faculty.lower())
+        if mapped_names:
+            for name in mapped_names:
+                if name and name not in search_terms:
+                    search_terms.append(name)
+
+        # Build SQL conditions dynamically to search any of the terms (exact or substring, case-insensitive)
+        conditions = " OR ".join(["(LOWER(u.faculty) = LOWER(?) OR LOWER(u.faculty) LIKE '%' || LOWER(?) || '%')" for _ in search_terms])
+
+        sql = f'''
             SELECT 
                 u.id,
                 u.first_name,
@@ -86,10 +150,19 @@ def get_faculty_leaderboard(faculty, limit=50, offset=0):
                 us.current_streak
             FROM users u
             LEFT JOIN user_stats us ON u.id = us.user_id
-            WHERE u.role = 'student' AND u.faculty = ?
+            WHERE u.role = 'student' 
+              AND ({conditions})
             ORDER BY u.total_points DESC, u.created_at ASC
             LIMIT ? OFFSET ?
-        ''', (faculty, limit, offset))
+        '''
+
+        params = []
+        for term in search_terms:
+            # each term provides two placeholders (equality and LIKE)
+            params.extend([term, term])
+        params.extend([limit, offset])
+
+        cursor.execute(sql, tuple(params))
         
         users = []
         rank = offset + 1
@@ -110,11 +183,16 @@ def get_faculty_leaderboard(faculty, limit=50, offset=0):
             })
             rank += 1
         
-        # Get total count for faculty
-        cursor.execute('''
+        # Get total count for faculty using the same dynamic search terms
+        count_conditions = " OR ".join(["(LOWER(faculty) = LOWER(?) OR LOWER(faculty) LIKE '%' || LOWER(?) || '%')" for _ in search_terms])
+        count_sql = f'''
             SELECT COUNT(*) FROM users 
-            WHERE role = "student" AND faculty = ?
-        ''', (faculty,))
+            WHERE role = "student" AND ({count_conditions})
+        '''
+        count_params = []
+        for term in search_terms:
+            count_params.extend([term, term])
+        cursor.execute(count_sql, tuple(count_params))
         total = cursor.fetchone()[0]
         
         conn.close()

@@ -18,6 +18,11 @@ class LeaderboardManager {
             facultyFilter.addEventListener('change', async (e) => {
                 this.currentFaculty = e.target.value;
                 this.currentPage = 1;
+                // Clear player search input when filtering by faculty
+                const searchInput = document.getElementById('playerSearch');
+                if (searchInput) {
+                    searchInput.value = '';
+                }
                 await this.loadLeaderboard();
             });
         }
@@ -48,8 +53,8 @@ class LeaderboardManager {
 
             let endpoint = `/leaderboard/global?page=${this.currentPage}&limit=${this.limit}`;
             if (this.currentFaculty && this.currentFaculty !== 'all') {
-                
-                endpoint = `/leaderboard/faculty/${this.currentFaculty.toUpperCase()}`;
+                // Include pagination when filtering by faculty (use stored faculty value)
+                endpoint = `/leaderboard/faculty/${encodeURIComponent(this.currentFaculty)}?page=${this.currentPage}&limit=${this.limit}`;
             }
 
             const data = await apiRequest(endpoint, { skipAuth: true });
