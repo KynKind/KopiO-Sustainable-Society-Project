@@ -4,13 +4,13 @@ Handles leaderboard queries with faculty filtering and search
 """
 from database import get_db_connection
 
-def get_global_leaderboard(limit=50, offset=0):
+def get_global_leaderboard(limit=50, offset=0, query=None):
     """Get global leaderboard"""
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        cursor.execute('''
+        sql = '''
             SELECT 
                 u.id,
                 u.first_name,
@@ -26,9 +26,17 @@ def get_global_leaderboard(limit=50, offset=0):
             FROM users u
             LEFT JOIN user_stats us ON u.id = us.user_id
             WHERE u.role = 'student'
-            ORDER BY u.total_points DESC, u.created_at ASC
-            LIMIT ? OFFSET ?
-        ''', (limit, offset))
+        '''
+        params = []
+        
+        if query:
+            sql += " AND (LOWER(u.first_name || ' ' || u.last_name) LIKE LOWER(?) OR LOWER(u.email) LIKE LOWER(?))"
+            params.extend([f'%{query}%', f'%{query}%'])
+        
+        sql += ' ORDER BY u.total_points DESC, u.created_at ASC LIMIT ? OFFSET ?'
+        params.extend([limit, offset])
+        
+        cursor.execute(sql, tuple(params))
         
         users = []
         rank = offset + 1
@@ -50,7 +58,12 @@ def get_global_leaderboard(limit=50, offset=0):
             rank += 1
         
         # Get total count
-        cursor.execute('SELECT COUNT(*) FROM users WHERE role = "student"')
+        count_sql = 'SELECT COUNT(*) FROM users u WHERE u.role = "student"'
+        count_params = []
+        if query:
+            count_sql += " AND (LOWER(u.first_name || ' ' || u.last_name) LIKE LOWER(?) OR LOWER(u.email) LIKE LOWER(?))"
+            count_params.extend([f'%{query}%', f'%{query}%'])
+        cursor.execute(count_sql, tuple(count_params))
         total = cursor.fetchone()[0]
         
         conn.close()
@@ -65,7 +78,7 @@ def get_global_leaderboard(limit=50, offset=0):
     except Exception as e:
         return {'error': f'Failed to get leaderboard: {str(e)}'}, 500
 
-def get_faculty_leaderboard(faculty, limit=50, offset=0):
+def get_faculty_leaderboard(faculty, limit=50, offset=0, query=None):
     """Get leaderboard filtered by faculty"""
     try:
         conn = get_db_connection()
@@ -152,14 +165,17 @@ def get_faculty_leaderboard(faculty, limit=50, offset=0):
             LEFT JOIN user_stats us ON u.id = us.user_id
             WHERE u.role = 'student' 
               AND ({conditions})
-            ORDER BY u.total_points DESC, u.created_at ASC
-            LIMIT ? OFFSET ?
         '''
-
         params = []
         for term in search_terms:
             # each term provides two placeholders (equality and LIKE)
             params.extend([term, term])
+        
+        if query:
+            sql += " AND (LOWER(u.first_name || ' ' || u.last_name) LIKE LOWER(?) OR LOWER(u.email) LIKE LOWER(?))"
+            params.extend([f'%{query}%', f'%{query}%'])
+        
+        sql += ' ORDER BY u.total_points DESC, u.created_at ASC LIMIT ? OFFSET ?'
         params.extend([limit, offset])
 
         cursor.execute(sql, tuple(params))
@@ -192,6 +208,9 @@ def get_faculty_leaderboard(faculty, limit=50, offset=0):
         count_params = []
         for term in search_terms:
             count_params.extend([term, term])
+        if query:
+            count_sql += " AND (LOWER(first_name || ' ' || last_name) LIKE LOWER(?) OR LOWER(email) LIKE LOWER(?))"
+            count_params.extend([f'%{query}%', f'%{query}%'])
         cursor.execute(count_sql, tuple(count_params))
         total = cursor.fetchone()[0]
         

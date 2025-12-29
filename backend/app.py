@@ -177,8 +177,9 @@ def get_global_leaderboard():
     limit = request.args.get('limit', 50, type=int)
     page = request.args.get('page', 1, type=int)
     offset = (page - 1) * limit
+    query = request.args.get('q', '')
     
-    result, status = leaderboard.get_global_leaderboard(limit, offset)
+    result, status = leaderboard.get_global_leaderboard(limit, offset, query if query else None)
     return jsonify(result), status
 
 @app.route('/api/leaderboard/faculty/<faculty>', methods=['GET'])
@@ -187,8 +188,9 @@ def get_faculty_leaderboard(faculty):
     limit = request.args.get('limit', 50, type=int)
     page = request.args.get('page', 1, type=int)
     offset = (page - 1) * limit
+    query = request.args.get('q', '')
     
-    result, status = leaderboard.get_faculty_leaderboard(faculty, limit, offset)
+    result, status = leaderboard.get_faculty_leaderboard(faculty, limit, offset, query if query else None)
     return jsonify(result), status
 
 @app.route('/api/leaderboard/search', methods=['GET'])

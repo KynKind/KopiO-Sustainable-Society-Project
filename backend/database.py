@@ -153,6 +153,15 @@ def init_db():
         insert_demo_users(cursor)
         conn.commit()
         logger.info("Demo users created successfully!")
+    else:
+        # Update demo user faculty to new format
+        cursor.execute('''
+            UPDATE users SET faculty = 'Faculty of Computing & Informatics (FCI)' 
+            WHERE email = 'demo.student@student.mmu.edu.my' AND faculty = 'Faculty of Computing'
+        ''')
+        if cursor.rowcount > 0:
+            conn.commit()
+            logger.info("Updated demo user faculty")
     
     conn.close()
     logger.info("Database initialized successfully!")
@@ -168,7 +177,7 @@ def insert_demo_users(cursor):
     demo_users = [
         # (email, password_hash, first_name, last_name, student_id, faculty, role, total_points, email_verified)
         # Student demo account - email_verified = 1
-        ('demo.student@student.mmu.edu.my', hash_password('Student123!'), 'Demo', 'Student', 'STU001', 'Faculty of Computing', 'student', 100, 1),
+        ('demo.student@student.mmu.edu.my', hash_password('Student123!'), 'Demo', 'Student', 'STU001', 'Faculty of Computing & Informatics (FCI)', 'student', 100, 1),
         # Admin demo account - email_verified = 1
         ('admin@student.mmu.edu.my', hash_password('Admin123!'), 'Admin', 'User', 'ADM001', 'Administration', 'admin', 500, 1),
     ]

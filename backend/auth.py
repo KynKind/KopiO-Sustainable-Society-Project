@@ -156,6 +156,19 @@ def register_user(data):
         student_id = data['studentId'].strip()
         faculty = data['faculty']
         
+        # Map faculty code to full name
+        faculty_map = {
+            'fci': 'Faculty of Computing & Informatics (FCI)',
+            'fom': 'Faculty of Management (FOM)',
+            'faie': 'Faculty of Artificial Intelligence & Engineering (FAIE)',
+            'fcm': 'Faculty of Creative Multimedia (FCM)',
+            'fca': 'Faculty of Cinematic Arts (FCA)',
+            'fob': 'Faculty of Business (FOB)',
+            'fac': 'Faculty of Applied Communication (FAC)',
+            'fist': 'Faculty of Information Science & Technology (FIST)'
+        }
+        faculty = faculty_map.get(faculty.lower(), faculty)
+        
         # Validate MMU email
         if not validate_mmu_email(email):
             return {'error': 'Only MMU email addresses are allowed (e.g., @mmu.edu.my or @student.mmu.edu.my)'}, 400

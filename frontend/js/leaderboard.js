@@ -1,6 +1,7 @@
 // Leaderboard JavaScript with API Integration
 class LeaderboardManager {
     constructor() {
+        console.log('LeaderboardManager constructor called');
         this.currentFaculty = 'all';
         this.currentPage = 1;
         this.limit = 20;
@@ -18,23 +19,21 @@ class LeaderboardManager {
             facultyFilter.addEventListener('change', async (e) => {
                 this.currentFaculty = e.target.value;
                 this.currentPage = 1;
-                // Clear player search input when filtering by faculty
-                const searchInput = document.getElementById('playerSearch');
-                if (searchInput) {
-                    searchInput.value = '';
-                }
                 await this.loadLeaderboard();
             });
         }
 
-        // change leaderboardSearch to playerSearch
+        // 修正点：将 leaderboardSearch 改为 playerSearch，对应 HTML 中的 ID
         const searchInput = document.getElementById('playerSearch');
+        console.log('Search input found:', searchInput);
         if (searchInput) {
             let searchTimeout;
             searchInput.addEventListener('input', (e) => {
+                console.log('Input event fired, value:', e.target.value);
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(async () => {
                     const query = e.target.value.trim();
+                    console.log('Query after trim:', query, 'length:', query.length);
                     if (query.length >= 2) {
                         await this.searchLeaderboard(query);
                     } else if (query.length === 0) {
@@ -42,19 +41,21 @@ class LeaderboardManager {
                     }
                 }, 300);
             });
+        } else {
+            console.error('Search input not found!');
         }
     }
 
     async loadLeaderboard() {
         try {
-            // leaderboard-list
+            // 修正点：对应 HTML 里的 class "leaderboard-list"
             const listContainer = document.querySelector('.leaderboard-list');
             if (listContainer) listContainer.innerHTML = '<div class="loading">Loading...</div>';
 
             let endpoint = `/leaderboard/global?page=${this.currentPage}&limit=${this.limit}`;
             if (this.currentFaculty && this.currentFaculty !== 'all') {
-                // Include pagination when filtering by faculty (use stored faculty value)
-                endpoint = `/leaderboard/faculty/${encodeURIComponent(this.currentFaculty)}?page=${this.currentPage}&limit=${this.limit}`;
+                // 根据文档，学院过滤路径为 /faculty/<faculty>
+                endpoint = `/leaderboard/faculty/${this.currentFaculty.toUpperCase()}`;
             }
 
             const data = await apiRequest(endpoint, { skipAuth: true });
@@ -70,9 +71,17 @@ class LeaderboardManager {
 
     async searchLeaderboard(query) {
         try {
-            const data = await apiRequest(`/leaderboard/search?q=${encodeURIComponent(query)}`, { skipAuth: true });
-            this.renderLeaderboard(data.results);
+            console.log('Searching for:', query);
+            let endpoint = `/leaderboard/global?q=${encodeURIComponent(query)}`;
+            if (this.currentFaculty && this.currentFaculty !== 'all') {
+                endpoint = `/leaderboard/faculty/${this.currentFaculty.toUpperCase()}?q=${encodeURIComponent(query)}`;
+            }
+            console.log('Endpoint:', endpoint);
+            const data = await apiRequest(endpoint, { skipAuth: true });
+            console.log('Search results:', data);
+            this.renderLeaderboard(data.leaderboard);
         } catch (error) {
+            console.error('Search error:', error);
             console.error('Search error:', error);
         }
     }
@@ -118,7 +127,7 @@ class LeaderboardManager {
     }
 }
 
-// preview top players
+// 首页预览和前三名逻辑
 async function loadTopPlayers() {
     try {
         const data = await apiRequest('/leaderboard/top', { skipAuth: true });
