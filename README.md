@@ -69,8 +69,11 @@ KopiO-Sustainable-Society-Project/
 ├── frontend/
 │   ├── html/            # All pages
 │   ├── css/             # Styles
-│   └── js/              # JavaScript
+│   ├── js/              # JavaScript
+│   └── JAVASCRIPT-GUIDE.md  # 📖 JS Architecture Documentation
 ```
+
+> **Note**: See [JAVASCRIPT-GUIDE.md](frontend/JAVASCRIPT-GUIDE.md) for detailed information about which JavaScript files to use on each page.
 
 ---
 
