@@ -58,6 +58,25 @@ CORS(app, resources={
 # Initialize database
 init_db()
 
+# Root endpoint
+@app.route('/', methods=['GET'])
+def index():
+    """Root endpoint - API information"""
+    return jsonify({
+        'message': 'Welcome to Kopi-O Sustainable Society Project API',
+        'version': '1.0',
+        'endpoints': {
+            'health': '/api/health',
+            'stats': '/api/public/stats',
+            'auth': '/api/auth/*',
+            'games': '/api/games/*',
+            'leaderboard': '/api/leaderboard/*',
+            'profile': '/api/profile/*',
+            'challenges': '/api/challenges/*',
+            'admin': '/api/admin/*'
+        }
+    }), 200
+
 # Health check endpoint
 @app.route('/api/health', methods=['GET'])
 def health_check():
