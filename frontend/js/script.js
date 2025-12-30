@@ -1,28 +1,3 @@
-// Mobile Navigation Toggle
-const hamburger = document.querySelector('.hamburger');
-const navMenu = document.querySelector('.nav-menu');
-
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navMenu.classList.toggle('active');
-});
-
-// Close mobile menu when clicking on a link
-document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
-    hamburger.classList.remove('active');
-    navMenu.classList.remove('active');
-}));
-
-// Game Card Animations
-document.addEventListener('DOMContentLoaded', function() {
-    const gameCards = document.querySelectorAll('.game-card');
-    
-    gameCards.forEach((card, index) => {
-        card.style.animationDelay = `${index * 0.1}s`;
-        card.classList.add('fade-in');
-    });
-});
-
 // Simple Form Validation
 function validateForm(formId) {
     const form = document.getElementById(formId);
@@ -157,6 +132,39 @@ async function checkAuth() {
     }
 }
 
+// Show toast message function
+function showMessage(message, type) {
+    // Remove existing messages
+    const existingMessage = document.querySelector('.message-toast');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `message-toast ${type}`;
+    toast.innerHTML = message;
+    toast.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: ${type === 'success' ? '#00C851' : '#ff4444'};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: var(--radius-small);
+        box-shadow: var(--shadow);
+        z-index: 10000;
+        max-width: 300px;
+        animation: slideIn 0.3s ease;
+    `;
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 6000);
+}
+
 // Logout function
 function logout() {
     localStorage.removeItem('authToken');
@@ -164,7 +172,32 @@ function logout() {
     window.location.href = 'login.html';
 }
 
-// Initialize the page
+// Initialize the page - consolidated DOMContentLoaded
 document.addEventListener('DOMContentLoaded', async function() {
+    // Mobile Navigation Toggle
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    if (hamburger && navMenu) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+        
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+        }));
+    }
+    
+    // Game Card Animations
+    const gameCards = document.querySelectorAll('.game-card');
+    gameCards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.classList.add('fade-in');
+    });
+    
+    // Check authentication
     await checkAuth();
 });
