@@ -17,32 +17,74 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 async function loadChallenges() {
     try {
+        console.log('=== LOADING CHALLENGES ===');
+        console.log('Making API request to /challenges/daily');
         const data = await apiRequest('/challenges/daily');
+        console.log('=== API RESPONSE RECEIVED ===');
+        console.log('Full data:', JSON.stringify(data, null, 2));
         
+        if (!data) {
+            console.error('No data received from API!');
+            showMessage('No data received from server', 'error');
+            return;
+        }
+        
+        console.log('Updating daily login challenge...');
         updateDailyLoginChallenge(data.dailyLogin);
+        
+        console.log('Updating game play challenge...');
         updateGamePlayChallenge(data.playAnyGame);
+        
+        console.log('Updating weekly streak challenge...');
         updateWeeklyStreakChallenge(data.weeklyStreak);
         
+        console.log('=== ALL CHALLENGES UPDATED ===');
+        
     } catch (error) {
-        console.error('Error loading challenges:', error);
-        showMessage('Failed to load challenges', 'error');
+        console.error('=== ERROR LOADING CHALLENGES ===');
+        console.error('Error object:', error);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+        showMessage('Failed to load challenges: ' + error.message, 'error');
     }
 }
 
 function updateDailyLoginChallenge(challenge) {
+    console.log('Updating daily login challenge:', challenge);
+    const card = document.getElementById('dailyLoginCard');
     const progressFill = document.getElementById('loginProgressFill');
     const claimBtn = document.getElementById('claimLoginBtn');
+    const pointsReward = card.querySelector('.points-reward');
+    
+    console.log('Button element:', claimBtn);
+    console.log('Button disabled before update:', claimBtn.disabled);
     
     if (challenge.claimed) {
+        console.log('Challenge already claimed');
+        card.classList.remove('ready-to-claim');
         progressFill.style.width = '100%';
         progressFill.style.backgroundColor = '#4CAF50';
         claimBtn.textContent = '✓ Claimed';
         claimBtn.disabled = true;
         claimBtn.classList.add('btn-success');
+        claimBtn.style.cursor = 'not-allowed';
+        pointsReward.classList.remove('ready');
+        pointsReward.textContent = '✓ Claimed today';
     } else if (challenge.completed) {
+        console.log('Challenge ready to claim - enabling button');
+        card.classList.add('ready-to-claim');
         progressFill.style.width = '100%';
+        progressFill.style.backgroundColor = '#FFA500';
         claimBtn.disabled = false;
-        claimBtn.textContent = 'Claim Reward';
+        claimBtn.classList.remove('btn-success');
+        claimBtn.textContent = '🎁 Claim Reward';
+        claimBtn.style.background = '#FFA500';
+        claimBtn.style.cursor = 'pointer';
+        claimBtn.style.pointerEvents = 'auto';
+        claimBtn.style.opacity = '1';
+        pointsReward.classList.add('ready');
+        pointsReward.textContent = 'Ready to claim +10 points!';
+        console.log('Button disabled after update:', claimBtn.disabled);
     }
 }
 
@@ -87,25 +129,35 @@ function updateWeeklyStreakChallenge(challenge) {
             claimBtn.disabled = true;
             claimBtn.classList.add('btn-success');
         }
-    } else {
-        rewardText.textContent = `${challenge.progress}/7 days - +${challenge.bonusPoints} points bonus!`;
     }
 }
 
 function setupEventListeners() {
+    console.log('Setting up event listeners...');
+    const claimBtn = document.getElementById('claimLoginBtn');
+    console.log('Claim button element:', claimBtn);
+    
     // Claim daily login button
-    document.getElementById('claimLoginBtn').addEventListener('click', claimDailyLogin);
+    claimBtn.addEventListener('click', function(e) {
+        console.log('Button clicked!', e);
+        claimDailyLogin();
+    });
     
     // Claim weekly streak button
     document.getElementById('claimStreakBtn').addEventListener('click', claimWeeklyStreak);
+    
+    console.log('Event listeners set up successfully');
 }
 
 async function claimDailyLogin() {
+    console.log('claimDailyLogin function called');
     try {
+        console.log('Sending claim request...');
         const result = await apiRequest('/challenges/claim-daily-login', {
             method: 'POST'
         });
         
+        console.log('Claim result:', result);
         showMessage(result.message + ` You earned ${result.pointsEarned} points!`, 'success');
         
         // Reload challenges to update UI

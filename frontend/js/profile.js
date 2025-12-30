@@ -137,7 +137,8 @@ class ProfileManager {
 
         activityList.innerHTML = games.map(game => {
             const gameIcon = this.getGameIcon(game.gameType);
-            const gameTitle = this.capitalize(game.gameType);
+            // Use activityTitle if available, otherwise fallback to formatted gameType
+            const gameTitle = game.activityTitle || `Completed ${this.capitalize(game.gameType)} Game`;
             // Backend now sends ISO format with timezone: "2025-12-30T08:20:43+08:00"
             const timeAgo = this.formatDate(new Date(game.playedAt));
             
@@ -147,7 +148,7 @@ class ProfileManager {
                         <i class="${gameIcon}"></i>
                     </div>
                     <div class="activity-content">
-                        <strong>Completed ${gameTitle} Game</strong>
+                        <strong>${gameTitle}</strong>
                         <span>Earned ${game.points} points • ${timeAgo}</span>
                     </div>
                 </div>

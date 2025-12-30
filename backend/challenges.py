@@ -93,6 +93,12 @@ def claim_daily_login(user_id):
             WHERE id = ?
         ''', (user_id,))
         
+        # Record activity for profile display
+        cursor.execute('''
+            INSERT INTO recent_activities (user_id, activity_type, activity_title, points_earned)
+            VALUES (?, ?, ?, ?)
+        ''', (user_id, 'daily_login', 'Claimed Daily Login Bonus', 10))
+        
         conn.commit()
         conn.close()
         
@@ -137,6 +143,12 @@ def record_game_played(cursor, user_id):
             SET total_points = total_points + 20
             WHERE id = ?
         ''', (user_id,))
+        
+        # Record activity for profile display
+        cursor.execute('''
+            INSERT INTO recent_activities (user_id, activity_type, activity_title, points_earned)
+            VALUES (?, ?, ?, ?)
+        ''', (user_id, 'daily_game', 'Completed Daily Game Challenge', 20))
         
         return True
         
@@ -194,12 +206,18 @@ def claim_weekly_streak(user_id):
             WHERE id = ?
         ''', (user_id,))
         
+        # Record activity for profile display
+        cursor.execute('''
+            INSERT INTO recent_activities (user_id, activity_type, activity_title, points_earned)
+            VALUES (?, ?, ?, ?)
+        ''', (user_id, 'weekly_streak', 'Claimed 7-Day Streak Bonus', 100))
+        
         conn.commit()
         conn.close()
         
         return {
             'success': True,
-            'message': '7-day streak bonus claimed!',
+            'message': 'Weekly streak bonus claimed!',
             'pointsEarned': 100
         }, 200
         

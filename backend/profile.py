@@ -50,19 +50,19 @@ def get_user_profile(user_id):
         
         rank = cursor.fetchone()[0] + 1
         
-        # Get recent game history
+        # Get recent activities from dedicated table
         cursor.execute('''
-            SELECT game_type, points_earned, played_at
-            FROM game_scores
+            SELECT activity_type, activity_title, points_earned, created_at
+            FROM recent_activities
             WHERE user_id = ?
-            ORDER BY played_at DESC
+            ORDER BY created_at DESC
             LIMIT 10
         ''', (user_id,))
         
         recent_games = []
         for row in cursor.fetchall():
             # Convert timestamp to ISO format with Malaysia timezone (UTC+8)
-            timestamp = row['played_at']
+            timestamp = row['created_at']
             if timestamp and ' ' in timestamp:
                 # Convert "2025-12-30 08:20:43" to "2025-12-30T08:20:43+08:00"
                 iso_timestamp = timestamp.replace(' ', 'T') + '+08:00'
@@ -70,7 +70,8 @@ def get_user_profile(user_id):
                 iso_timestamp = timestamp
                 
             recent_games.append({
-                'gameType': row['game_type'],
+                'gameType': row['activity_type'],
+                'activityTitle': row['activity_title'],
                 'points': row['points_earned'],
                 'playedAt': iso_timestamp
             })

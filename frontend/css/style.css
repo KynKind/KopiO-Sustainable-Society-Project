@@ -4045,9 +4045,30 @@ body:not(.user-admin) .admin-only {
 }
 
 /* ==================== Daily Challenges Page ==================== */
-.challenge-card { background: white; border-radius: var(--radius-medium); padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); border-left: 4px solid var(--primary-brown); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.challenge-card { 
+    background: white; 
+    border-radius: var(--radius-medium); 
+    padding: 1.5rem; 
+    margin-bottom: 1.5rem; 
+    box-shadow: var(--shadow); 
+    border-left: 4px solid var(--primary-brown); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: visible;
+    min-height: 180px;
+}
 
 .challenge-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(139, 69, 19, 0.2); }
+
+.challenge-card.ready-to-claim { 
+    border-left-color: #FFA500; 
+    background: linear-gradient(to right, #FFF9E6, white);
+    animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 4px 12px rgba(139, 69, 19, 0.15); }
+    50% { box-shadow: 0 4px 20px rgba(255, 165, 0, 0.4); }
+}
 
 .challenge-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
 
@@ -4064,11 +4085,53 @@ body:not(.user-admin) .admin-only {
 
 .progress-text { display: block; margin-top: 0.5rem; font-size: 0.9rem; color: #666; font-weight: 500; }
 
-.challenge-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; }
+.challenge-footer { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
 
-.points-reward { color: var(--primary-brown); font-weight: 600; font-size: 1rem; }
+.points-reward { 
+    color: var(--primary-brown); 
+    font-weight: 600; 
+    font-size: 1rem;
+    flex: 1 1 auto;
+}
 
-.challenge-footer .btn { padding: 0.5rem 1.5rem; font-size: 0.9rem; }
+.points-reward.ready { 
+    color: #FFA500; 
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.challenge-footer .btn { 
+    padding: 0.5rem 1.5rem; 
+    font-size: 0.9rem;
+    min-width: 140px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.challenge-footer .btn:not(:disabled) {
+    cursor: pointer;
+    pointer-events: auto;
+    display: inline-block;
+    visibility: visible;
+}
+
+.challenge-footer .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    display: inline-block;
+    visibility: visible;
+}
 
 .btn-success { background: #4CAF50 !important; cursor: not-allowed; }
 .btn-success:hover { background: #45a049 !important; }

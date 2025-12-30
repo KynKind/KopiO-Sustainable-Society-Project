@@ -57,6 +57,44 @@ def fix_unverified_users(cursor=None):
         if own_connection and conn:
             conn.close()
 
+def ensure_all_users_have_stats(cursor=None):
+    """Ensure all users have corresponding user_stats records
+    
+    Args:
+        cursor: Optional database cursor. If provided, uses this cursor.
+                If not provided, creates its own connection.
+    """
+    own_connection = cursor is None
+    conn = None
+    
+    try:
+        if own_connection:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+        
+        # Insert user_stats for any users that don't have them
+        cursor.execute('''
+            INSERT OR IGNORE INTO user_stats (user_id)
+            SELECT id FROM users
+            WHERE id NOT IN (SELECT user_id FROM user_stats)
+        ''')
+        
+        affected = cursor.rowcount
+        if affected > 0:
+            logger.info(f"Created user_stats for {affected} users")
+            print(f"✅ Created user_stats records for {affected} existing users")
+        
+        if own_connection and conn:
+            conn.commit()
+    except sqlite3.Error as e:
+        logger.error(f"Error ensuring user_stats: {e}")
+        if own_connection and conn:
+            conn.rollback()
+        raise
+    finally:
+        if own_connection and conn:
+            conn.close()
+
 def init_db():
     """Initialize the database with tables"""
     try:
@@ -135,6 +173,26 @@ def init_db():
         )
     ''')
     
+    # Recent activities table - dedicated tracking for profile display
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS recent_activities (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            activity_type TEXT NOT NULL,
+            activity_title TEXT NOT NULL,
+            points_earned INTEGER DEFAULT 0,
+            activity_data TEXT,
+            created_at TIMESTAMP DEFAULT (datetime('now', 'localtime')),
+            FOREIGN KEY (user_id) REFERENCES users (id)
+        )
+    ''')
+    
+    # Create index for faster queries
+    cursor.execute('''
+        CREATE INDEX IF NOT EXISTS idx_recent_activities_user_id 
+        ON recent_activities(user_id, created_at DESC)
+    ''')
+    
     # Daily challenges table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS daily_challenges (
@@ -155,6 +213,10 @@ def init_db():
     # AUTO-FIX: Verify all existing users so they can login
     fix_unverified_users(cursor)
     conn.commit()  # Commit the auto-verification changes
+    
+    # AUTO-FIX: Ensure all users have user_stats records
+    ensure_all_users_have_stats(cursor)
+    conn.commit()
     
     # Insert sample quiz questions if none exist
     cursor.execute('SELECT COUNT(*) FROM quiz_questions')
