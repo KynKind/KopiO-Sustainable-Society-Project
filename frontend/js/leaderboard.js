@@ -130,18 +130,37 @@ class LeaderboardManager {
 // 首页预览和前三名逻辑
 async function loadTopPlayers() {
     try {
-        const data = await apiRequest('/leaderboard/top', { skipAuth: true });
-        const players = data.topPlayers;
+        const data = await apiRequest('/leaderboard/top?limit=3', { skipAuth: true });
+        
+        if (!data || !data.users) {
+            console.log('No data or users returned from API');
+            return;
+        }
 
-        players.forEach(player => {
-            const card = document.querySelector(`.winner-${player.rank}`);
+        const players = data.users;
+
+        if (players.length === 0) {
+            console.log('No players found for top winners');
+            return;
+        }
+
+        players.forEach((player, index) => {
+            const rank = index + 1;
+            const card = document.querySelector(`.winner-${rank}`);
             if (card) {
-                card.querySelector('h3').textContent = player.name;
-                card.querySelector('.winner-faculty').textContent = player.faculty;
-                card.querySelector('.winner-points').textContent = `${player.totalPoints.toLocaleString()} pts`;
+                const fullName = `${player.firstName || ''} ${player.lastName || ''}`.trim();
+                const h3 = card.querySelector('h3');
+                const faculty = card.querySelector('.winner-faculty');
+                const points = card.querySelector('.winner-points');
+                
+                if (h3) h3.textContent = fullName || 'Unknown';
+                if (faculty) faculty.textContent = player.faculty || '-';
+                if (points) points.textContent = `${(player.totalPoints || 0).toLocaleString()} pts`;
             }
         });
-    } catch (error) { console.error(error); }
+    } catch (error) { 
+        console.error('Error loading top players:', error); 
+    }
 }
 
 let leaderboardManager;

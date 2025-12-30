@@ -244,7 +244,7 @@ class QuizGame {
         });
 
         document.getElementById('backToHome').addEventListener('click', () => {
-            window.location.href = 'index.html';
+            window.location.href = '../html/index.html';
         });
     }
 

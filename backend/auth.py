@@ -5,7 +5,7 @@ Handles user registration, login, and JWT token management
 import bcrypt
 import jwt
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from functools import wraps
 from flask import jsonify, request
 from database import get_db_connection
@@ -294,6 +294,9 @@ def login_user(data):
         if Config.EMAIL_VERIFICATION_REQUIRED and not user['email_verified']:
             return {'error': 'Please verify your email before logging in. Check your inbox for the verification link.', 'requiresVerification': True, 'email': email}, 401
         
+        # Record daily login for challenges
+        record_daily_login(user['id'])
+        
         # Generate token
         token = generate_token(user['id'], user['email'], user['role'])
         
@@ -488,3 +491,64 @@ def resend_verification_email(email):
     except Exception as e:
         return {'error': f'Failed to resend verification: {str(e)}'}, 500
 
+def record_daily_login(user_id):
+    """Record that user logged in today and update login streak"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        today = date.today().isoformat()
+        yesterday = (date.today() - timedelta(days=1)).isoformat()
+        
+        # Get user's last login date and current streak
+        cursor.execute('''
+            SELECT last_played_date, current_streak
+            FROM user_stats
+            WHERE user_id = ?
+        ''', (user_id,))
+        
+        stats = cursor.fetchone()
+        
+        if stats:
+            last_played = stats['last_played_date']
+            current_streak = stats['current_streak'] or 0
+            
+            # Calculate new streak
+            if last_played == today:
+                # Already logged in today, no streak update needed
+                new_streak = current_streak
+            elif last_played == yesterday:
+                # Consecutive day login - increment streak
+                new_streak = current_streak + 1
+            elif last_played is None:
+                # First ever login
+                new_streak = 1
+            else:
+                # Streak broken - restart from 1
+                new_streak = 1
+            
+            # Update streak and last played date
+            cursor.execute('''
+                UPDATE user_stats
+                SET current_streak = ?, last_played_date = ?
+                WHERE user_id = ?
+            ''', (new_streak, today, user_id))
+        else:
+            # No stats record exists yet (shouldn't happen, but handle it)
+            cursor.execute('''
+                INSERT INTO user_stats (user_id, current_streak, last_played_date)
+                VALUES (?, 1, ?)
+            ''', (user_id, today))
+        
+        # Create or update today's challenge record to mark login
+        cursor.execute('''
+            INSERT INTO daily_challenges (user_id, challenge_date, daily_login_claimed)
+            VALUES (?, ?, 0)
+            ON CONFLICT(user_id, challenge_date) 
+            DO NOTHING
+        ''', (user_id, today))
+        
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Error recording daily login: {e}")

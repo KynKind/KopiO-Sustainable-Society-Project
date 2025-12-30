@@ -111,7 +111,7 @@ def init_db():
             score INTEGER NOT NULL,
             points_earned INTEGER NOT NULL,
             game_data TEXT,
-            played_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            played_at TIMESTAMP DEFAULT (datetime('now', 'localtime')),
             FOREIGN KEY (user_id) REFERENCES users (id)
         )
     ''')
@@ -132,6 +132,21 @@ def init_db():
             current_streak INTEGER DEFAULT 0,
             last_played_date DATE,
             FOREIGN KEY (user_id) REFERENCES users (id)
+        )
+    ''')
+    
+    # Daily challenges table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS daily_challenges (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            challenge_date DATE NOT NULL,
+            daily_login_claimed BOOLEAN DEFAULT 0,
+            game_played_today BOOLEAN DEFAULT 0,
+            weekly_streak_bonus_claimed BOOLEAN DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users (id),
+            UNIQUE(user_id, challenge_date)
         )
     ''')
     

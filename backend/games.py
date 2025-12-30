@@ -147,6 +147,10 @@ def submit_quiz_score(user_id, data):
         # Update streak
         update_user_streak(cursor, user_id)
         
+        # Record game played for daily challenges
+        from challenges import record_game_played
+        record_game_played(cursor, user_id)
+        
         conn.commit()
         conn.close()
         
@@ -227,6 +231,10 @@ def submit_memory_game_score(user_id, data):
         
         update_user_streak(cursor, user_id)
         
+        # Record game played for daily challenges
+        from challenges import record_game_played
+        record_game_played(cursor, user_id)
+        
         conn.commit()
         conn.close()
         
@@ -300,6 +308,10 @@ def submit_puzzle_game_score(user_id, data):
         ''', (points, user_id))
         
         update_user_streak(cursor, user_id)
+        
+        # Record game played for daily challenges
+        from challenges import record_game_played
+        record_game_played(cursor, user_id)
         
         conn.commit()
         conn.close()
@@ -386,6 +398,10 @@ def submit_sorting_game_score(user_id, data):
         ''', (points, user_id))
         
         update_user_streak(cursor, user_id)
+        
+        # Record game played for daily challenges
+        from challenges import record_game_played
+        record_game_played(cursor, user_id)
         
         conn.commit()
         conn.close()

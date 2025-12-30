@@ -441,6 +441,28 @@ body:not(.user-admin) .admin-only {
     to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes slideIn {
+    from { 
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to { 
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    from { 
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to { 
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
 /* Admin Only */
 .admin-only {
     display: none;
@@ -1233,6 +1255,38 @@ body:not(.user-admin) .admin-only {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+}
+
+.filter-group label {
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.filter-group select {
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    border: 2px solid #E0D3B8;
+    border-radius: var(--radius-small);
+    background: var(--light-cream);
+    color: var(--text-dark);
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 250px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B6F47' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+}
+
+.filter-group select:hover {
+    border-color: var(--primary-brown);
+}
+
+.filter-group select:focus {
+    outline: none;
+    border-color: var(--primary-brown);
+    box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1);
 }
 
 /* Top Winners */
@@ -3989,3 +4043,43 @@ body:not(.user-admin) .admin-only {
 .footer-section .sponsor-contact a[href*="ecolikecare"]:hover {
     background: linear-gradient(135deg, #45a049 0%, #1B5E20 100%);
 }
+
+/* ==================== Daily Challenges Page ==================== */
+.challenge-card { background: white; border-radius: var(--radius-medium); padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); border-left: 4px solid var(--primary-brown); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+
+.challenge-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(139, 69, 19, 0.2); }
+
+.challenge-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+
+.challenge-icon { width: 50px; height: 50px; background: linear-gradient(135deg, var(--primary-brown), var(--light-brown)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; }
+
+.challenge-info h3 { margin: 0; color: var(--primary-brown); font-size: 1.25rem; }
+.challenge-info p { margin: 0.25rem 0 0 0; color: #666; font-size: 0.9rem; }
+
+.challenge-progress { margin: 1rem 0; }
+
+.progress-bar { width: 100%; height: 24px; background: #f0f0f0; border-radius: 12px; overflow: hidden; position: relative; }
+
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary-brown), var(--light-brown)); border-radius: 12px; transition: width 0.5s ease, background-color 0.3s ease; }
+
+.progress-text { display: block; margin-top: 0.5rem; font-size: 0.9rem; color: #666; font-weight: 500; }
+
+.challenge-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; }
+
+.points-reward { color: var(--primary-brown); font-weight: 600; font-size: 1rem; }
+
+.challenge-footer .btn { padding: 0.5rem 1.5rem; font-size: 0.9rem; }
+
+.btn-success { background: #4CAF50 !important; cursor: not-allowed; }
+.btn-success:hover { background: #45a049 !important; }
+
+.games-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+
+.game-card { background: white; border-radius: var(--radius-medium); padding: 2rem; text-align: center; text-decoration: none; color: var(--text-dark); box-shadow: var(--shadow); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.game-card:hover { transform: translateY(-8px); box-shadow: 0 8px 24px rgba(139, 69, 19, 0.25); }
+.game-card i { font-size: 3rem; color: var(--primary-brown); margin-bottom: 1rem; }
+.game-card h3 { margin: 0.5rem 0; color: var(--primary-brown); }
+.game-card p { margin: 0; color: #666; font-size: 0.9rem; }
+
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }

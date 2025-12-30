@@ -307,7 +307,8 @@ def get_top_players(limit=3):
         for row in cursor.fetchall():
             players.append({
                 'rank': rank,
-                'name': f"{row['first_name']} {row['last_name']}",
+                'firstName': row['first_name'],
+                'lastName': row['last_name'],
                 'faculty': row['faculty'],
                 'totalPoints': row['total_points']
             })
@@ -315,7 +316,7 @@ def get_top_players(limit=3):
         
         conn.close()
         
-        return {'topPlayers': players}, 200
+        return {'users': players}, 200
         
     except Exception as e:
         return {'error': f'Failed to get top players: {str(e)}'}, 500

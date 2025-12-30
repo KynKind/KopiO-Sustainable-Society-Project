@@ -122,7 +122,6 @@ async function checkAuth() {
                         window.location.pathname.includes('sponsorship.html');
     
     if (!token) {
-        updateNavbar(null);
         if (!isPublicPage) {
             window.location.href = 'login.html';
         }
@@ -144,9 +143,21 @@ async function checkAuth() {
         
         // Update local storage with latest user data
         localStorage.setItem('currentUser', JSON.stringify(user));
-        updateNavbar(user);
         return user;
     } catch (error) {
+        console.error('Auth check error:', error);
+        // Don't clear auth on network errors for public pages
+        if (isPublicPage) {
+            // Keep the cached user data on public pages if it's just a network issue
+            const storedUser = localStorage.getItem('currentUser');
+            if (storedUser) {
+                try {
+                    return JSON.parse(storedUser);
+                } catch (e) {
+                    // If parse fails, clear everything
+                }
+            }
+        }
         localStorage.removeItem('authToken');
         localStorage.removeItem('currentUser');
         updateNavbar(null);
@@ -164,7 +175,66 @@ function logout() {
     window.location.href = 'login.html';
 }
 
+// Show message to user (for notifications and errors)
+function showMessage(message, type = 'info') {
+    // Create message element if it doesn't exist
+    let messageContainer = document.getElementById('messageContainer');
+    if (!messageContainer) {
+        messageContainer = document.createElement('div');
+        messageContainer.id = 'messageContainer';
+        messageContainer.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 10000; max-width: 400px;';
+        document.body.appendChild(messageContainer);
+    }
+    
+    // Create message box
+    const messageBox = document.createElement('div');
+    messageBox.className = `message-box message-${type}`;
+    messageBox.style.cssText = `
+        padding: 15px 20px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        background: ${type === 'error' ? '#fee' : type === 'success' ? '#efe' : '#eef'};
+        border: 1px solid ${type === 'error' ? '#c33' : type === 'success' ? '#3c3' : '#33c'};
+        color: ${type === 'error' ? '#c33' : type === 'success' ? '#363' : '#336'};
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        animation: slideIn 0.3s ease-out;
+    `;
+    messageBox.textContent = message;
+    
+    // Add to container
+    messageContainer.appendChild(messageBox);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        messageBox.style.animation = 'slideOut 0.3s ease-in';
+        setTimeout(() => {
+            messageBox.remove();
+        }, 300);
+    }, 5000);
+}
+
 // Initialize the page
 document.addEventListener('DOMContentLoaded', async function() {
-    await checkAuth();
+    // Update navbar state immediately from localStorage to prevent flicker
+    const token = localStorage.getItem('authToken');
+    const storedUser = localStorage.getItem('currentUser');
+    
+    if (token && storedUser) {
+        try {
+            const user = JSON.parse(storedUser);
+            if (user && user.id) {
+                updateNavbar(user);
+            }
+        } catch (e) {
+            console.error('Error parsing stored user:', e);
+        }
+    }
+    
+    // Then verify with server (but don't let it override the immediate update)
+    const verifiedUser = await checkAuth();
+    
+    // If verification succeeded with different data, update again
+    if (verifiedUser && verifiedUser.id) {
+        updateNavbar(verifiedUser);
+    }
 });

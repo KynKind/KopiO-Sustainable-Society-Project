@@ -106,6 +106,18 @@ class SortingGame {
 
         // 默认 nextRound 不显示（等 check 后才显示）
         document.getElementById('nextRound').style.display = 'none';
+        
+        // Add "Finish & Save Score" button
+        const controlsCard = document.querySelector('.game-controls');
+        if (controlsCard && !document.getElementById('endGameBtn')) {
+            const endBtn = document.createElement('button');
+            endBtn.id = 'endGameBtn';
+            endBtn.className = 'btn';
+            endBtn.style.backgroundColor = 'var(--primary-brown)';
+            endBtn.innerHTML = '<i class="fas fa-flag-checkered"></i> Finish & Save Score';
+            endBtn.addEventListener('click', () => this.endGame());
+            controlsCard.appendChild(endBtn);
+        }
     }
 
     renderItems() {
@@ -403,7 +415,7 @@ class SortingGame {
         });
 
         document.getElementById('backToHome').addEventListener('click', () => {
-            window.location.href = 'index.html';
+            window.location.href = '../html/index.html';
         });
     }
 

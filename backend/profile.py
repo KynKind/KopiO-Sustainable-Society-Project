@@ -61,10 +61,18 @@ def get_user_profile(user_id):
         
         recent_games = []
         for row in cursor.fetchall():
+            # Convert timestamp to ISO format with Malaysia timezone (UTC+8)
+            timestamp = row['played_at']
+            if timestamp and ' ' in timestamp:
+                # Convert "2025-12-30 08:20:43" to "2025-12-30T08:20:43+08:00"
+                iso_timestamp = timestamp.replace(' ', 'T') + '+08:00'
+            else:
+                iso_timestamp = timestamp
+                
             recent_games.append({
                 'gameType': row['game_type'],
                 'points': row['points_earned'],
-                'playedAt': row['played_at']
+                'playedAt': iso_timestamp
             })
         
         conn.close()
