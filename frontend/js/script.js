@@ -1,28 +1,3 @@
-// Mobile Navigation Toggle
-const hamburger = document.querySelector('.hamburger');
-const navMenu = document.querySelector('.nav-menu');
-
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navMenu.classList.toggle('active');
-});
-
-// Close mobile menu when clicking on a link
-document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
-    hamburger.classList.remove('active');
-    navMenu.classList.remove('active');
-}));
-
-// Game Card Animations
-document.addEventListener('DOMContentLoaded', function() {
-    const gameCards = document.querySelectorAll('.game-card');
-    
-    gameCards.forEach((card, index) => {
-        card.style.animationDelay = `${index * 0.1}s`;
-        card.classList.add('fade-in');
-    });
-});
-
 // Simple Form Validation
 function validateForm(formId) {
     const form = document.getElementById(formId);
@@ -168,6 +143,57 @@ async function checkAuth() {
     }
 }
 
+// Show toast message function
+function showMessage(message, type) {
+    // Inject CSS animations if not already present
+    if (!document.getElementById('toast-animations')) {
+        const style = document.createElement('style');
+        style.id = 'toast-animations';
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Remove existing messages
+    const existingMessage = document.querySelector('.message-toast');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `message-toast ${type}`;
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: ${type === 'success' ? '#00C851' : '#ff4444'};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: var(--radius-small);
+        box-shadow: var(--shadow);
+        z-index: 10000;
+        max-width: 300px;
+        animation: slideIn 0.3s ease;
+    `;
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 6000);
+}
+
 // Logout function
 function logout() {
     localStorage.removeItem('authToken');
@@ -175,66 +201,32 @@ function logout() {
     window.location.href = 'login.html';
 }
 
-// Show message to user (for notifications and errors)
-function showMessage(message, type = 'info') {
-    // Create message element if it doesn't exist
-    let messageContainer = document.getElementById('messageContainer');
-    if (!messageContainer) {
-        messageContainer = document.createElement('div');
-        messageContainer.id = 'messageContainer';
-        messageContainer.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 10000; max-width: 400px;';
-        document.body.appendChild(messageContainer);
-    }
-    
-    // Create message box
-    const messageBox = document.createElement('div');
-    messageBox.className = `message-box message-${type}`;
-    messageBox.style.cssText = `
-        padding: 15px 20px;
-        margin-bottom: 10px;
-        border-radius: 8px;
-        background: ${type === 'error' ? '#fee' : type === 'success' ? '#efe' : '#eef'};
-        border: 1px solid ${type === 'error' ? '#c33' : type === 'success' ? '#3c3' : '#33c'};
-        color: ${type === 'error' ? '#c33' : type === 'success' ? '#363' : '#336'};
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        animation: slideIn 0.3s ease-out;
-    `;
-    messageBox.textContent = message;
-    
-    // Add to container
-    messageContainer.appendChild(messageBox);
-    
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-        messageBox.style.animation = 'slideOut 0.3s ease-in';
-        setTimeout(() => {
-            messageBox.remove();
-        }, 300);
-    }, 5000);
-}
-
-// Initialize the page
+// Initialize the page - consolidated DOMContentLoaded
 document.addEventListener('DOMContentLoaded', async function() {
-    // Update navbar state immediately from localStorage to prevent flicker
-    const token = localStorage.getItem('authToken');
-    const storedUser = localStorage.getItem('currentUser');
+    // Mobile Navigation Toggle
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
     
-    if (token && storedUser) {
-        try {
-            const user = JSON.parse(storedUser);
-            if (user && user.id) {
-                updateNavbar(user);
-            }
-        } catch (e) {
-            console.error('Error parsing stored user:', e);
-        }
+    if (hamburger && navMenu) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+        
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+        }));
     }
     
-    // Then verify with server (but don't let it override the immediate update)
-    const verifiedUser = await checkAuth();
+    // Game Card Animations
+    const gameCards = document.querySelectorAll('.game-card');
+    gameCards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.classList.add('fade-in');
+    });
     
-    // If verification succeeded with different data, update again
-    if (verifiedUser && verifiedUser.id) {
-        updateNavbar(verifiedUser);
-    }
+    // Check authentication
+    await checkAuth();
 });
