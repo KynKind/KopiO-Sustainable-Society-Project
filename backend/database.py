@@ -57,6 +57,44 @@ def fix_unverified_users(cursor=None):
         if own_connection and conn:
             conn.close()
 
+def ensure_all_users_have_stats(cursor=None):
+    """Ensure all users have corresponding user_stats records
+    
+    Args:
+        cursor: Optional database cursor. If provided, uses this cursor.
+                If not provided, creates its own connection.
+    """
+    own_connection = cursor is None
+    conn = None
+    
+    try:
+        if own_connection:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+        
+        # Insert user_stats for any users that don't have them
+        cursor.execute('''
+            INSERT OR IGNORE INTO user_stats (user_id)
+            SELECT id FROM users
+            WHERE id NOT IN (SELECT user_id FROM user_stats)
+        ''')
+        
+        affected = cursor.rowcount
+        if affected > 0:
+            logger.info(f"Created user_stats for {affected} users")
+            print(f"✅ Created user_stats records for {affected} existing users")
+        
+        if own_connection and conn:
+            conn.commit()
+    except sqlite3.Error as e:
+        logger.error(f"Error ensuring user_stats: {e}")
+        if own_connection and conn:
+            conn.rollback()
+        raise
+    finally:
+        if own_connection and conn:
+            conn.close()
+
 def init_db():
     """Initialize the database with tables"""
     try:
@@ -111,7 +149,7 @@ def init_db():
             score INTEGER NOT NULL,
             points_earned INTEGER NOT NULL,
             game_data TEXT,
-            played_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            played_at TIMESTAMP DEFAULT (datetime('now', 'localtime')),
             FOREIGN KEY (user_id) REFERENCES users (id)
         )
     ''')
@@ -135,11 +173,50 @@ def init_db():
         )
     ''')
     
+    # Recent activities table - dedicated tracking for profile display
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS recent_activities (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            activity_type TEXT NOT NULL,
+            activity_title TEXT NOT NULL,
+            points_earned INTEGER DEFAULT 0,
+            activity_data TEXT,
+            created_at TIMESTAMP DEFAULT (datetime('now', 'localtime')),
+            FOREIGN KEY (user_id) REFERENCES users (id)
+        )
+    ''')
+    
+    # Create index for faster queries
+    cursor.execute('''
+        CREATE INDEX IF NOT EXISTS idx_recent_activities_user_id 
+        ON recent_activities(user_id, created_at DESC)
+    ''')
+    
+    # Daily challenges table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS daily_challenges (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            challenge_date DATE NOT NULL,
+            daily_login_claimed BOOLEAN DEFAULT 0,
+            game_played_today BOOLEAN DEFAULT 0,
+            weekly_streak_bonus_claimed BOOLEAN DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users (id),
+            UNIQUE(user_id, challenge_date)
+        )
+    ''')
+    
     conn.commit()
     
     # AUTO-FIX: Verify all existing users so they can login
     fix_unverified_users(cursor)
     conn.commit()  # Commit the auto-verification changes
+    
+    # AUTO-FIX: Ensure all users have user_stats records
+    ensure_all_users_have_stats(cursor)
+    conn.commit()
     
     # Insert sample quiz questions if none exist
     cursor.execute('SELECT COUNT(*) FROM quiz_questions')
@@ -153,6 +230,15 @@ def init_db():
         insert_demo_users(cursor)
         conn.commit()
         logger.info("Demo users created successfully!")
+    else:
+        # Update demo user faculty to new format
+        cursor.execute('''
+            UPDATE users SET faculty = 'Faculty of Computing & Informatics (FCI)' 
+            WHERE email = 'demo.student@student.mmu.edu.my' AND faculty = 'Faculty of Computing'
+        ''')
+        if cursor.rowcount > 0:
+            conn.commit()
+            logger.info("Updated demo user faculty")
     
     conn.close()
     logger.info("Database initialized successfully!")
@@ -168,7 +254,7 @@ def insert_demo_users(cursor):
     demo_users = [
         # (email, password_hash, first_name, last_name, student_id, faculty, role, total_points, email_verified)
         # Student demo account - email_verified = 1
-        ('demo.student@student.mmu.edu.my', hash_password('Student123!'), 'Demo', 'Student', 'STU001', 'Faculty of Computing', 'student', 100, 1),
+        ('demo.student@student.mmu.edu.my', hash_password('Student123!'), 'Demo', 'Student', 'STU001', 'Faculty of Computing & Informatics (FCI)', 'student', 100, 1),
         # Admin demo account - email_verified = 1
         ('admin@student.mmu.edu.my', hash_password('Admin123!'), 'Admin', 'User', 'ADM001', 'Administration', 'admin', 500, 1),
     ]

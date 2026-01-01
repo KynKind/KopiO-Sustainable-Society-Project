@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Challenges - Kopi-O</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <div class="logo">
+                    <i class="fas fa-mug-hot"></i>
+                    <span>Kopi-O</span>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+                <li class="nav-item"><a href="my_profile.html" class="nav-link auth-required">My Profile</a></li>
+                <li class="nav-item"><a href="challenges.html" class="nav-link auth-required active">Challenges</a></li>
+                <li class="nav-item admin-only"><a href="admin.html" class="nav-link">Admin</a></li>
+            </ul>
+            <div class="nav-auth">
+                <span class="user-greeting" id="userGreeting"></span>
+                <a href="login.html" class="btn nav-btn" id="authBtn">Login</a>
+            </div>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <section class="card">
+                <h1>Daily Challenges</h1>
+                <p>Complete daily tasks to earn bonus points!</p>
+
+                <!-- Daily Login Challenge -->
+                <div class="challenge-card" id="dailyLoginCard">
+                    <div class="challenge-header">
+                        <div class="challenge-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="challenge-info">
+                            <h3>🏛️ Daily Login</h3>
+                            <p>Log in to claim your daily reward</p>
+                        </div>
+                    </div>
+                    <div class="challenge-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="loginProgressFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="challenge-footer">
+                        <span class="points-reward">+10 points daily</span>
+                        <button class="btn btn-primary" id="claimLoginBtn" disabled>
+                            <i class="fas fa-spinner fa-spin"></i> Loading...
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Play Any Game Challenge -->
+                <div class="challenge-card" id="gamePlayCard">
+                    <div class="challenge-header">
+                        <div class="challenge-icon">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <div class="challenge-info">
+                            <h3>🎮 Play Any Game</h3>
+                            <p>Complete at least one game today</p>
+                        </div>
+                    </div>
+                    <div class="challenge-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="gameProgressFill" style="width: 0%"></div>
+                        </div>
+                        <span class="progress-text" id="gameProgressText">0/1 game</span>
+                    </div>
+                    <div class="challenge-footer">
+                        <span class="points-reward">1/1 game - Claim +20 points!</span>
+                        <span class="status-badge" id="gameStatusBadge">Pending</span>
+                    </div>
+                </div>
+
+                <!-- Weekly Streak Challenge -->
+                <div class="challenge-card" id="weeklyStreakCard">
+                    <div class="challenge-header">
+                        <div class="challenge-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="challenge-info">
+                            <h3>🏆 Weekly Streak</h3>
+                            <p>Login for 7 consecutive days</p>
+                        </div>
+                    </div>
+                    <div class="challenge-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="streakProgressFill" style="width: 0%"></div>
+                        </div>
+                        <span class="progress-text" id="streakProgressText">0/7 days</span>
+                    </div>
+                    <div class="challenge-footer">
+                        <span class="points-reward" id="streakReward">+100 points bonus!</span>
+                        <button class="btn btn-primary" id="claimStreakBtn" disabled>Claim Bonus</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Links to Games -->
+            <section class="card">
+                <h2>Play Games to Complete Challenges</h2>
+                <div class="games-grid">
+                    <a href="quiz_game.html" class="game-card">
+                        <i class="fas fa-question-circle"></i>
+                        <h3>Quiz Game</h3>
+                        <p>Test your knowledge</p>
+                    </a>
+                    <a href="memory_game.html" class="game-card">
+                        <i class="fas fa-brain"></i>
+                        <h3>Memory Match</h3>
+                        <p>Match the pairs</p>
+                    </a>
+                    <a href="puzzle_game.html" class="game-card">
+                        <i class="fas fa-puzzle-piece"></i>
+                        <h3>Puzzle Game</h3>
+                        <p>Solve the puzzle</p>
+                    </a>
+                    <a href="sorting_game.html" class="game-card">
+                        <i class="fas fa-recycle"></i>
+                        <h3>Sorting Game</h3>
+                        <p>Sort waste correctly</p>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Kopi-O</h3>
+                    <p>Making MMU more sustainable through gamification.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="how_to_play.html">How to Play</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Social Media</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Kopi-O Sustainable Society Project. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/api-config.js"></script>
+    <script src="../js/challenges.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+</html>

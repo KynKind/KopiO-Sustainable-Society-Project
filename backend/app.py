@@ -26,6 +26,7 @@ import games
 import leaderboard
 import profile
 import admin
+import challenges
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -57,10 +58,36 @@ CORS(app, resources={
 # Initialize database
 init_db()
 
+# Root endpoint
+@app.route('/', methods=['GET'])
+def index():
+    """Root endpoint - API information"""
+    return jsonify({
+        'message': 'Welcome to Kopi-O Sustainable Society Project API',
+        'version': '1.0',
+        'endpoints': {
+            'health': '/api/health',
+            'stats': '/api/public/stats',
+            'auth': '/api/auth/*',
+            'games': '/api/games/*',
+            'leaderboard': '/api/leaderboard/*',
+            'profile': '/api/profile/*',
+            'challenges': '/api/challenges/*',
+            'admin': '/api/admin/*'
+        }
+    }), 200
+
 # Health check endpoint
 @app.route('/api/health', methods=['GET'])
 def health_check():
     return jsonify({'status': 'ok', 'message': 'Kopi-O API is running'}), 200
+
+# Public stats endpoint for homepage
+@app.route('/api/public/stats', methods=['GET'])
+def public_stats():
+    """Get public platform statistics (no authentication required)"""
+    result, status = admin.get_platform_statistics()
+    return jsonify(result), status
 
 # ==================== Authentication Endpoints ====================
 
@@ -177,8 +204,9 @@ def get_global_leaderboard():
     limit = request.args.get('limit', 50, type=int)
     page = request.args.get('page', 1, type=int)
     offset = (page - 1) * limit
+    query = request.args.get('q', '')
     
-    result, status = leaderboard.get_global_leaderboard(limit, offset)
+    result, status = leaderboard.get_global_leaderboard(limit, offset, query if query else None)
     return jsonify(result), status
 
 @app.route('/api/leaderboard/faculty/<faculty>', methods=['GET'])
@@ -187,8 +215,9 @@ def get_faculty_leaderboard(faculty):
     limit = request.args.get('limit', 50, type=int)
     page = request.args.get('page', 1, type=int)
     offset = (page - 1) * limit
+    query = request.args.get('q', '')
     
-    result, status = leaderboard.get_faculty_leaderboard(faculty, limit, offset)
+    result, status = leaderboard.get_faculty_leaderboard(faculty, limit, offset, query if query else None)
     return jsonify(result), status
 
 @app.route('/api/leaderboard/search', methods=['GET'])
@@ -310,6 +339,29 @@ def reset_user_password(user_id):
         return jsonify({'error': 'New password is required'}), 400
     
     result, status = admin.reset_user_password(request.user_id, user_id, new_password)
+    return jsonify(result), status
+
+# ==================== Daily Challenges Endpoints ====================
+
+@app.route('/api/challenges/daily', methods=['GET'])
+@auth.token_required
+def get_challenges():
+    """Get today's challenge progress"""
+    result, status = challenges.get_daily_challenges(request.user_id)
+    return jsonify(result), status
+
+@app.route('/api/challenges/claim-daily-login', methods=['POST'])
+@auth.token_required
+def claim_login():
+    """Claim daily login bonus"""
+    result, status = challenges.claim_daily_login(request.user_id)
+    return jsonify(result), status
+
+@app.route('/api/challenges/claim-weekly-streak', methods=['POST'])
+@auth.token_required
+def claim_streak():
+    """Claim weekly streak bonus"""
+    result, status = challenges.claim_weekly_streak(request.user_id)
     return jsonify(result), status
 
 # Error handlers

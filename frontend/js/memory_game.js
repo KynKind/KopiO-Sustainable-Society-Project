@@ -281,7 +281,7 @@ class MemoryGame {
                 <p>Moves: ${this.moves}</p>
                 <p>Pairs: ${this.matchedPairs}/${this.config.pairs}</p>
                 <button onclick="location.reload()">Play Again</button>
-                <button onclick="location.href='index.html'">Home</button>
+                <button onclick="location.href='../html/index.html'">Home</button>
             </div>`;
         document.body.appendChild(modal);
     }

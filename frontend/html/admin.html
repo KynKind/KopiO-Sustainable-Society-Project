@@ -21,6 +21,7 @@
                 <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
                 <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
                 <li class="nav-item"><a href="my_profile.html" class="nav-link auth-required">My Profile</a></li>
+                <li class="nav-item"><a href="challenges.html" class="nav-link auth-required">Challenges</a></li>
                 <li class="nav-item admin-only"><a href="admin.html" class="nav-link active">Admin</a></li>
             </ul>
             <div class="nav-auth">
@@ -45,7 +46,7 @@
                     <p>Welcome back, Administrator. System overview for Kopi-O Sustainable Society.</p>
                 </div>
                 <div class="admin-actions">
-                    <button class="btn btn-secondary" id="refreshData">
+                    <button class="btn btn-secondary" id="refreshStats">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <button class="btn" id="exportReport">
@@ -62,9 +63,9 @@
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="stat-content">
-                            <h3>324</h3>
+                            <h3 id="totalUsers">0</h3>
                             <p>Total Users</p>
-                            <span class="stat-change positive">+42 this week</span>
+                            <span class="stat-change positive" id="weeklyUsers">Loading...</span>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -72,9 +73,9 @@
                             <i class="fas fa-gamepad"></i>
                         </div>
                         <div class="stat-content">
-                            <h3>12,847</h3>
+                            <h3 id="totalGames">0</h3>
                             <p>Games Played</p>
-                            <span class="stat-change positive">+1,240 today</span>
+                            <span class="stat-change positive" id="todayGames">Loading...</span>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -82,9 +83,9 @@
                             <i class="fas fa-coins"></i>
                         </div>
                         <div class="stat-content">
-                            <h3>45,280</h3>
+                            <h3 id="totalPoints">0</h3>
                             <p>Total Points</p>
-                            <span class="stat-change positive">+3,450 today</span>
+                            <span class="stat-change positive" id="avgPoints">Loading...</span>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -92,9 +93,9 @@
                             <i class="fas fa-user-clock"></i>
                         </div>
                         <div class="stat-content">
-                            <h3>8.4 hrs</h3>
-                            <p>Avg. Play Time</p>
-                            <span class="stat-change positive">+0.5 hrs</span>
+                            <h3 id="activeUsers">0</h3>
+                            <p>Active Users</p>
+                            <span class="stat-change positive" id="activeChange">Last 7 days</span>
                         </div>
                     </div>
                 </div>
@@ -113,119 +114,30 @@
                 </div>
 
                 <div class="users-table">
-                    <table>
+                    <table id="usersTable">
                         <thead>
                             <tr>
                                 <th>User</th>
                                 <th>Student ID</th>
                                 <th>Faculty</th>
                                 <th>Points</th>
-                                <th>Play Time</th>
+                                <th>Games Played</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <div class="user-cell">
-                                        <div class="user-avatar">
-                                            <i class="fas fa-user"></i>
-                                        </div>
-                                        <div class="user-info">
-                                            <strong>Sarah Lim</strong>
-                                            <span>sarah.lim@student.mmu.edu.my</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>12234567</td>
-                                <td>FCI</td>
-                                <td>2,450</td>
-                                <td>14.5 hrs</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-icon" title="View Details">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn-icon" title="Reset Password">
-                                            <i class="fas fa-key"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="user-cell">
-                                        <div class="user-avatar">
-                                            <i class="fas fa-user"></i>
-                                        </div>
-                                        <div class="user-info">
-                                            <strong>Ahmad Haikal</strong>
-                                            <span>ahmad.haikal@student.mmu.edu.my</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>12235678</td>
-                                <td>FOE</td>
-                                <td>2,120</td>
-                                <td>12.8 hrs</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-icon" title="View Details">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn-icon" title="Reset Password">
-                                            <i class="fas fa-key"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="user-cell">
-                                        <div class="user-avatar">
-                                            <i class="fas fa-user"></i>
-                                        </div>
-                                        <div class="user-info">
-                                            <strong>Demo Student</strong>
-                                            <span>student@student.mmu.edu.my</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>12345678</td>
-                                <td>FCI</td>
-                                <td>1,250</td>
-                                <td>9.2 hrs</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn-icon" title="View Details">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn-icon" title="Reset Password">
-                                            <i class="fas fa-key"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                            <!-- Users will be loaded dynamically -->
                         </tbody>
                     </table>
                 </div>
 
                 <div class="table-footer">
                     <div class="table-info">
-                        <span>Showing 3 of 324 users</span>
+                        <span id="userCount">Loading users...</span>
                     </div>
-                    <div class="pagination">
-                        <button class="btn-icon" disabled>
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <span class="page-info">Page 1 of 65</span>
-                        <button class="btn-icon">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
+                    <div class="pagination" id="pagination">
+                        <!-- Pagination will be loaded dynamically -->
                     </div>
                 </div>
             </section>
@@ -239,19 +151,8 @@
                 <div class="analytics-grid">
                     <div class="analytics-card">
                         <h3>Game Popularity</h3>
-                        <div class="chart-placeholder">
-                            <div class="chart-bar" style="height: 80%">
-                                <span>Quiz</span>
-                            </div>
-                            <div class="chart-bar" style="height: 65%">
-                                <span>Memory</span>
-                            </div>
-                            <div class="chart-bar" style="height: 50%">
-                                <span>Sorting</span>
-                            </div>
-                            <div class="chart-bar" style="height: 45%">
-                                <span>Puzzle</span>
-                            </div>
+                        <div class="chart-placeholder" id="gamePopularityChart">
+                            <!-- Dynamic chart bars will be inserted here -->
                         </div>
                     </div>
 
@@ -259,16 +160,16 @@
                         <h3>Activity Metrics</h3>
                         <div class="engagement-stats">
                             <div class="engagement-item">
-                                <span class="metric-label">Active Users Today</span>
-                                <span class="metric-value">142</span>
+                                <span class="metric-label">Active Users (7 days)</span>
+                                <span class="metric-value" id="activeUsersMetric">-</span>
                             </div>
                             <div class="engagement-item">
-                                <span class="metric-label">Avg. Session Duration</span>
-                                <span class="metric-value">12.5 min</span>
+                                <span class="metric-label">Recent Registrations</span>
+                                <span class="metric-value" id="recentRegistrations">-</span>
                             </div>
                             <div class="engagement-item">
                                 <span class="metric-label">Points Per User</span>
-                                <span class="metric-value">139.8</span>
+                                <span class="metric-value" id="avgPointsMetric">-</span>
                             </div>
                         </div>
                     </div>

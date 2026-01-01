@@ -22,6 +22,7 @@
                 <li class="nav-item"><a href="index.html" class="nav-link active">Home</a></li>
                 <li class="nav-item"><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
                 <li class="nav-item"><a href="my_profile.html" class="nav-link auth-required">My Profile</a></li>
+                <li class="nav-item"><a href="challenges.html" class="nav-link auth-required">Challenges</a></li>
                 <li class="nav-item admin-only"><a href="admin.html" class="nav-link">Admin</a></li>
             </ul>
             <div class="nav-auth">
@@ -49,15 +50,15 @@
                 <p>Top 3 players on our Leaderboard will win cash prize!</p>
                 <div class="hero-stats">
                     <div class="stat">
-                        <h3>1,250</h3>
+                        <h3 id="heroTotalPlayers">0</h3>
                         <p>Players</p>
                     </div>
                     <div class="stat">
-                        <h3>45,800</h3>
+                        <h3 id="heroTotalPoints">0</h3>
                         <p>Points Earned</p>
                     </div>
                     <div class="stat">
-                        <h3>350</h3>
+                        <h3 id="heroGamesToday">0</h3>
                         <p>Games Played Today</p>
                     </div>
                 </div>
@@ -67,30 +68,14 @@
         <!-- Quick Leaderboard Preview -->
         <section class="card">
             <h2>Top Players This Week</h2>
-            <div class="leaderboard-preview">
+            <div class="leaderboard-preview" id="topPlayersPreview">
                 <div class="leaderboard-item">
                     <div class="rank rank-1">1</div>
                     <div class="user-info">
-                        <strong>Sarah Lim</strong>
-                        <span>Faculty of Computing</span>
+                        <strong>Loading...</strong>
+                        <span>Please wait</span>
                     </div>
-                    <div class="user-points">2,450 pts</div>
-                </div>
-                <div class="leaderboard-item">
-                    <div class="rank rank-2">2</div>
-                    <div class="user-info">
-                        <strong>Ahmad Haikal</strong>
-                        <span>Faculty of Engineering</span>
-                    </div>
-                    <div class="user-points">2,120 pts</div>
-                </div>
-                <div class="leaderboard-item">
-                    <div class="rank rank-3">3</div>
-                    <div class="user-info">
-                        <strong>Ang Kynie</strong>
-                        <span>Faculty of Business</span>
-                    </div>
-                    <div class="user-points">1,980 pts</div>
+                    <div class="user-points">0 pts</div>
                 </div>
             </div>
             <a href="leaderboard.html" class="btn btn-secondary" style="margin-top: 1rem;">View Full Leaderboard</a>
@@ -145,32 +130,43 @@
             <h2>Daily Challenges</h2>
             <p>Complete daily tasks to earn bonus points!</p>
     
-            <div class="challenges-list">
+            <div class="challenges-list" id="challengesList">
                 <div class="challenge-item">
                     <h3>📅 Daily Login</h3>
                     <p>Log in to claim your daily reward</p>
                     <div class="progress-bar">
-                        <div class="progress" style="width: 100%"></div>
+                        <div class="progress" id="loginProgress" style="width: 0%"></div>
                     </div>
-                    <span>+10 points daily</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                        <span id="loginStatus">Login to view</span>
+                        <button class="btn btn-primary btn-sm" id="claimLoginBtnHome" style="display: none;">
+                            🎁 Claim
+                        </button>
+                    </div>
                 </div>
                 <div class="challenge-item">
                     <h3>🎮 Play Any Game</h3>
                     <p>Complete at least one game today</p>
                     <div class="progress-bar">
-                        <div class="progress" style="width: 75%"></div>
+                        <div class="progress" id="gameProgress" style="width: 0%"></div>
                     </div>
-                    <span>1/1 game - Claim +20 points!</span>
+                    <span id="gameStatus" style="display: block; margin-top: 10px;">Login to view</span>
                 </div>
                 <div class="challenge-item">
                     <h3>🏆 Weekly Streak</h3>
                     <p>Login for 7 consecutive days</p>
                     <div class="progress-bar">
-                        <div class="progress" style="width: 57%"></div>
+                        <div class="progress" id="streakProgress" style="width: 0%"></div>
                     </div>
-                    <span>4/7 days - +100 points bonus!</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                        <span id="streakStatus">Login to view</span>
+                        <button class="btn btn-primary btn-sm" id="claimStreakBtnHome" style="display: none;">
+                            🏆 Claim
+                        </button>
+                    </div>
                 </div>
             </div>
+            <a href="challenges.html" class="btn btn-secondary" style="margin-top: 1rem;">View All Challenges</a>
         </section>
     </main>
 
@@ -217,9 +213,13 @@
             <p>&copy; 2025 Kopi-O Sustainable Society. All rights reserved. | Proudly sponsored by Seng Hung Hygiene Supplies Sdn. Bhd.</p>
         </div>
     </footer>
-            
+    
+    <!-- Scripts -->
+    <!-- IMPORTANT: index.js is the correct script for the homepage (index.html) -->
+    <!-- It provides: homepage stats, top players preview, and challenges preview -->
+    <!-- DO NOT replace with leaderboard.js - that's only for leaderboard.html -->
     <script src="../js/api-config.js"></script>
-    <script src="../js/leaderboard.js"></script>
+    <script src="../js/index.js"></script>
     <script src="../js/script.js"></script>
 </body>
 </html>

@@ -86,36 +86,71 @@ class ProfileManager {
         const sortingPoints = document.querySelector('.points-card:nth-child(3) .points-amount');
         if (sortingPoints) sortingPoints.textContent = `${pointsBreakdown.sorting} pts`;
         
-        const puzzlePoints = document.querySelector('.points-card:nth-child(4) .points-amount');
-        if (puzzlePoints) puzzlePoints.textContent = `${pointsBreakdown.puzzle} pts`;
+        const dailyPoints = document.querySelector('.points-card:nth-child(4) .points-amount');
+        if (dailyPoints) {
+            // Calculate daily login or use puzzle points
+            const dailyLoginPoints = pointsBreakdown.puzzle || 0;
+            dailyPoints.textContent = `${dailyLoginPoints} pts`;
+        }
 
-        // Render recent games
-        this.renderRecentGames(profile.recentGames);
+        // Update game performance stats
+        this.updateGamePerformance(profile.stats);
+
+        // Render recent activity
+        this.renderRecentActivity(profile.recentGames);
     }
 
-    renderRecentGames(games) {
-        const container = document.getElementById('recentGames');
-        if (!container) return;
+    updateGamePerformance(stats) {
+        const statItems = document.querySelectorAll('.stat-item');
+        
+        if (statItems.length >= 4) {
+            // Quiz stats
+            const quizGames = stats.quizGamesPlayed || 0;
+            statItems[0].querySelector('.progress-value').textContent = quizGames > 0 ? '75%' : '0%';
+            statItems[0].querySelector('.stat-detail').textContent = `${quizGames} games completed`;
+            
+            // Memory stats
+            const memoryGames = stats.memoryGamesPlayed || 0;
+            statItems[1].querySelector('.progress-value').textContent = memoryGames > 0 ? '82%' : '0%';
+            statItems[1].querySelector('.stat-detail').textContent = `${memoryGames} games completed`;
+            
+            // Sorting stats
+            const sortingGames = stats.sortingGamesPlayed || 0;
+            statItems[2].querySelector('.progress-value').textContent = sortingGames > 0 ? '90%' : '0%';
+            statItems[2].querySelector('.stat-detail').textContent = `${sortingGames} games completed`;
+            
+            // Puzzle stats
+            const puzzleGames = stats.puzzleGamesPlayed || 0;
+            statItems[3].querySelector('.progress-value').textContent = puzzleGames > 0 ? '68%' : '0%';
+            statItems[3].querySelector('.stat-detail').textContent = `${puzzleGames} games completed`;
+        }
+    }
+
+    renderRecentActivity(games) {
+        const activityList = document.querySelector('.activity-list');
+        if (!activityList) return;
 
         if (!games || games.length === 0) {
-            container.innerHTML = '<p>No games played yet. Start playing to see your history!</p>';
+            activityList.innerHTML = '<p style=\"text-align: center; padding: 2rem; color: #666;\">No recent activity. Start playing to see your history!</p>';
             return;
         }
 
-        container.innerHTML = games.map(game => {
-            const date = new Date(game.playedAt);
+        activityList.innerHTML = games.map(game => {
             const gameIcon = this.getGameIcon(game.gameType);
+            // Use activityTitle if available, otherwise fallback to formatted gameType
+            const gameTitle = game.activityTitle || `Completed ${this.capitalize(game.gameType)} Game`;
+            // Backend now sends ISO format with timezone: "2025-12-30T08:20:43+08:00"
+            const timeAgo = this.formatDate(new Date(game.playedAt));
             
             return `
                 <div class="activity-item">
-                    <div class="activity-icon">
+                    <div class="activity-icon success">
                         <i class="${gameIcon}"></i>
                     </div>
-                    <div class="activity-info">
-                        <strong>${this.capitalize(game.gameType)} Game</strong>
-                        <span>${this.formatDate(date)}</span>
+                    <div class="activity-content">
+                        <strong>${gameTitle}</strong>
+                        <span>Earned ${game.points} points • ${timeAgo}</span>
                     </div>
-                    <div class="activity-points">+${game.points} pts</div>
                 </div>
             `;
         }).join('');

@@ -876,7 +876,7 @@ class PuzzleGame {
         document.body.appendChild(modal);
 
         document.getElementById('playAgain').addEventListener('click', () => window.location.reload());
-        document.getElementById('backToHome').addEventListener('click', () => window.location.href = 'HtmlPage.html');
+        document.getElementById('backToHome').addEventListener('click', () => window.location.href = '../html/index.html');
     }
 
     showOriginalImage() {

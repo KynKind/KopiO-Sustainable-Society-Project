@@ -4,13 +4,13 @@ Handles leaderboard queries with faculty filtering and search
 """
 from database import get_db_connection
 
-def get_global_leaderboard(limit=50, offset=0):
+def get_global_leaderboard(limit=50, offset=0, query=None):
     """Get global leaderboard"""
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        cursor.execute('''
+        sql = '''
             SELECT 
                 u.id,
                 u.first_name,
@@ -26,9 +26,17 @@ def get_global_leaderboard(limit=50, offset=0):
             FROM users u
             LEFT JOIN user_stats us ON u.id = us.user_id
             WHERE u.role = 'student'
-            ORDER BY u.total_points DESC, u.created_at ASC
-            LIMIT ? OFFSET ?
-        ''', (limit, offset))
+        '''
+        params = []
+        
+        if query:
+            sql += " AND (LOWER(u.first_name || ' ' || u.last_name) LIKE LOWER(?) OR LOWER(u.email) LIKE LOWER(?))"
+            params.extend([f'%{query}%', f'%{query}%'])
+        
+        sql += ' ORDER BY u.total_points DESC, u.created_at ASC LIMIT ? OFFSET ?'
+        params.extend([limit, offset])
+        
+        cursor.execute(sql, tuple(params))
         
         users = []
         rank = offset + 1
@@ -50,7 +58,12 @@ def get_global_leaderboard(limit=50, offset=0):
             rank += 1
         
         # Get total count
-        cursor.execute('SELECT COUNT(*) FROM users WHERE role = "student"')
+        count_sql = 'SELECT COUNT(*) FROM users u WHERE u.role = "student"'
+        count_params = []
+        if query:
+            count_sql += " AND (LOWER(u.first_name || ' ' || u.last_name) LIKE LOWER(?) OR LOWER(u.email) LIKE LOWER(?))"
+            count_params.extend([f'%{query}%', f'%{query}%'])
+        cursor.execute(count_sql, tuple(count_params))
         total = cursor.fetchone()[0]
         
         conn.close()
@@ -65,13 +78,77 @@ def get_global_leaderboard(limit=50, offset=0):
     except Exception as e:
         return {'error': f'Failed to get leaderboard: {str(e)}'}, 500
 
-def get_faculty_leaderboard(faculty, limit=50, offset=0):
+def get_faculty_leaderboard(faculty, limit=50, offset=0, query=None):
     """Get leaderboard filtered by faculty"""
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        cursor.execute('''
+        # Map known faculty codes (from the dropdown) to possible stored name variants
+        # so selection values like 'fci' match users stored as 'Faculty of Computing' or similar
+        FACULTY_CODE_TO_NAMES = {
+            'fci': [
+                'Faculty of Computing & Informatics (FCI)',
+                'Faculty of Computing',
+                'Computing',
+                'FCI'
+            ],
+            'fom': [
+                'Faculty of Management (FOM)',
+                'Faculty of Management',
+                'Management',
+                'FOM'
+            ],
+            'faie': [
+                'Faculty of Artificial Intelligence & Engineering (FAIE)',
+                'Faculty of Artificial Intelligence & Engineering',
+                'Artificial Intelligence',
+                'FAIE'
+            ],
+            'fcm': [
+                'Faculty of Creative Multimedia (FCM)',
+                'Faculty of Creative Multimedia',
+                'Creative Multimedia',
+                'FCM'
+            ],
+            'fca': [
+                'Faculty of Cinematic Arts (FCA)',
+                'Faculty of Cinematic Arts',
+                'Cinematic Arts',
+                'FCA'
+            ],
+            'fob': [
+                'Faculty of Business (FOB)',
+                'Faculty of Business',
+                'Business',
+                'FOB'
+            ],
+            'fac': [
+                'Faculty of Applied Communication (FAC)',
+                'Faculty of Applied Communication',
+                'Applied Communication',
+                'FAC'
+            ],
+            'fist': [
+                'Faculty of Information Science & Technology (FIST)',
+                'Faculty of Information Science & Technology',
+                'Information Science',
+                'FIST'
+            ]
+        }
+
+        # Build search terms: include the raw input and any mapped full name variants
+        search_terms = [faculty]
+        mapped_names = FACULTY_CODE_TO_NAMES.get(faculty.lower())
+        if mapped_names:
+            for name in mapped_names:
+                if name and name not in search_terms:
+                    search_terms.append(name)
+
+        # Build SQL conditions dynamically to search any of the terms (exact or substring, case-insensitive)
+        conditions = " OR ".join(["(LOWER(u.faculty) = LOWER(?) OR LOWER(u.faculty) LIKE '%' || LOWER(?) || '%')" for _ in search_terms])
+
+        sql = f'''
             SELECT 
                 u.id,
                 u.first_name,
@@ -86,10 +163,22 @@ def get_faculty_leaderboard(faculty, limit=50, offset=0):
                 us.current_streak
             FROM users u
             LEFT JOIN user_stats us ON u.id = us.user_id
-            WHERE u.role = 'student' AND u.faculty = ?
-            ORDER BY u.total_points DESC, u.created_at ASC
-            LIMIT ? OFFSET ?
-        ''', (faculty, limit, offset))
+            WHERE u.role = 'student' 
+              AND ({conditions})
+        '''
+        params = []
+        for term in search_terms:
+            # each term provides two placeholders (equality and LIKE)
+            params.extend([term, term])
+        
+        if query:
+            sql += " AND (LOWER(u.first_name || ' ' || u.last_name) LIKE LOWER(?) OR LOWER(u.email) LIKE LOWER(?))"
+            params.extend([f'%{query}%', f'%{query}%'])
+        
+        sql += ' ORDER BY u.total_points DESC, u.created_at ASC LIMIT ? OFFSET ?'
+        params.extend([limit, offset])
+
+        cursor.execute(sql, tuple(params))
         
         users = []
         rank = offset + 1
@@ -110,11 +199,19 @@ def get_faculty_leaderboard(faculty, limit=50, offset=0):
             })
             rank += 1
         
-        # Get total count for faculty
-        cursor.execute('''
+        # Get total count for faculty using the same dynamic search terms
+        count_conditions = " OR ".join(["(LOWER(faculty) = LOWER(?) OR LOWER(faculty) LIKE '%' || LOWER(?) || '%')" for _ in search_terms])
+        count_sql = f'''
             SELECT COUNT(*) FROM users 
-            WHERE role = "student" AND faculty = ?
-        ''', (faculty,))
+            WHERE role = "student" AND ({count_conditions})
+        '''
+        count_params = []
+        for term in search_terms:
+            count_params.extend([term, term])
+        if query:
+            count_sql += " AND (LOWER(first_name || ' ' || last_name) LIKE LOWER(?) OR LOWER(email) LIKE LOWER(?))"
+            count_params.extend([f'%{query}%', f'%{query}%'])
+        cursor.execute(count_sql, tuple(count_params))
         total = cursor.fetchone()[0]
         
         conn.close()
@@ -210,7 +307,8 @@ def get_top_players(limit=3):
         for row in cursor.fetchall():
             players.append({
                 'rank': rank,
-                'name': f"{row['first_name']} {row['last_name']}",
+                'firstName': row['first_name'],
+                'lastName': row['last_name'],
                 'faculty': row['faculty'],
                 'totalPoints': row['total_points']
             })
@@ -218,7 +316,7 @@ def get_top_players(limit=3):
         
         conn.close()
         
-        return {'topPlayers': players}, 200
+        return {'users': players}, 200
         
     except Exception as e:
         return {'error': f'Failed to get top players: {str(e)}'}, 500

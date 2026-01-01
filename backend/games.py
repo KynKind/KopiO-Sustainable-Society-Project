@@ -8,6 +8,16 @@ from datetime import datetime, date
 from database import get_db_connection
 from config import Config
 
+def record_activity(cursor, user_id, activity_type, activity_title, points_earned, activity_data=None):
+    """Record an activity in the recent_activities table"""
+    try:
+        cursor.execute('''
+            INSERT INTO recent_activities (user_id, activity_type, activity_title, points_earned, activity_data)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (user_id, activity_type, activity_title, points_earned, activity_data))
+    except Exception as e:
+        print(f"Error recording activity: {e}")
+
 def get_random_quiz_questions(count=None):
     """Get random quiz questions"""
     try:
@@ -127,6 +137,9 @@ def submit_quiz_score(user_id, data):
             VALUES (?, ?, ?, ?, ?)
         ''', (user_id, 'quiz', correct_count, points, game_data))
         
+        # Ensure user_stats record exists
+        cursor.execute('INSERT OR IGNORE INTO user_stats (user_id) VALUES (?)', (user_id,))
+        
         # Update user stats
         cursor.execute('''
             UPDATE user_stats
@@ -146,6 +159,18 @@ def submit_quiz_score(user_id, data):
         
         # Update streak
         update_user_streak(cursor, user_id)
+        
+        # Record game played for daily challenges
+        from challenges import record_game_played
+        record_game_played(cursor, user_id)
+        
+        # Record activity for profile display
+        record_activity(
+            cursor, user_id, 'quiz', 
+            'Completed Sustainability Quiz',
+            points,
+            json.dumps({'score': correct_count, 'total': len(answers)})
+        )
         
         conn.commit()
         conn.close()
@@ -210,6 +235,9 @@ def submit_memory_game_score(user_id, data):
             VALUES (?, ?, ?, ?, ?)
         ''', (user_id, 'memory', moves, points, game_data))
         
+        # Ensure user_stats record exists
+        cursor.execute('INSERT OR IGNORE INTO user_stats (user_id) VALUES (?)', (user_id,))
+        
         cursor.execute('''
             UPDATE user_stats
             SET memory_games_played = memory_games_played + 1,
@@ -226,6 +254,18 @@ def submit_memory_game_score(user_id, data):
         ''', (points, user_id))
         
         update_user_streak(cursor, user_id)
+        
+        # Record game played for daily challenges
+        from challenges import record_game_played
+        record_game_played(cursor, user_id)
+        
+        # Record activity for profile display
+        record_activity(
+            cursor, user_id, 'memory',
+            'Completed Memory Game',
+            points,
+            json.dumps({'moves': moves, 'level': level})
+        )
         
         conn.commit()
         conn.close()
@@ -284,6 +324,9 @@ def submit_puzzle_game_score(user_id, data):
             VALUES (?, ?, ?, ?, ?)
         ''', (user_id, 'puzzle', moves, points, game_data))
         
+        # Ensure user_stats record exists
+        cursor.execute('INSERT OR IGNORE INTO user_stats (user_id) VALUES (?)', (user_id,))
+        
         cursor.execute('''
             UPDATE user_stats
             SET puzzle_games_played = puzzle_games_played + 1,
@@ -300,6 +343,18 @@ def submit_puzzle_game_score(user_id, data):
         ''', (points, user_id))
         
         update_user_streak(cursor, user_id)
+        
+        # Record game played for daily challenges
+        from challenges import record_game_played
+        record_game_played(cursor, user_id)
+        
+        # Record activity for profile display
+        record_activity(
+            cursor, user_id, 'puzzle',
+            'Completed Puzzle Game',
+            points,
+            json.dumps({'moves': moves, 'puzzleNumber': puzzle_number})
+        )
         
         conn.commit()
         conn.close()
@@ -370,6 +425,9 @@ def submit_sorting_game_score(user_id, data):
             VALUES (?, ?, ?, ?, ?)
         ''', (user_id, 'sorting', correct_sorts, points, game_data))
         
+        # Ensure user_stats record exists
+        cursor.execute('INSERT OR IGNORE INTO user_stats (user_id) VALUES (?)', (user_id,))
+        
         cursor.execute('''
             UPDATE user_stats
             SET sorting_games_played = sorting_games_played + 1,
@@ -386,6 +444,18 @@ def submit_sorting_game_score(user_id, data):
         ''', (points, user_id))
         
         update_user_streak(cursor, user_id)
+        
+        # Record game played for daily challenges
+        from challenges import record_game_played
+        record_game_played(cursor, user_id)
+        
+        # Record activity for profile display
+        record_activity(
+            cursor, user_id, 'sorting',
+            'Completed Sorting Game',
+            points,
+            json.dumps({'accuracy': accuracy, 'level': level})
+        )
         
         conn.commit()
         conn.close()

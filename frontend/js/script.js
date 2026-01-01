@@ -97,7 +97,6 @@ async function checkAuth() {
                         window.location.pathname.includes('sponsorship.html');
     
     if (!token) {
-        updateNavbar(null);
         if (!isPublicPage) {
             window.location.href = 'login.html';
         }
@@ -119,9 +118,21 @@ async function checkAuth() {
         
         // Update local storage with latest user data
         localStorage.setItem('currentUser', JSON.stringify(user));
-        updateNavbar(user);
         return user;
     } catch (error) {
+        console.error('Auth check error:', error);
+        // Don't clear auth on network errors for public pages
+        if (isPublicPage) {
+            // Keep the cached user data on public pages if it's just a network issue
+            const storedUser = localStorage.getItem('currentUser');
+            if (storedUser) {
+                try {
+                    return JSON.parse(storedUser);
+                } catch (e) {
+                    // If parse fails, clear everything
+                }
+            }
+        }
         localStorage.removeItem('authToken');
         localStorage.removeItem('currentUser');
         updateNavbar(null);

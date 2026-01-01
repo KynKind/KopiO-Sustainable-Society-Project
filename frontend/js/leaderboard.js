@@ -1,7 +1,7 @@
 // Leaderboard JavaScript with API Integration
-
 class LeaderboardManager {
     constructor() {
+        console.log('LeaderboardManager constructor called');
         this.currentFaculty = 'all';
         this.currentPage = 1;
         this.limit = 20;
@@ -23,13 +23,17 @@ class LeaderboardManager {
             });
         }
 
-        const searchInput = document.getElementById('leaderboardSearch');
+        // 修正点：将 leaderboardSearch 改为 playerSearch，对应 HTML 中的 ID
+        const searchInput = document.getElementById('playerSearch');
+        console.log('Search input found:', searchInput);
         if (searchInput) {
             let searchTimeout;
             searchInput.addEventListener('input', (e) => {
+                console.log('Input event fired, value:', e.target.value);
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(async () => {
                     const query = e.target.value.trim();
+                    console.log('Query after trim:', query, 'length:', query.length);
                     if (query.length >= 2) {
                         await this.searchLeaderboard(query);
                     } else if (query.length === 0) {
@@ -37,206 +41,134 @@ class LeaderboardManager {
                     }
                 }, 300);
             });
+        } else {
+            console.error('Search input not found!');
         }
     }
 
     async loadLeaderboard() {
         try {
-            const leaderboardList = document.getElementById('leaderboardList');
-            if (leaderboardList) {
-                leaderboardList.innerHTML = '<div class="loading">Loading leaderboard...</div>';
-            }
+            // 修正点：对应 HTML 里的 class "leaderboard-list"
+            const listContainer = document.querySelector('.leaderboard-list');
+            if (listContainer) listContainer.innerHTML = '<div class="loading">Loading...</div>';
 
             let endpoint = `/leaderboard/global?page=${this.currentPage}&limit=${this.limit}`;
-            
             if (this.currentFaculty && this.currentFaculty !== 'all') {
-                endpoint = `/leaderboard/faculty/${this.currentFaculty}?page=${this.currentPage}&limit=${this.limit}`;
+                // 根据文档，学院过滤路径为 /faculty/<faculty>
+                endpoint = `/leaderboard/faculty/${this.currentFaculty.toUpperCase()}`;
             }
 
             const data = await apiRequest(endpoint, { skipAuth: true });
-            
             this.renderLeaderboard(data.leaderboard);
-            this.updatePagination(data.page, Math.ceil(data.total / data.limit));
             
-        } catch (error) {
-            console.error('Error loading leaderboard:', error);
-            const leaderboardList = document.getElementById('leaderboardList');
-            if (leaderboardList) {
-                leaderboardList.innerHTML = '<div class="error">Failed to load leaderboard. Please try again.</div>';
+            if (data.total && data.limit) {
+                this.updatePagination(data.page, Math.ceil(data.total / data.limit));
             }
+        } catch (error) {
+            console.error('Error:', error);
         }
     }
 
     async searchLeaderboard(query) {
         try {
-            const leaderboardList = document.getElementById('leaderboardList');
-            if (leaderboardList) {
-                leaderboardList.innerHTML = '<div class="loading">Searching...</div>';
+            console.log('Searching for:', query);
+            let endpoint = `/leaderboard/global?q=${encodeURIComponent(query)}`;
+            if (this.currentFaculty && this.currentFaculty !== 'all') {
+                endpoint = `/leaderboard/faculty/${this.currentFaculty.toUpperCase()}?q=${encodeURIComponent(query)}`;
             }
-
-            const data = await apiRequest(`/leaderboard/search?q=${encodeURIComponent(query)}`, { skipAuth: true });
-            
-            this.renderLeaderboard(data.results);
-            
+            console.log('Endpoint:', endpoint);
+            const data = await apiRequest(endpoint, { skipAuth: true });
+            console.log('Search results:', data);
+            this.renderLeaderboard(data.leaderboard);
         } catch (error) {
-            console.error('Error searching leaderboard:', error);
-            const leaderboardList = document.getElementById('leaderboardList');
-            if (leaderboardList) {
-                leaderboardList.innerHTML = '<div class="error">Search failed. Please try again.</div>';
-            }
+            console.error('Search error:', error);
+            console.error('Search error:', error);
         }
     }
 
     renderLeaderboard(users) {
-        const leaderboardList = document.getElementById('leaderboardList');
-        if (!leaderboardList) return;
+        const listContainer = document.querySelector('.leaderboard-list');
+        if (!listContainer || !users) return;
 
         if (users.length === 0) {
-            leaderboardList.innerHTML = '<div class="no-results">No users found.</div>';
+            listContainer.innerHTML = '<div class="no-results">No champions found!</div>';
             return;
         }
 
-        leaderboardList.innerHTML = users.map(user => `
+        listContainer.innerHTML = users.map(user => `
             <div class="leaderboard-item">
-                <div class="rank ${this.getRankClass(user.rank)}">${user.rank}</div>
+                <div class="rank ${user.rank <= 3 ? 'rank-' + user.rank : ''}">${user.rank || '-'}</div>
+                <div class="user-avatar"><i class="fas fa-user"></i></div>
                 <div class="user-info">
-                    <strong>${this.escapeHtml(user.name)}</strong>
-                    <span>${this.escapeHtml(user.faculty)}</span>
+                    <strong>${user.name}</strong>
+                    <span>${user.faculty}</span>
                 </div>
                 <div class="user-stats">
-                    <span><i class="fas fa-gamepad"></i> ${user.gamesPlayed} games</span>
-                    <span><i class="fas fa-fire"></i> ${user.currentStreak} day streak</span>
+                    <span><i class="fas fa-fire"></i> ${user.currentStreak || 0} streak</span>
                 </div>
                 <div class="user-points">${user.totalPoints.toLocaleString()} pts</div>
             </div>
         `).join('');
     }
 
-    getRankClass(rank) {
-        if (rank === 1) return 'rank-1';
-        if (rank === 2) return 'rank-2';
-        if (rank === 3) return 'rank-3';
-        return '';
-    }
-
     updatePagination(currentPage, totalPages) {
-        const pagination = document.getElementById('pagination');
-        if (!pagination || totalPages <= 1) {
-            if (pagination) pagination.innerHTML = '';
-            return;
-        }
-
-        let html = '';
-        
-        if (currentPage > 1) {
-            html += `<button class="btn btn-secondary" onclick="leaderboardManager.goToPage(${currentPage - 1})">Previous</button>`;
-        }
-        
-        html += `<span class="page-info">Page ${currentPage} of ${totalPages}</span>`;
-        
+        const footer = document.querySelector('.leaderboard-footer');
+        if (!footer) return;
         if (currentPage < totalPages) {
-            html += `<button class="btn btn-secondary" onclick="leaderboardManager.goToPage(${currentPage + 1})">Next</button>`;
+            footer.innerHTML = `<button class="btn btn-secondary" onclick="leaderboardManager.goToPage(${currentPage + 1})">Load More</button>`;
+        } else {
+            footer.innerHTML = '<p>End of list</p>';
         }
-        
-        pagination.innerHTML = html;
     }
 
     async goToPage(page) {
         this.currentPage = page;
         await this.loadLeaderboard();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
     }
 }
 
-// Load top players for homepage
+// 首页预览和前三名逻辑
 async function loadTopPlayers() {
     try {
         const data = await apiRequest('/leaderboard/top?limit=3', { skipAuth: true });
         
-        const topWinners = document.querySelector('.top-winners');
-        if (!topWinners || !data.topPlayers || data.topPlayers.length === 0) return;
+        if (!data || !data.users) {
+            console.log('No data or users returned from API');
+            return;
+        }
 
-        // Update the winners display
-        const players = data.topPlayers;
-        
-        if (players[0]) {
-            const winner1 = topWinners.querySelector('.winner-1 .winner-info');
-            if (winner1) {
-                winner1.querySelector('h3').textContent = players[0].name;
-                winner1.querySelector('.winner-faculty').textContent = players[0].faculty;
-                winner1.querySelector('.winner-points').textContent = `${players[0].totalPoints.toLocaleString()} pts`;
-            }
+        const players = data.users;
+
+        if (players.length === 0) {
+            console.log('No players found for top winners');
+            return;
         }
-        
-        if (players[1]) {
-            const winner2 = topWinners.querySelector('.winner-2 .winner-info');
-            if (winner2) {
-                winner2.querySelector('h3').textContent = players[1].name;
-                winner2.querySelector('.winner-faculty').textContent = players[1].faculty;
-                winner2.querySelector('.winner-points').textContent = `${players[1].totalPoints.toLocaleString()} pts`;
+
+        players.forEach((player, index) => {
+            const rank = index + 1;
+            const card = document.querySelector(`.winner-${rank}`);
+            if (card) {
+                const fullName = `${player.firstName || ''} ${player.lastName || ''}`.trim();
+                const h3 = card.querySelector('h3');
+                const faculty = card.querySelector('.winner-faculty');
+                const points = card.querySelector('.winner-points');
+                
+                if (h3) h3.textContent = fullName || 'Unknown';
+                if (faculty) faculty.textContent = player.faculty || '-';
+                if (points) points.textContent = `${(player.totalPoints || 0).toLocaleString()} pts`;
             }
-        }
-        
-        if (players[2]) {
-            const winner3 = topWinners.querySelector('.winner-3 .winner-info');
-            if (winner3) {
-                winner3.querySelector('h3').textContent = players[2].name;
-                winner3.querySelector('.winner-faculty').textContent = players[2].faculty;
-                winner3.querySelector('.winner-points').textContent = `${players[2].totalPoints.toLocaleString()} pts`;
-            }
-        }
-        
-    } catch (error) {
-        console.error('Error loading top players:', error);
+        });
+    } catch (error) { 
+        console.error('Error loading top players:', error); 
     }
 }
 
-// Load homepage leaderboard preview
-async function loadLeaderboardPreview() {
-    try {
-        const data = await apiRequest('/leaderboard/top?limit=3', { skipAuth: true });
-        
-        const previewContainer = document.querySelector('.leaderboard-preview');
-        if (!previewContainer || !data.topPlayers) return;
-
-        previewContainer.innerHTML = data.topPlayers.map((player, index) => `
-            <div class="leaderboard-item">
-                <div class="rank rank-${index + 1}">${index + 1}</div>
-                <div class="user-info">
-                    <strong>${player.name}</strong>
-                    <span>${player.faculty}</span>
-                </div>
-                <div class="user-points">${player.totalPoints.toLocaleString()} pts</div>
-            </div>
-        `).join('');
-        
-    } catch (error) {
-        console.error('Error loading leaderboard preview:', error);
-    }
-}
-
-// Initialize leaderboard manager when DOM is loaded
 let leaderboardManager;
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize on leaderboard page
-    if (document.getElementById('leaderboardList')) {
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.querySelector('.leaderboard-list')) {
         leaderboardManager = new LeaderboardManager();
     }
-    
-    // Load top players on leaderboard page
     if (document.querySelector('.top-winners')) {
         loadTopPlayers();
-    }
-    
-    // Load preview on homepage
-    if (document.querySelector('.leaderboard-preview')) {
-        loadLeaderboardPreview();
     }
 });
