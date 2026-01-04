@@ -278,3 +278,30 @@ def get_user_achievements(user_id):
         
     except Exception as e:
         return {'error': f'Failed to get achievements: {str(e)}'}, 500
+
+def delete_my_account(user_id):
+    """Allow user to delete their own account"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Check if user exists
+        cursor.execute('SELECT id FROM users WHERE id = ?', (user_id,))
+        if not cursor.fetchone():
+            conn.close()
+            return {'error': 'User not found'}, 404
+        
+        # Delete related records
+        cursor.execute('DELETE FROM game_scores WHERE user_id = ?', (user_id,))
+        cursor.execute('DELETE FROM user_stats WHERE user_id = ?', (user_id,))
+        cursor.execute('DELETE FROM daily_challenges WHERE user_id = ?', (user_id,))
+        cursor.execute('DELETE FROM recent_activities WHERE user_id = ?', (user_id,))
+        cursor.execute('DELETE FROM users WHERE id = ?', (user_id,))
+        
+        conn.commit()
+        conn.close()
+        
+        return {'message': 'Account deleted successfully'}, 200
+        
+    except Exception as e:
+        return {'error': f'Failed to delete account: {str(e)}'}, 500

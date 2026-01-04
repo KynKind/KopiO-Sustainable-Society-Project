@@ -274,6 +274,14 @@ def get_my_achievements():
     result, status = profile.get_user_achievements(request.user_id)
     return jsonify(result), status
 
+@app.route('/api/profile/deactivate', methods=['DELETE'])
+@auth.token_required
+def deactivate_account():
+    """Deactivate (delete) current user's account"""
+    result, status = profile.delete_my_account(request.user_id)
+    return jsonify(result), status
+
+
 # ==================== Admin Endpoints ====================
 
 @app.route('/api/admin/users', methods=['GET'])

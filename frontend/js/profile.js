@@ -17,6 +17,29 @@ class ProfileManager {
                 logout();
             });
         }
+
+        const deactivateBtn = document.getElementById('deactivateBtn');
+        if (deactivateBtn) {
+            deactivateBtn.addEventListener('click', () => {
+                this.handleDeactivation();
+            });
+        }
+    }
+
+    async handleDeactivation() {
+        if (confirm('Are you sure you want to deactivate your account? This action cannot be undone and you will lose all your progress and points.')) {
+            try {
+                const response = await apiRequest('/profile/deactivate', {
+                    method: 'DELETE'
+                });
+
+                alert('Your account has been successfully deactivated.');
+                logout(); // Logs out and redirects to login
+            } catch (error) {
+                console.error('Deactivation error:', error);
+                showMessage(error.message || 'Failed to deactivate account', 'error');
+            }
+        }
     }
 
     async loadProfile() {
@@ -28,15 +51,15 @@ class ProfileManager {
             }
 
             const data = await apiRequest('/profile/me');
-            
+
             this.renderProfile(data);
             await this.loadStats();
-            
+
             // Remove loading state
             if (profileContainer) {
                 profileContainer.style.opacity = '1';
             }
-            
+
         } catch (error) {
             console.error('Error loading profile:', error);
             showMessage('Failed to load profile data', 'error');
@@ -76,16 +99,16 @@ class ProfileManager {
 
         // Update points breakdown
         const pointsBreakdown = profile.pointsBreakdown;
-        
+
         const quizPoints = document.querySelector('.points-card:nth-child(1) .points-amount');
         if (quizPoints) quizPoints.textContent = `${pointsBreakdown.quiz} pts`;
-        
+
         const memoryPoints = document.querySelector('.points-card:nth-child(2) .points-amount');
         if (memoryPoints) memoryPoints.textContent = `${pointsBreakdown.memory} pts`;
-        
+
         const sortingPoints = document.querySelector('.points-card:nth-child(3) .points-amount');
         if (sortingPoints) sortingPoints.textContent = `${pointsBreakdown.sorting} pts`;
-        
+
         const dailyPoints = document.querySelector('.points-card:nth-child(4) .points-amount');
         if (dailyPoints) {
             // Calculate daily login or use puzzle points
@@ -102,23 +125,23 @@ class ProfileManager {
 
     updateGamePerformance(stats) {
         const statItems = document.querySelectorAll('.stat-item');
-        
+
         if (statItems.length >= 4) {
             // Quiz stats
             const quizGames = stats.quizGamesPlayed || 0;
             statItems[0].querySelector('.progress-value').textContent = quizGames > 0 ? '75%' : '0%';
             statItems[0].querySelector('.stat-detail').textContent = `${quizGames} games completed`;
-            
+
             // Memory stats
             const memoryGames = stats.memoryGamesPlayed || 0;
             statItems[1].querySelector('.progress-value').textContent = memoryGames > 0 ? '82%' : '0%';
             statItems[1].querySelector('.stat-detail').textContent = `${memoryGames} games completed`;
-            
+
             // Sorting stats
             const sortingGames = stats.sortingGamesPlayed || 0;
             statItems[2].querySelector('.progress-value').textContent = sortingGames > 0 ? '90%' : '0%';
             statItems[2].querySelector('.stat-detail').textContent = `${sortingGames} games completed`;
-            
+
             // Puzzle stats
             const puzzleGames = stats.puzzleGamesPlayed || 0;
             statItems[3].querySelector('.progress-value').textContent = puzzleGames > 0 ? '68%' : '0%';
@@ -141,7 +164,7 @@ class ProfileManager {
             const gameTitle = game.activityTitle || `Completed ${this.capitalize(game.gameType)} Game`;
             // Backend now sends ISO format with timezone: "2025-12-30T08:20:43+08:00"
             const timeAgo = this.formatDate(new Date(game.playedAt));
-            
+
             return `
                 <div class="activity-item">
                     <div class="activity-icon success">
@@ -168,7 +191,7 @@ class ProfileManager {
     renderDetailedStats(stats) {
         // Update games played by type
         const gamesPlayed = stats.gamesPlayed;
-        
+
         // You can add more detailed stats visualization here if needed
         console.log('Detailed stats:', stats);
     }
@@ -198,7 +221,7 @@ class ProfileManager {
         if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
         if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
         if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-        
+
         return date.toLocaleDateString();
     }
 }
@@ -206,7 +229,7 @@ class ProfileManager {
 // Initialize profile manager when DOM is loaded
 let profileManager;
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     if (document.querySelector('.profile-container')) {
         profileManager = new ProfileManager();
     }

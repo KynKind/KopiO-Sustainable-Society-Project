@@ -1,21 +1,5 @@
 // Homepage data loader + navbar fix
-document.addEventListener('DOMContentLoaded', async function() {
-    // --- Navbar login/profile fix ---
-    const authBtn = document.getElementById('authBtn');
-    const userGreeting = document.getElementById('userGreeting');
-
-    // Check if user is logged in
-    const user = JSON.parse(localStorage.getItem('user')); // assumes 'user' object stored on login
-    if (user && user.username) {
-        authBtn.textContent = 'Profile';
-        authBtn.href = 'my_profile.html';
-        userGreeting.textContent = `Hi, ${user.username}`;
-    } else {
-        authBtn.textContent = 'Login';
-        authBtn.href = 'login.html';
-        userGreeting.textContent = '';
-    }
-
+document.addEventListener('DOMContentLoaded', async function () {
     // --- Original homepage code ---
     await loadHomeStats();
     await loadTopPlayers();

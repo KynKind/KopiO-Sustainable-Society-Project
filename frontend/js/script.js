@@ -49,7 +49,7 @@ function getFromLocalStorage(key) {
 function updateNavbar(user) {
     const authBtn = document.getElementById('authBtn');
     const userGreeting = document.getElementById('userGreeting');
-    
+
     if (user) {
         document.body.classList.add('logged-in');
         if (authBtn) {
@@ -84,25 +84,25 @@ function updateNavbar(user) {
 // Check if user is logged in
 async function checkAuth() {
     const token = localStorage.getItem('authToken');
-    
+
     // If on public pages, just update navbar state without redirecting
-    const isPublicPage = window.location.pathname.includes('login.html') || 
-                        window.location.pathname.includes('register.html') ||
-                        window.location.pathname.includes('forgot_password.html') ||
-                        window.location.pathname.includes('index.html') ||
-                        window.location.pathname.includes('leaderboard.html') ||
-                        window.location.pathname.includes('about.html') ||
-                        window.location.pathname.includes('contact.html') ||
-                        window.location.pathname.includes('how_to_play.html') ||
-                        window.location.pathname.includes('sponsorship.html');
-    
+    const isPublicPage = window.location.pathname.includes('login.html') ||
+        window.location.pathname.includes('register.html') ||
+        window.location.pathname.includes('forgot_password.html') ||
+        window.location.pathname.includes('index.html') ||
+        window.location.pathname.includes('leaderboard.html') ||
+        window.location.pathname.includes('about.html') ||
+        window.location.pathname.includes('contact.html') ||
+        window.location.pathname.includes('how_to_play.html') ||
+        window.location.pathname.includes('sponsorship.html');
+
     if (!token) {
         if (!isPublicPage) {
             window.location.href = 'login.html';
         }
         return null;
     }
-    
+
     // Verify token is still valid
     try {
         const user = await getCurrentUser();
@@ -115,9 +115,19 @@ async function checkAuth() {
             }
             return null;
         }
-        
+
         // Update local storage with latest user data
         localStorage.setItem('currentUser', JSON.stringify(user));
+
+        // Redirect logged-in users away from auth pages
+        const isAuthPage = window.location.pathname.includes('login.html') ||
+            window.location.pathname.includes('register.html') ||
+            window.location.pathname.includes('forgot_password.html');
+
+        if (isAuthPage) {
+            window.location.href = 'my_profile.html';
+        }
+
         return user;
     } catch (error) {
         console.error('Auth check error:', error);
@@ -202,31 +212,32 @@ function logout() {
 }
 
 // Initialize the page - consolidated DOMContentLoaded
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async function () {
     // Mobile Navigation Toggle
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
-    
+
     if (hamburger && navMenu) {
         hamburger.addEventListener('click', () => {
             hamburger.classList.toggle('active');
             navMenu.classList.toggle('active');
         });
-        
+
         // Close mobile menu when clicking on a link
         document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
             hamburger.classList.remove('active');
             navMenu.classList.remove('active');
         }));
     }
-    
+
     // Game Card Animations
     const gameCards = document.querySelectorAll('.game-card');
     gameCards.forEach((card, index) => {
         card.style.animationDelay = `${index * 0.1}s`;
         card.classList.add('fade-in');
     });
-    
+
     // Check authentication
-    await checkAuth();
+    const user = await checkAuth();
+    updateNavbar(user);
 });
