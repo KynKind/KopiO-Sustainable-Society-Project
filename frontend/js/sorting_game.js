@@ -25,7 +25,7 @@ class SortingGame {
     // ✅ 50 items pool
     generateItemsPool() {
         return [
-            // --- Plastic (13) ---
+            // --- Plastic ---
             { name: "Plastic Bottle", type: "plastic", image: "🥤" },
             { name: "Plastic Container", type: "plastic", image: "🍶" },
             { name: "Plastic Bag", type: "plastic", image: "🛍️" },
@@ -39,8 +39,17 @@ class SortingGame {
             { name: "Plastic Packaging", type: "plastic", image: "📦" },
             { name: "Detergent Bottle", type: "plastic", image: "🧼" },
             { name: "Plastic Lid", type: "plastic", image: "🫙" },
+            { name: "Yogurt Cup", type: "plastic", image: "🥛" },
+            { name: "Butter Tub", type: "plastic", image: "🧈" },
+            { name: "Ice Cream Tub", type: "plastic", image: "🍨" },
+            { name: "CD Case", type: "plastic", image: "💿" },
+            { name: "Plastic Hanger", type: "plastic", image: "👕" },
+            { name: "Plant Pot", type: "plastic", image: "🪴" },
+            { name: "Pipette Tips", type: "plastic", image: "🧪" },
+            { name: "Plastic Toy", type: "plastic", image: "🧸" },
+            { name: "Plastic Utensils", type: "plastic", image: "🍴" },
 
-            // --- Paper (13) ---
+            // --- Paper ---
             { name: "Newspaper", type: "paper", image: "📰" },
             { name: "Cardboard Box", type: "paper", image: "📦" },
             { name: "Office Paper", type: "paper", image: "📄" },
@@ -54,8 +63,18 @@ class SortingGame {
             { name: "Paper Plate", type: "paper", image: "🍽️" },
             { name: "Paper Carton", type: "paper", image: "🧃" },
             { name: "Wrapping Paper", type: "paper", image: "🎁" },
+            { name: "Paper Towel Roll", type: "paper", image: "🧻" },
+            { name: "Egg Carton", type: "paper", image: "🥚" },
+            { name: "Pizza Box", type: "paper", image: "🍕" },
+            { name: "Cereal Box", type: "paper", image: "🥣" },
+            { name: "Toilet Paper Roll", type: "paper", image: "🧻" },
+            { name: "Paper Bag", type: "paper", image: "🛍️" },
+            { name: "Shipping Box", type: "paper", image: "📦" },
+            { name: "Paper Cup", type: "paper", image: "☕" },
+            { name: "Wine Box", type: "paper", image: "🍷" },
+            { name: "Paper Folder", type: "paper", image: "📁" },
 
-            // --- Glass (12) ---
+            // --- Glass ---
             { name: "Glass Bottle", type: "glass", image: "🍾" },
             { name: "Glass Jar", type: "glass", image: "🫙" },
             { name: "Broken Glass", type: "glass", image: "⚗️" },
@@ -68,8 +87,18 @@ class SortingGame {
             { name: "Pickle Jar", type: "glass", image: "🥒" },
             { name: "Olive Oil Bottle", type: "glass", image: "🫒" },
             { name: "Glass Vase", type: "glass", image: "🏺" },
+            { name: "Glass Vase", type: "glass", image: "🏺" },
+            { name: "Glass Window", type: "glass", image: "🪟" },
+            { name: "Glass Tabletop", type: "glass", image: "🪟" },
+            { name: "Glass Mirror", type: "glass", image: "🪞" },
+            { name: "Glass Light Bulb", type: "glass", image: "💡" },
+            { name: "Glass Marbles", type: "glass", image: "🔮" },
+            { name: "Glass Decanter", type: "glass", image: "🍾" },
+            { name: "Glass Ash Tray", type: "glass", image: "🚬" },
+            { name: "Glass Ornament", type: "glass", image: "✨" },
+            { name: "Glass Cookware", type: "glass", image: "🍳" },
 
-            // --- Organic (12) ---
+            // --- Organic ---
             { name: "Apple Core", type: "organic", image: "🍎" },
             { name: "Banana Peel", type: "organic", image: "🍌" },
             { name: "Egg Shells", type: "organic", image: "🥚" },
@@ -81,7 +110,41 @@ class SortingGame {
             { name: "Fish Bones", type: "organic", image: "🐟" },
             { name: "Chicken Bones", type: "organic", image: "🍗" },
             { name: "Leaves", type: "organic", image: "🍂" },
-            { name: "Leftover Rice", type: "organic", image: "🍚" }
+            { name: "Leftover Rice", type: "organic", image: "🍚" },
+            { name: "Potato Peels", type: "organic", image: "🥔" },
+            { name: "Onion Skins", type: "organic", image: "🧅" },
+            { name: "Citrus Peels", type: "organic", image: "🍊" },
+            { name: "Nut Shells", type: "organic", image: "🥜" },
+            { name: "Corn Cobs", type: "organic", image: "🌽" },
+            { name: "Coffee Filters", type: "organic", image: "☕" },
+            { name: "Tea Bags", type: "organic", image: "🍵" },
+            { name: "Coconut Shells", type: "organic", image: "🥥" },
+            { name: "Pineapple Crown", type: "organic", image: "🍍" },
+            { name: "Watermelon Rind", type: "organic", image: "🍉" },
+
+            // --- E-Waste ---
+            { name: "Mobile Phone", type: "ewaste", image: "📱" },
+            { name: "Laptop", type: "ewaste", image: "💻" },
+            { name: "Batteries", type: "ewaste", image: "🔋" },
+            { name: "Tablet", type: "ewaste", image: "📱" },
+            { name: "Charger Cable", type: "ewaste", image: "🔌" },
+            { name: "USB Drive", type: "ewaste", image: "💾" },
+            { name: "Headphones", type: "ewaste", image: "🎧" },
+            { name: "Mouse", type: "ewaste", image: "🖱️" },
+            { name: "Keyboard", type: "ewaste", image: "⌨️" },
+            { name: "Remote Control", type: "ewaste", image: "📺" },
+        
+            // --- Metal ---
+            { name: "Aluminum Can", type: "metal", image: "🥫" },
+            { name: "Steel Can", type: "metal", image: "🥫" },
+            { name: "Metal Lid", type: "metal", image: "🫙" },
+            { name: "Aluminum Foil", type: "metal", image: "📄" },
+            { name: "Metal Keys", type: "metal", image: "🔑" },
+            { name: "Nails/Screws", type: "metal", image: "🔩" },
+            { name: "Metal Hangers", type: "metal", image: "👕" },
+            { name: "Wire", type: "metal", image: "🔌" },
+            { name: "Metal Utensils", type: "metal", image: "🍴" },
+            { name: "Soda Can", type: "metal", image: "🥤" }
         ].map((item, idx) => ({
             id: idx + 1,
             ...item

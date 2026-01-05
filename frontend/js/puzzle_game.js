@@ -58,7 +58,12 @@ class PuzzleGame {
             2: { title: "Wind Turbines", description: "Wind energy is a clean, renewable source that helps reduce our carbon footprint.", fact: "A single wind turbine can power up to 1,500 homes for a year!" },
             3: { title: "Rainforest", description: "Rainforests are vital for biodiversity and absorbing carbon dioxide from the atmosphere.", fact: "Rainforests cover only 6% of Earth's surface but contain 50% of all plant and animal species!" },
             4: { title: "Coral Reef", description: "Coral reefs protect coastlines and support incredible marine biodiversity.", fact: "Coral reefs support 25% of all marine species despite covering less than 1% of the ocean floor!" },
-            5: { title: "Organic Farm", description: "Organic farming practices protect soil health and reduce chemical pollution.", fact: "Organic farms have 30% more biodiversity than conventional farms!" }
+            5: { title: "Organic Farm", description: "Organic farming practices protect soil health and reduce chemical pollution.", fact: "Organic farms have 30% more biodiversity than conventional farms!" },
+            6: { title: "Green City", description: "Sustainable urban planning with green spaces, public transport, and energy-efficient buildings.", fact: "Green roofs can reduce building energy use by up to 30% and manage stormwater runoff!"},
+            7: { title: "Electric Vehicles", description: "Zero-emission transportation reducing air pollution and dependence on fossil fuels.", fact: "Electric vehicles produce 60-70% less CO2 over their lifetime compared to gasoline cars!"},
+            8: { title: "Eco Fashion", description: "Ethical clothing production using sustainable materials and fair labor practices.", fact: "It takes 2,700 liters of water to produce one cotton t-shirt - equivalent to 3 years of drinking water!"},
+            9: { title: "Water Saving", description: "Technologies and practices to reduce water waste and preserve freshwater resources.", fact: "A dripping faucet can waste over 10,000 liters of water per year - enough for 100 baths!"},
+            10: { title: "Circular Economy", description: "Economic system eliminating waste through continual reuse of resources.", fact: "A circular economy could reduce global CO2 emissions by 39% and virgin material use by 28%!"}
         };
     }
 
