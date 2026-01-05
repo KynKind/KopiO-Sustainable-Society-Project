@@ -280,39 +280,70 @@ body:not(.user-admin) .admin-only {
     box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
 }
 
-/* Game Cards Grid */
+/* ========== SIMPLE GAME CARDS ========== */
 .games-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
+    gap: 2rem;
     margin: 2rem 0;
 }
 
 .game-card {
-    background: linear-gradient(135deg, var(--light-cream), #F8F4E9);
+    background: white;
     border-radius: var(--radius-medium);
     padding: 2rem;
     text-align: center;
-    box-shadow: var(--shadow);
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-}
-
-.game-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--accent-gold);
     box-shadow: 0 8px 25px rgba(139, 69, 19, 0.2);
+    border: 3px solid var(--accent-gold);
 }
 
+/* Game icons - NO backgrounds */
 .game-icon {
-    font-size: 3rem;
-    color: var(--primary-brown);
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.game-icon i {
+    font-size: 4.5rem;
+}
+
+/* Different colors for each icon */
+.game-card:nth-child(1) .game-icon i { /* Quiz */
+    color: #4CAF50;
+}
+
+.game-card:nth-child(2) .game-icon i { /* Memory */
+    color: #2196F3;
+}
+
+.game-card:nth-child(3) .game-icon i { /* Waste */
+    color: #FF9800;
+}
+
+.game-card:nth-child(4) .game-icon i { /* Puzzle */
+    color: #9C27B0;
 }
 
 .game-card h3 {
     color: var(--dark-brown);
     margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.game-card p {
+    color: #5D4037;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    background: var(--primary-brown);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-small);
+    font-weight: 600;
 }
 
 /* Leaderboard */
