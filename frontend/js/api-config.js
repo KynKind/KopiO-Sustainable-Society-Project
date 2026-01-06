@@ -1,5 +1,13 @@
 // API Configuration
-const API_BASE_URL = 'http://localhost:5000/api';
+// For PythonAnywhere deployment:
+// 1. Add this to your HTML file before loading api-config.js:
+//    <script>window.PYTHONANYWHERE_USERNAME = 'YOUR_PYTHONANYWHERE_USERNAME';</script>
+// 2. Replace 'YOUR_PYTHONANYWHERE_USERNAME' with your actual PythonAnywhere username
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/api'
+    : (window.PYTHONANYWHERE_USERNAME 
+        ? `https://${window.PYTHONANYWHERE_USERNAME}.pythonanywhere.com/api`
+        : '/api');  // Fallback to relative URL if same domain
 
 // API Helper Functions
 async function apiRequest(endpoint, options = {}) {
