@@ -114,10 +114,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 
+                // Get submit button and save original text
+                const submitBtn = registerForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                
                 try {
                     // Show loading state
-                    const submitBtn = registerForm.querySelector('button[type="submit"]');
-                    const originalText = submitBtn.innerHTML;
                     submitBtn.disabled = true;
                     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
                     
