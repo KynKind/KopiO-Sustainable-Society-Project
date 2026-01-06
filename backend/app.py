@@ -9,14 +9,19 @@ from datetime import datetime
 from config import config
 from database import init_db
 
-# Configure logging
+# Configure logging - handle cases where file logging may not work
+log_handlers = [logging.StreamHandler()]
+
+# Try to add file handler, but don't fail if it doesn't work
+try:
+    log_handlers.append(logging.FileHandler('kopio.log'))
+except (OSError, PermissionError):
+    pass  # File logging not available, continue with stream only
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('kopio.log'),
-        logging.StreamHandler()
-    ]
+    handlers=log_handlers
 )
 logger = logging.getLogger(__name__)
 
@@ -38,8 +43,18 @@ logger.info(f"Starting Kopi-O API in {env} mode")
 
 # Enable CORS
 # Note: Configure CORS_ORIGINS environment variable in production
-# Default allows common development ports
-default_cors = 'http://localhost:3000,http://localhost:5000,http://127.0.0.1:3000,http://127.0.0.1:5000,http://0.0.0.0:3000,http://localhost:5500,http://127.0.0.1:5500'
+# Default allows common development ports and PythonAnywhere deployment
+default_cors = ','.join([
+    'http://localhost:3000',
+    'http://localhost:5000',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:5000',
+    'http://0.0.0.0:3000',
+    'http://localhost:5500',
+    'http://127.0.0.1:5500',
+    'https://kopio.pythonanywhere.com',
+    'http://kopio.pythonanywhere.com'
+])
 cors_origins_str = os.environ.get('CORS_ORIGINS', default_cors)
 cors_origins = cors_origins_str.split(',') if cors_origins_str and cors_origins_str != '*' else '*'
 
