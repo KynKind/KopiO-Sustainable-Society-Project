@@ -682,11 +682,12 @@ def insert_sample_questions(cursor):
     ]
     
     for q in questions:
+        # Skip the first element (question ID) as it's auto-generated
         cursor.execute('''
             INSERT OR IGNORE INTO quiz_questions 
             (question, option_a, option_b, option_c, option_d, correct_option, fact, difficulty)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ''', q)
+        ''', q[1:])
 
 if __name__ == '__main__':
     init_db()

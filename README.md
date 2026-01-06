@@ -61,6 +61,7 @@ http://localhost:3000/html/login.html
 
 ```
 KopiO-Sustainable-Society-Project/
+├── wsgi.py              # PythonAnywhere deployment entry point
 ├── backend/
 │   ├── app.py           # Main Flask server
 │   ├── auth.py          # Login/Register
@@ -94,6 +95,49 @@ python app.py
 
 ### CORS errors
 Make sure backend is running on port 5000 before opening the frontend.
+
+---
+
+## 🌐 PythonAnywhere Deployment
+
+### Setup Instructions
+
+1. Upload your project to PythonAnywhere
+2. Go to the **Web** tab and create a new web app
+3. Choose **Manual Configuration** (not Flask)
+4. Edit the WSGI configuration file and replace its contents with:
+
+```python
+import sys
+
+# Add your project directory to the path
+path = '/home/YOUR_USERNAME/KopiO-Sustainable-Society-Project'
+if path not in sys.path:
+    sys.path.insert(0, path)
+
+# Import the application from the wsgi.py file
+from wsgi import application
+```
+
+5. Replace `YOUR_USERNAME` with your PythonAnywhere username
+6. Set the working directory to your project root in the Web tab
+7. Reload your web app
+
+### Environment Variables (Optional)
+
+Add these in the WSGI file if needed:
+
+```python
+import os
+os.environ['FLASK_ENV'] = 'production'
+os.environ['SECRET_KEY'] = 'your-secret-key-here'
+os.environ['JWT_SECRET_KEY'] = 'your-jwt-secret-here'
+```
+
+### Static Files Configuration
+
+- **URL**: `/static/`
+- **Directory**: `/home/YOUR_USERNAME/KopiO-Sustainable-Society-Project/frontend/`
 
 ---
 
