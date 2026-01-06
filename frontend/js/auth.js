@@ -157,7 +157,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     showMessage(error.message || 'Registration failed. Please try again.', 'error');
                     
                     // Reset button
-                    const submitBtn = registerForm.querySelector('button[type="submit"]');
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = originalText;
                 }
